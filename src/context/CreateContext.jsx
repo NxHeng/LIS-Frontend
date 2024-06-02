@@ -33,7 +33,14 @@ export const CreateContextProvider = ({ children }) => {
   };
 
   return (
-    <CreateContext.Provider value={{ view, toNewCase, toNewCaseDetails, toCategories, toNewCategory, toCategoryUpdate }}>
+    <CreateContext.Provider value={{
+      view,
+      toNewCase,
+      toNewCaseDetails,
+      toCategories,
+      toNewCategory,
+      toCategoryUpdate
+    }}>
       {children}
     </CreateContext.Provider>
   );

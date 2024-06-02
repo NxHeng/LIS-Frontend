@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
 import Cases from "./pages/Cases";
+import Details from "./pages/Details";
 import Tasks from "./pages/Tasks";
 import Notifications from "./pages/Notifications";
 import Announcement from "./pages/Announcement";
@@ -25,6 +26,7 @@ function App() {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/announcement" element={<Announcement />} />
             <Route path="/create" element={<Create />} />
+            <Route path="/cases/details/:id" element={<Details />} />
           </Routes>
           {/* <Footer /> */}
         </BrowserRouter>
