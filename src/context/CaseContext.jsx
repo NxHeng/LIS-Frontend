@@ -3,10 +3,17 @@ import React, { createContext, useContext, useState } from 'react';
 const CaseContext = createContext();
 
 export const CaseContextProvider = ({ children }) => {
+    const [caseItems, setCaseItems] = useState([
+        { id: 1, title: "case 1", date: "6-6-2024", task: "Task 1" }, 
+        { id: 2, title: "case 2", date: "4-6-2024", task: "Task 2" }, 
+        { id: 3, title: "case 3", date: "3-6-2024", task: "Task 3" }]);
+    const [detailView, setDetailView] = useState('matterDetail');
+
     const [view, setView] = useState('myCases');
     const [filteredCases, setFilteredCases] = useState('active');
     const [filteredCategory, setFilteredCategory] = useState('All');
 
+    // Case List Page
     const toMyCases = () => {
         setView('myCases');
         console.log(view);
@@ -32,6 +39,24 @@ export const CaseContextProvider = ({ children }) => {
         console.log(`Filtering ${category} cases`);
     };
 
+    // Details Page
+    const toMatterDetails = () => {
+        setDetailView('matterDetails');
+    }
+
+    const toCaseDetails = () => {
+        setDetailView('caseDetails');
+    }
+
+    const toTasks = () => {
+        setDetailView('tasks');
+    }
+
+    const toDocuments = () => {
+        setDetailView('documents');
+    }
+
+
     return (
         <CaseContext.Provider value={{
             view,
@@ -41,7 +66,13 @@ export const CaseContextProvider = ({ children }) => {
             filterActiveCases,
             filterClosedCases,
             filteredCategory,
-            filterCategory
+            filterCategory,
+            caseItems,
+            detailView,
+            toMatterDetails,
+            toCaseDetails,
+            toTasks,
+            toDocuments
         }}>
             {children}
         </CaseContext.Provider>

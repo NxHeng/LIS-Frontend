@@ -8,10 +8,8 @@ import { useCaseContext } from '../context/CaseContext';
 
 const Cases = () => {
 
-    // Dummy data
-    const cases = [{ title: "case 1", date: "6-6-2024", task: "Task 1" }, { title: "case 2", date: "4-6-2024", task: "Task 2" }, { title: "case 3", date: "3-6-2024", task: "Task 3" }];
-
     const {
+        caseItems,
         view,
         toMyCases,
         toAllCases,
@@ -76,7 +74,7 @@ const Cases = () => {
                                 freeSolo
                                 id="free-solo-2-demo"
                                 disableClearable
-                                options={cases.map((option) => option.title)}
+                                options={caseItems.map((option) => option.title)}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
@@ -104,7 +102,7 @@ const Cases = () => {
                         </Container>
 
                         <Container sx={{ mt: 2 }}>
-                            {cases.map((caseItem, index) => (
+                            {caseItems.map((caseItem, index) => (
                                 <CaseCard key={index} caseItem={caseItem} />
                             ))}
                         </Container>
