@@ -5,16 +5,13 @@ import './index.css'
 
 import { CreateContextProvider } from './context/CreateContext'
 import { CategoryContextProvider } from './context/CategoryContext'
-import { TemplateContextProvider } from './context/TemplateContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <TemplateContextProvider>
-      <CategoryContextProvider>
-        <CreateContextProvider>
-          <App />
-        </CreateContextProvider>
-      </CategoryContextProvider>
-    </TemplateContextProvider>
+    <CategoryContextProvider>
+      <CreateContextProvider>
+        <App />
+      </CreateContextProvider>
+    </CategoryContextProvider>
   </React.StrictMode>,
 )

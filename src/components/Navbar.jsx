@@ -37,7 +37,7 @@ const Navbar = () => {
     };
 
     return (
-        <AppBar elevation={0} position="static" sx={{backgroundColor: 'lightgrey', color: 'black'}}>
+        <AppBar elevation={0} position="static" sx={{ backgroundColor: 'lightgrey', color: 'black' }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -88,7 +88,9 @@ const Navbar = () => {
                         >
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
+                                    <Link to={`/${page.toLowerCase()}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        {page}
+                                    </Link>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -127,7 +129,7 @@ const Navbar = () => {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar alt="Xian Heng" src="/static/images/avatar/2.jpg" />
                             </IconButton>
                         </Tooltip>
                         <Menu

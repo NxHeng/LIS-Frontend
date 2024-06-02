@@ -11,8 +11,8 @@ export const CreateContextProvider = ({ children }) => {
     setView('newCase');
   };
 
-  const toTemplates = () => {
-    setView('templates');
+  const toNewCaseDetails = () => {
+    setView('newCaseDetails');
     console.log(view)
   };
 
@@ -20,17 +20,6 @@ export const CreateContextProvider = ({ children }) => {
     setView('categories');
     console.log(view)
   };
-
-  // TemplateList
-  const toNewTemplate = () => {
-    setView('newTemplate');
-    console.log(view)
-  };
-
-  const toTemplateUpdate = () => {
-    setView('templateUpdate');
-    console.log(view)
-  }
 
   // CategoryList
   const toNewCategory = () => {
@@ -44,7 +33,7 @@ export const CreateContextProvider = ({ children }) => {
   };
 
   return (
-    <CreateContext.Provider value={{ view, toNewCase, toTemplates, toCategories, toNewTemplate, toTemplateUpdate, toNewCategory, toCategoryUpdate }}>
+    <CreateContext.Provider value={{ view, toNewCase, toNewCaseDetails, toCategories, toNewCategory, toCategoryUpdate }}>
       {children}
     </CreateContext.Provider>
   );
