@@ -2,8 +2,12 @@ import React, { createContext, useContext, useState } from 'react';
 
 const CreateContext = createContext();
 
+import { useCategoryContext } from './CategoryContext';
+
 export const CreateContextProvider = ({ children }) => {
   const [view, setView] = useState('newCase');
+
+  const { fetchCategories, categories, setCategories } = useCategoryContext();
 
   // Side navigation
   const toNewCase = () => {
@@ -17,7 +21,9 @@ export const CreateContextProvider = ({ children }) => {
   };
 
   const toCategories = () => {
-    setView('categories');
+    fetchCategories().then(() => {
+      setView('categories');
+    });
     console.log(view)
   };
 

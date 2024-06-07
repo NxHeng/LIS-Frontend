@@ -9,7 +9,7 @@ const CategoryCard = ({ category }) => {
         <Card onClick={toCategoryUpdate} elevation={3} sx={{ marginBottom: 2, borderRadius: 5 }}>
             <CardContent>
                 <Typography variant="h6">
-                    {category}
+                    {category.categoryName}
                 </Typography>
             </CardContent>
         </Card>

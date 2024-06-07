@@ -1,14 +1,25 @@
-import React from 'react';
-import { Container, Box, Typography, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Container, Box, Typography, Button, CircularProgress } from '@mui/material';
 
 import CategoryCard from './CategoryCard';
 
 import { useCreateContext } from '../../../context/CreateContext';
+import { useCategoryContext } from '../../../context/CategoryContext';
 
 const CategoryList = () => {
 
-    const categories = ['Housing Project', 'Completed Property', 'Options', 'Loan']
     const { toNewCategory } = useCreateContext();
+    const { categories, categoriesLoaded } = useCategoryContext();
+    console.log(categoriesLoaded);
+    console.log(categories)
+
+    if (!categoriesLoaded) {
+        return (
+            <Container maxWidth="sm" sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+            </Container>
+        );
+    }
 
     return (
         <Container maxWidth="sm" sx={{ marginTop: 4 }}>
@@ -27,7 +38,7 @@ const CategoryList = () => {
                 </Button>
             </Box>
             {categories.map((category) => (
-                <CategoryCard key={category} category={category} />
+                <CategoryCard key={category._id} category={category} />
             ))}
         </Container>
     );
