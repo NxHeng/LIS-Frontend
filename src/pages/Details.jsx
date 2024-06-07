@@ -1,27 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Typography, Box, Button, Grid, Stack } from '@mui/material';
 
 import MatterDetails from '../components/Cases/MatterDetails';
 import CaseDetails from '../components/Cases/CaseDetails';
-import Tasks from '../components/Cases/Tasks';
+import Tasks from '../components/Cases/Tasks/Tasks';
+import TaskDetail from '../components/Cases/Tasks/TaskDetail';
 import Documents from '../components/Cases/Documents';
 
 import { useCaseContext } from '../context/CaseContext';
+import { useTaskContext } from '../context/TaskContext';
 
 const Details = () => {
 
     const { detailView, toMatterDetails, toCaseDetails, toTasks, toDocuments } = useCaseContext();
+    const { task } = useTaskContext();
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
+    useEffect(() => {
+        toMatterDetails();
+    }, []);
+
     return (
-        <Container sx={{ p: 2 }}>
-            <Typography variant='h2'>Cases</Typography>
-            <Box sx={{ flexGrow: 1 }}>
+        <div sx={{ p: 2 }}>
+
+            <Box sx={{ flexGrow: 1, ml: 27, mt: 2 }}>
                 <Grid container spacing={2}>
                     {/* Side Navigation */}
-                    <Grid item xs={3}>
+                    <Grid item xs={2}>
                         <Stack>
-
+                            <Typography variant='h2'>Cases</Typography>
                             <Button onClick={toMatterDetails} variant={detailView === 'matterDetails' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
                                 Matter Detail
                             </Button>
@@ -42,20 +49,8 @@ const Details = () => {
                     </Grid>
 
                     {/* Main Content */}
-                    <Grid item xs={9}>
-                        <Container maxWidth="md">
-                            <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
-                                <Button variant="contained" sx={{ mx: 1, borderRadius: 5 }} >
-                                    Edit
-                                </Button>
-                                <Button variant="contained" sx={{ mx: 1, borderRadius: 5 }} >
-                                    Mark As Closed
-                                </Button>
-                                <Button variant="contained" sx={{ mx: 1, borderRadius: 5 }} >
-                                    Generate Link
-                                </Button>
-                            </Box>
-
+                    <Grid item xs={7}>
+                        <Container maxWidth="md" sx={{ mt: 10 }}>
                             <Box>
                                 {
                                     detailView === 'matterDetails' ? (
@@ -71,9 +66,17 @@ const Details = () => {
                             </Box>
                         </Container>
                     </Grid>
+                    {
+                        detailView === 'tasks' ? (
+                            <Grid item xs={3} sx={{ backgroundColor: "lightgrey" }}>
+                                <TaskDetail />
+                            </Grid>
+                        ) : null
+                    }
+
                 </Grid>
             </Box>
-        </Container>
+        </div>
     );
 };
 

@@ -20,7 +20,7 @@ const Create = () => {
             <Typography variant='h2'>Create</Typography>
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
-                    <Grid item xs={3}>
+                    <Grid item xs={2}>
                         <Stack>
                             {/* New Case */}
                             <Button onClick={toNewCase} variant={view === 'newCase' || view === 'newCaseDetails' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >New Case</Button>
@@ -32,7 +32,7 @@ const Create = () => {
 
                         </Stack>
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={8}>
                         {
                             view === 'newCase' ? (
                                 <NewCase />

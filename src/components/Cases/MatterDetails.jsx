@@ -1,12 +1,23 @@
 import React from 'react';
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, Button } from '@mui/material';
 
 const MatterDetails = ({ caseItem }) => {
 
 
-    
+
     return (
         <Container>
+            <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
+                <Button variant="contained" sx={{ mx: 1, borderRadius: 5 }} >
+                    Edit
+                </Button>
+                <Button variant="contained" sx={{ mx: 1, borderRadius: 5 }} >
+                    Mark As Closed
+                </Button>
+                <Button variant="contained" sx={{ mx: 1, borderRadius: 5 }} >
+                    Generate Link
+                </Button>
+            </Box>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Box>
                     <Typography variant='h6' color="grey">

@@ -28,7 +28,7 @@ const Cases = () => {
             <Box sx={{ flexGrow: 1 }}>
                 <Grid container spacing={2}>
                     {/* Side Navigation */}
-                    <Grid item xs={3}>
+                    <Grid item xs={2}>
                         <Stack>
 
                             <Button onClick={toMyCases} variant={view === 'myCases' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
@@ -68,7 +68,7 @@ const Cases = () => {
                     </Grid>
 
                     {/* Main Content */}
-                    <Grid item xs={9}>
+                    <Grid item xs={8}>
                         <Container maxWidth="md">
                             <Autocomplete
                                 freeSolo

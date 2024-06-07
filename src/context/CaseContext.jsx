@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState } from 'react';
 
 const CaseContext = createContext();
 
+import { useTaskContext } from './TaskContext';
+
 export const CaseContextProvider = ({ children }) => {
     const [caseItems, setCaseItems] = useState([
         { id: 1, title: "case 1", date: "6-6-2024", task: "Task 1" }, 
@@ -12,6 +14,8 @@ export const CaseContextProvider = ({ children }) => {
     const [view, setView] = useState('myCases');
     const [filteredCases, setFilteredCases] = useState('active');
     const [filteredCategory, setFilteredCategory] = useState('All');
+
+    const { setTask } = useTaskContext();
 
     // Case List Page
     const toMyCases = () => {
@@ -41,10 +45,12 @@ export const CaseContextProvider = ({ children }) => {
 
     // Details Page
     const toMatterDetails = () => {
+        setTask(null);
         setDetailView('matterDetails');
     }
 
     const toCaseDetails = () => {
+        setTask(null);
         setDetailView('caseDetails');
     }
 
@@ -53,6 +59,7 @@ export const CaseContextProvider = ({ children }) => {
     }
 
     const toDocuments = () => {
+        setTask(null);
         setDetailView('documents');
     }
 
