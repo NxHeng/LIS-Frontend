@@ -1,27 +1,51 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { Container, Box, Typography, Button, TextField, InputAdornment, IconButton } from '@mui/material';
+import { Container, Box, Typography, Button, TextField, InputAdornment, IconButton, CircularProgress, Stack, FormControl, Select, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-
+import { useCategoryContext } from '../../../context/CategoryContext';
+import { useCreateContext } from '../../../context/CreateContext';
 
 const CategoryUpdate = () => {
 
-    // Category Name Field
+    const { fetchCategory, categoryLoaded, category, setCategory, selectedCategoryId, updateFields, updateTasks, deleteCategory } = useCategoryContext();
+    const { toCategories } = useCreateContext();
+
+    // Fetch category data when component mounts or selectedCategoryId changes
+    useEffect(() => {
+        if (selectedCategoryId) {
+            fetchCategory(selectedCategoryId);
+        }
+        console.log(category);
+        console.log(selectedCategoryId);
+    }, [selectedCategoryId]);
+
+    // Initialize states
     const [categoryName, setCategoryName] = useState('');
+    const [detailFields, setDetailFields] = useState([]);
+    const [taskFields, setTaskFields] = useState([]);
+    const [tabValue, setTabValue] = useState(0);
+
+    useEffect(() => {
+        if (categoryLoaded && category) {
+            setCategoryName(category.categoryName || '');
+            setDetailFields(category.fields ? category.fields.map((field, index) => ({ id: index, value: field.name, type: field.type })) : []);
+            setTaskFields(category.tasks ? category.tasks.map((task, index) => ({ id: index, value: task.description })) : []);
+        }
+    }, [categoryLoaded, category]);
+
+    // Category Name Field
     const handleCategoryNameChange = (event) => {
         setCategoryName(event.target.value);
     };
 
     // Case Details Fields
-    const [detailFields, setDetailFields] = useState([{ id: 0, value: '' }]);
-
     const handleAddDetailField = () => {
         const newId = detailFields.length > 0 ? detailFields[detailFields.length - 1].id + 1 : 0;
-        setDetailFields([...detailFields, { id: newId, value: '' }]);
+        setDetailFields([...detailFields, { id: newId, value: '', type: 'string' }]);
     };
 
     const handleRemoveDetailField = (id) => {
@@ -38,9 +62,17 @@ const CategoryUpdate = () => {
         setDetailFields(newFields);
     };
 
-    // Tasks Fields
-    const [taskFields, setTaskFields] = useState([{ id: 0, value: '' }]);
+    const handleDetailTypeChange = (id, newType) => {
+        const newFields = detailFields.map(field => {
+            if (field.id === id) {
+                return { ...field, type: newType };
+            }
+            return field;
+        });
+        setDetailFields(newFields);
+    };
 
+    // Tasks Fields
     const handleAddTaskField = () => {
         const newId = taskFields.length > 0 ? taskFields[taskFields.length - 1].id + 1 : 0;
         setTaskFields([...taskFields, { id: newId, value: '' }]);
@@ -63,29 +95,55 @@ const CategoryUpdate = () => {
     const handleSaveDetail = (event) => {
         event.preventDefault();
         // Handle form submission with fields state
-        console.log(categoryName);
-        console.log(detailFields);
+        const transformedFields = transformDetailFields(detailFields);
+        setCategory(prevCategory => ({
+            ...prevCategory,
+            categoryName: categoryName,
+            fields: transformedFields
+        }));
+        // To Database
+        updateFields(category, transformedFields, categoryName);
+        setTabValue(1);
     };
 
     const handleSaveTask = (event) => {
         event.preventDefault();
         // Handle form submission with fields state
-        console.log(taskFields);
+        const transformedTasks = transformTaskFields(taskFields);
+        setCategory(prevCategory => ({
+            ...prevCategory,
+            tasks: transformedTasks
+        }));
+        // To Database
+        updateTasks(category, transformedTasks);
+    }
+
+    const transformDetailFields = (fields) => {
+        return fields.map(({ value, type }) => ({ name: value, type }));
+    };
+    const transformTaskFields = (fields) => {
+        return fields.map(({ value }) => ({ description: value }));
     };
 
     const handleDeleteCategory = (event) => {
         event.preventDefault();
-        console.log('Category Deleted');
-        console.log(detailFields);
-        console.log(taskFields);
+        deleteCategory(category);
+        toCategories();
     }
 
     // Tabs Handling
-    const [tabValue, setTabValue] = useState(0);
     const handleChangeTab = (event, newValue) => {
         setTabValue(newValue);
     };
 
+    if (!categoryLoaded) {
+        console.log(categoryLoaded)
+        return (
+            <Container maxWidth="sm" sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+            </Container>
+        );
+    }
 
     return (
         <Container maxWidth="sm">
@@ -115,33 +173,48 @@ const CategoryUpdate = () => {
                             name="categoryName"
                             autoFocus
                             onChange={handleCategoryNameChange}
+                            value={categoryName}
                         />
                         <Typography variant="h6" sx={{ mt: 2 }}>
                             Details Needed
                         </Typography>
                         {detailFields.map((field, index) => (
-                            <TextField
-                                key={field.id}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                value={field.value}
-                                onChange={(e) => handleDetailChange(field.id, e)}
-                                label={`Detail ${index + 1}`}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="delete"
-                                                onClick={() => handleRemoveDetailField(field.id)}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
+                            <Stack sx={{ mt: 1 }} key={field.id} spacing={2} direction="row">
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    value={field.value}
+                                    onChange={(e) => handleDetailChange(field.id, e)}
+                                    label={`Detail ${index + 1}`}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="delete"
+                                                    onClick={() => handleRemoveDetailField(field.id)}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                                <FormControl fullWidth>
+                                    <Select
+                                        variant="outlined"
+                                        required
+                                        fullWidth
+                                        value={field.type}
+                                        onChange={(e) => handleDetailTypeChange(field.id, e.target.value)}
+                                    >
+                                        <MenuItem value="string">String</MenuItem>
+                                        <MenuItem value="number">Number</MenuItem>
+                                        {/* Add more types here */}
+                                    </Select>
+                                </FormControl>
+                            </Stack>
                         ))}
                         <Button
                             onClick={handleAddDetailField}

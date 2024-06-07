@@ -7,10 +7,12 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 import { useCategoryContext } from '../../../context/CategoryContext';
+import { useCreateContext } from '../../../context/CreateContext';
 
 const NewCategory = () => {
 
     const { category, setCategory, createCategory } = useCategoryContext();
+    const { toCategories } = useCreateContext();
 
     // Category Name Field
     const [categoryName, setCategoryName] = useState('');
@@ -94,6 +96,7 @@ const NewCategory = () => {
         // To Database
         // console.log(newCategory);
         createCategory(newCategory);
+        toCategories();
     }
 
     const transformDetailFields = (fields) => {

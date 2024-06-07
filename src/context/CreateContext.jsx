@@ -7,7 +7,7 @@ import { useCategoryContext } from './CategoryContext';
 export const CreateContextProvider = ({ children }) => {
   const [view, setView] = useState('newCase');
 
-  const { fetchCategories, categories, setCategories } = useCategoryContext();
+  const { fetchCategories, setSelectedCategoryId } = useCategoryContext();
 
   // Side navigation
   const toNewCase = () => {
@@ -21,9 +21,7 @@ export const CreateContextProvider = ({ children }) => {
   };
 
   const toCategories = () => {
-    fetchCategories().then(() => {
-      setView('categories');
-    });
+    setView('categories');
     console.log(view)
   };
 
@@ -33,7 +31,8 @@ export const CreateContextProvider = ({ children }) => {
     console.log(view)
   };
 
-  const toCategoryUpdate = () => {
+  const toCategoryUpdate = (id) => {
+    setSelectedCategoryId(id);
     setView('categoryUpdate');
     console.log(view)
   };

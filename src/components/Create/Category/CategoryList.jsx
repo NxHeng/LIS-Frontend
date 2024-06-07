@@ -9,9 +9,11 @@ import { useCategoryContext } from '../../../context/CategoryContext';
 const CategoryList = () => {
 
     const { toNewCategory } = useCreateContext();
-    const { categories, categoriesLoaded } = useCategoryContext();
-    console.log(categoriesLoaded);
-    console.log(categories)
+    const { categories, categoriesLoaded, fetchCategories } = useCategoryContext();
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
 
     if (!categoriesLoaded) {
         return (
