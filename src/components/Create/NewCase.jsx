@@ -1,29 +1,41 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, InputAdornment, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useCreateContext } from '../../context/CreateContext';
+import { useCategoryContext } from '../../context/CategoryContext';
+import { useCaseContext } from '../../context/CaseContext';
 
 const NewCase = () => {
 
     const { toNewCaseDetails } = useCreateContext();
+    const { formData, setFormData } = useCaseContext();
+    const { fetchCategories, categories, setCategory, category, categoriesLoaded, categoryLoaded, setCategoryLoaded } = useCategoryContext();
 
-    const [category, setCategory] = useState();
-    // Sample Categories
-    const categories = ['Housing Project', 'Completed Property', 'Options', 'Loan']
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    useEffect(() => {
+        if (categoriesLoaded && categories.length > 0) {
+            console.log('Categories:', categories);
+            setCategory(categories[0]);
+            setCategoryLoaded(true);
+        }
+    }, [categoriesLoaded, categories]);
+
+    //
+    // useEffect(() => {
+    //     console.log('Selected category:', category);
+    // }, [categoryLoaded, category]);
 
     const handleCategoryChange = (event) => {
-        setCategory(event.target.value);
+        const selectedCategory = categories.find(
+            cat => cat._id === event.target.value
+        );
+        setCategory(selectedCategory);
     };
-
-    const [formData, setFormData] = useState({
-        matterName: '',
-        fileReference: '',
-        solicitorInCharge: '',
-        clerkInCharge: '',
-        clients: [{ id: 0, value: '' }],
-    });
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -55,8 +67,10 @@ const NewCase = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         // Handle form submission
-        console.log('Selected category:', category);
-        console.log('Form Data:', formData);
+        const transformedClients = formData.clients.map(({ value }) => value);
+        const finalFormData = { ...formData, clients: transformedClients };
+        console.log('Form Data:', finalFormData);
+        // console.log('Selected category:', category);
         toNewCaseDetails();
     };
 
@@ -149,15 +163,14 @@ const NewCase = () => {
                     <Select
                         labelId="category-label"
                         id="category-select"
-                        value={categories[0]}
+                        value={categoryLoaded && category ? category._id : ''}
                         label="Category"
                         onChange={handleCategoryChange}
                         sx={{ mb: 2 }}
                     >
-
                         {categories.map((category) => (
-                            <MenuItem key={category} value={category}>
-                                {category}
+                            <MenuItem key={category._id} value={category._id}>  
+                                {category.categoryName}
                             </MenuItem>
                         ))}
                     </Select>

@@ -4,6 +4,8 @@ const CaseContext = createContext();
 
 import { useTaskContext } from './TaskContext';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const CaseContextProvider = ({ children }) => {
     const [caseItems, setCaseItems] = useState([
         { id: 1, title: "case 1", date: "6-6-2024", task: "Task 1" }, 
@@ -14,6 +16,15 @@ export const CaseContextProvider = ({ children }) => {
     const [view, setView] = useState('myCases');
     const [filteredCases, setFilteredCases] = useState('active');
     const [filteredCategory, setFilteredCategory] = useState('All');
+    const [formData, setFormData] = useState({
+        matterName: '',
+        fileReference: '',
+        solicitorInCharge: '',
+        clerkInCharge: '',
+        clients: [{ id: 0, value: '' }],
+        categoryId: '',
+        fields: []
+      });
 
     const { setTask } = useTaskContext();
 
@@ -63,6 +74,21 @@ export const CaseContextProvider = ({ children }) => {
         setDetailView('documents');
     }
 
+    const createCase = async (formData) => {
+        try {
+          const response = await fetch(`${API_URL}/create/case`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
+          const data = await response.json();
+          console.log(data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
     return (
         <CaseContext.Provider value={{
@@ -79,7 +105,10 @@ export const CaseContextProvider = ({ children }) => {
             toMatterDetails,
             toCaseDetails,
             toTasks,
-            toDocuments
+            toDocuments,
+            formData,
+            setFormData,
+            createCase
         }}>
             {children}
         </CaseContext.Provider>

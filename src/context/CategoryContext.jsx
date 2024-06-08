@@ -22,7 +22,7 @@ export const CategoryContextProvider = ({ children }) => {
                 body: JSON.stringify(category),
             });
             const data = await response.json();
-            // setCategories([...categories, data]);
+            setCategories([...categories, data]);
             console.log(data);
         } catch (error) {
             console.error(error);
@@ -145,6 +145,7 @@ export const CategoryContextProvider = ({ children }) => {
             fetchCategories,
             categoryLoaded,
             categoriesLoaded,
+            setCategoryLoaded,
             selectedCategoryId,
             setSelectedCategoryId,
         }}>

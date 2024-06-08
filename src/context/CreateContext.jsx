@@ -7,7 +7,7 @@ import { useCategoryContext } from './CategoryContext';
 export const CreateContextProvider = ({ children }) => {
   const [view, setView] = useState('newCase');
 
-  const { fetchCategories, setSelectedCategoryId } = useCategoryContext();
+  const { setSelectedCategoryId } = useCategoryContext();
 
   // Side navigation
   const toNewCase = () => {
@@ -44,7 +44,7 @@ export const CreateContextProvider = ({ children }) => {
       toNewCaseDetails,
       toCategories,
       toNewCategory,
-      toCategoryUpdate
+      toCategoryUpdate,
     }}>
       {children}
     </CreateContext.Provider>

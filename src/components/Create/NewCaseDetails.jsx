@@ -1,34 +1,86 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Box, TextField, Button, Typography } from '@mui/material';
 
-const NewCaseDetails = () => {
+import { useCategoryContext } from '../../context/CategoryContext';
+import { useCaseContext } from '../../context/CaseContext';
 
-    const [formData, setFormData] = useState('');
-    const handleChange = (event) => {
-        setFormData(event.target.value);
-    }
+const NewCaseDetails = () => {
+    const { category } = useCategoryContext();
+    const { formData, setFormData, createCase } = useCaseContext();
+    console.log(formData);
+
+    useEffect(() => {
+        if (category?.fields) {
+            const initialFieldsData = category.fields.map(field => ({
+                name: field.name,
+                value: '', // Initialize with an empty string or a default value
+                _id: field._id
+            }));
+    
+            // Update formData to include the category ID and the fields
+            setFormData(currentData => ({
+                ...currentData,
+                categoryId: category._id, 
+                fields: initialFieldsData
+            }));
+        }
+    }, [category, setFormData]); 
+
+    const handleFieldChange = (id, event) => {
+        const { value } = event.target;
+        setFormData(currentData => ({
+            ...currentData,
+            fields: currentData.fields.map(field => 
+                field._id === id ? { ...field, value: value } : field
+            )
+        }));
+    };
+    
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log('Form Data:', formData);
-    }
+    
+        const transformedData = {
+            categoryId: formData.categoryId,  // Use categoryId as the key
+            matterName: formData.matterName,
+            fileReference: formData.fileReference,
+            solicitorInCharge: formData.solicitorInCharge,
+            clerkInCharge: formData.clerkInCharge,
+            clients: formData.clients.map(client => client.value),  // Extract values from clients array
+            fieldValues: formData.fields.map(field => field.value)  // Extract values from fields array
+        };
+    
+        createCase(transformedData);
+        console.log('Transformed Data:', transformedData);
+    };
+    
+
+    const getTypeDescription = (type) => {
+        switch (type) {
+            case 'number': return 'Numeric value';
+            case 'string': default: return 'Text';
+        }
+    };
+
     return (
         <Container>
             <Typography variant='h5' sx={{ mb: 2 }}>Case Details</Typography>
 
             <Box component="form" onSubmit={handleSubmit}>
-                <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="field1"
-                    label="Field 1"
-                    name="field1"
-                    value={''}
-                    onChange={handleChange}
-                    autoFocus
-                    sx={{ mb: 2 }}
-                />
+                {formData.fields.map((field, index) => (
+                    <TextField
+                        key={field._id}
+                        variant="outlined"
+                        required
+                        fullWidth
+                        label={`${field.name} (${getTypeDescription(field.type)})`}
+                        value={field.value}
+                        onChange={(e) => handleFieldChange(field._id, e)}
+                        type={typeof field.value === 'number' ? 'number' : 'text'}
+                        autoFocus={index === 0}
+                        sx={{ mb: 2 }}
+                    />
+                ))}
 
                 <Button type="submit" variant="contained" color="primary" fullWidth>
                     Create Case
