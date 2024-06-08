@@ -3,6 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import AddTaskBar from "./components/Cases/Tasks/AddTaskBar";
 
 import Home from "./pages/Home";
 import Cases from "./pages/Cases";
@@ -28,6 +29,7 @@ function App() {
             <Route path="/create" element={<Create />} />
             <Route path="/cases/details/:id" element={<Details />} />
           </Routes>
+          {/* <AddTaskBar /> */}
           {/* <Footer /> */}
         </BrowserRouter>
       </CssBaseline>

@@ -24,7 +24,7 @@ export const CaseContextProvider = ({ children }) => {
         fields: []
     });
 
-    const { setTask } = useTaskContext();
+    const { setTask, setTasks, setTasksLoaded } = useTaskContext();
 
     // Case List Page
     const toMyCases = () => {
@@ -88,6 +88,19 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
+    const fetchCase = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/case/getCase/${id}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const fetchCases = async () => {
         try {
             const response = await fetch(`${API_URL}/case/getCases`);
@@ -121,7 +134,8 @@ export const CaseContextProvider = ({ children }) => {
             formData,
             setFormData,
             createCase,
-            fetchCases
+            fetchCases,
+            fetchCase,
         }}>
             {children}
         </CaseContext.Provider>

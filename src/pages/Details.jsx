@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Container, Typography, Box, Button, Grid, Stack } from '@mui/material';
+import { Container, Typography, Box, Button, Grid, Stack, Paper } from '@mui/material';
 
 import MatterDetails from '../components/Cases/MatterDetails';
 import CaseDetails from '../components/Cases/CaseDetails';
 import Tasks from '../components/Cases/Tasks/Tasks';
 import TaskDetail from '../components/Cases/Tasks/TaskDetail';
+import AddTaskBar from '../components/Cases/Tasks/AddTaskBar';
 import Documents from '../components/Cases/Documents';
 
 import { useCaseContext } from '../context/CaseContext';
@@ -23,8 +24,8 @@ const Details = () => {
     return (
         <div sx={{ p: 2 }}>
 
-            <Box sx={{ flexGrow: 1, ml: 27, mt: 2 }}>
-                <Grid container spacing={2}>
+            <Box sx={{ ml: 27, mt: 2, minHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+                <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     {/* Side Navigation */}
                     <Grid item xs={2}>
                         <Stack>
@@ -68,7 +69,7 @@ const Details = () => {
                     </Grid>
                     {
                         detailView === 'tasks' ? (
-                            <Grid item xs={3} sx={{ backgroundColor: "lightgrey" }}>
+                            <Grid item xs={3} sx={{ backgroundColor: "lightgrey", height: "100vh%" }}>
                                 <TaskDetail />
                             </Grid>
                         ) : null
@@ -76,6 +77,11 @@ const Details = () => {
 
                 </Grid>
             </Box>
+            {
+                detailView === 'tasks' ? (
+                    <AddTaskBar />
+                ) : null
+            }
         </div>
     );
 };

@@ -1,20 +1,25 @@
 import React from 'react';
 import { useState } from 'react';
-import { ListItem, ListItemText, Checkbox, Box } from '@mui/material';
+import { ListItem, ListItemText, Checkbox } from '@mui/material';
 import { Draggable } from '@hello-pangea/dnd';
 
 import { useTaskContext } from '../../../context/TaskContext';
 
-const TaskItem = ({ task, index }) => {
-
-    const { setTask, updateTask } = useTaskContext();
+const TaskItem = ({ task, index, newStatus, onStatusChange }) => {
+    console.log(task)
+    const { setTask, updateTask, updateTaskInDatabase } = useTaskContext();
 
     const { id, description, due, status } = task;
     const [completed, setCompleted] = useState(status === 'Completed');
 
+    const caseId = JSON.parse(localStorage.getItem('caseItem'))._id;
+
     const handleCheckboxChange = () => {
-        setCompleted(!completed); 
-        updateTask(id);
+        // set task status to completed or pending and updateTask, updateTaskInDatabase
+        setCompleted(!completed);
+        updateTask(task._id, { status: completed ? 'Pending' : 'Completed' });
+        updateTaskInDatabase(caseId, task._id, { status: completed ? 'Pending' : 'Completed' });
+        onStatusChange(newStatus);
     };
 
     const handleClick = () => {
@@ -22,7 +27,7 @@ const TaskItem = ({ task, index }) => {
     }
 
     return (
-        <Draggable key={id} draggableId={task.id.toString()} index={index} >
+        <Draggable key={id} draggableId={task._id.toString()} index={index} >
             {(provided) => (
                 <ListItem
                     ref={provided.innerRef}

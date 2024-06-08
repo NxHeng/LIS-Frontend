@@ -2,52 +2,90 @@ import React, { createContext, useContext, useState } from 'react';
 
 const TaskContext = createContext();
 
-const initialTasks = [
-    {
-        id: 1,
-        description: 'Task 1',
-        status: 'Pending',
-        due: '2024-6-31'
-    },
-    {
-        id: 2,
-        description: 'Task 2',
-        status: 'Completed',
-        due: '2024-6-31'
-    },
-    {
-        id: 3,
-        description: 'Task 3',
-        status: 'Pending',
-        due: '2024-6-31'
-    },
-    {
-        id: 4,
-        description: 'Task 4',
-        status: 'Completed',
-        due: '2024-6-31'
-    },
-    {
-        id: 5,
-        description: 'Task 5',
-        status: 'Pending',
-        due: '2024-6-31'
-    }
-]
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const TaskContextProvider = ({ children }) => {
     // Tasks for one case at a time
     const [task, setTask] = useState(null);
-    const [tasks, setTasks] = useState(initialTasks);
+    const [tasks, setTasks] = useState();
+    const [tasksLoaded, setTasksLoaded] = useState(false);
 
-    //Find a task by id and set it to the task state
-    const updateTask = (id) => {
-        const task = tasks.find(task => task.id === id);
-        setTask(task);
+    //Find a task by id and set it with new task data
+    const updateTask = (id, taskData) => {
+        setTasks(tasks.map((task) => (task._id === id ? { ...task, ...taskData } : task)));
     }
 
+    const updateTaskInDatabase = async (caseId, taskId, taskData) => {
+        try {
+            const response = await fetch(`${API_URL}/case/updateTask/${caseId}/${taskId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(taskData),
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // const addTask = (taskData) => {
+    //     setTasks([...tasks, taskData]);
+    // }
+
+    const addTaskToDatabase = async (caseId, taskData) => {
+        try {
+            const response = await fetch(`${API_URL}/case/addTask/${caseId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ description: taskData }),
+            });
+            const data = await response.json();
+            fetchTasks(caseId);
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const deleteTask = (id) => {
+        setTasks(tasks.filter((task) => task._id !== id));
+    }
+
+    const deleteTaskFromDatabase = async (caseId, taskId) => {
+        try {
+            const response = await fetch(`${API_URL}/case/deleteTask/${caseId}/${taskId}`, {
+                method: 'DELETE',
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const fetchTasks = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/case/getCase/${id}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setTasks(data.tasks);
+            setTasksLoaded(true);
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
     return (
-        <TaskContext.Provider value={{ task, tasks, setTasks, setTask, updateTask }}>
+        <TaskContext.Provider value={{ task, tasks, setTasks, setTask, updateTask, tasksLoaded, setTasksLoaded, updateTaskInDatabase, addTaskToDatabase, deleteTask, deleteTaskFromDatabase, fetchTasks }}>
             {children}
         </TaskContext.Provider>
     );

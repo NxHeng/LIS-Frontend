@@ -9,11 +9,14 @@ const CaseCard = ({ caseItem }) => {
         localStorage.setItem('caseItem', JSON.stringify(caseItem));
     };
 
+    // filter out the first task that is not completed
+    const firstTask = caseItem.tasks.find(task => task.status !== 'Completed');
+
     // Format the createdAt date
     const formattedDate = format(new Date(caseItem.createdAt), 'dd MMM yyyy');
 
     return (
-        <Link to={`/cases/details/${caseItem.id}`} onClick={handleClick} style={{ textDecoration: 'none' }}>
+        <Link to={`/cases/details/${caseItem._id}`} onClick={handleClick} style={{ textDecoration: 'none' }}>
             <Card elevation={5} sx={{ marginBottom: 2, borderRadius: 5 }}>
                 <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mx: 2 }}>
                     <Box sx={{ flex: 1 }}>
@@ -29,7 +32,7 @@ const CaseCard = ({ caseItem }) => {
                             {formattedDate}
                         </Typography>
                         <Typography component="span" variant="body2" color="primary" sx={{ width: '100px', textAlign: 'right' }}>
-                            {caseItem.tasks[0]?.description}
+                            {firstTask.description}
                         </Typography>
                         <ArrowForwardIosIcon sx={{ ml: 3 }} />
                     </Box>
