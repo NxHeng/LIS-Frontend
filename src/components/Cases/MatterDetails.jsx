@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Typography, Box, Button } from '@mui/material';
 
-const MatterDetails = ({ caseItem }) => {
+import { useCategoryContext } from '../../context/CategoryContext';
 
+const MatterDetails = () => {
 
+    const { fetchCategory, category } = useCategoryContext();
+    const caseItem = JSON.parse(localStorage.getItem('caseItem'));
+
+    useEffect(() => {
+        fetchCategory(caseItem.category);
+    }, []);
 
     return (
         <Container>
@@ -24,21 +31,21 @@ const MatterDetails = ({ caseItem }) => {
                         Matter Name
                     </Typography>
                     <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.title}
+                        {caseItem.matterName}
                     </Typography>
 
                     <Typography variant='h6' color="grey">
                         File Reference
                     </Typography>
                     <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.id}
+                        {caseItem.fileReference}
                     </Typography>
 
                     <Typography variant='h6' color="grey">
                         Clerk In Charge
                     </Typography>
                     <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.title}
+                        {caseItem.clerkInCharge}
                     </Typography>
 
                 </Box>
@@ -47,21 +54,21 @@ const MatterDetails = ({ caseItem }) => {
                         Category
                     </Typography>
                     <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.title}
+                        {category.categoryName}
                     </Typography>
 
                     <Typography variant='h6' color="grey">
                         Status
                     </Typography>
                     <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.title}
+                        {caseItem.status}
                     </Typography>
 
                     <Typography variant='h6' color="grey">
                         Solicitor In Charge
                     </Typography>
                     <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.title}
+                        {caseItem.solicitorInCharge}
                     </Typography>
 
                 </Box>

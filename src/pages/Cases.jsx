@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Typography, Grid, Box, Stack, Button, Autocomplete, InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 import CaseCard from '../components/Cases/CaseCard';
 
 import { useCaseContext } from '../context/CaseContext';
+import { useCategoryContext } from '../context/CategoryContext';
 
 const Cases = () => {
 
@@ -17,10 +18,16 @@ const Cases = () => {
         filterActiveCases,
         filterClosedCases,
         filteredCategory,
-        filterCategory
+        filterCategory,
+        fetchCases,
+        caseItemsLoaded
     } = useCaseContext();
 
     const categories = ['All', 'Housing Project', 'Completed Property', 'Options', 'Loan']
+
+    useEffect(() => {
+        fetchCases();
+    }, []);
 
     return (
         <Container sx={{ p: 2 }}>
@@ -106,7 +113,6 @@ const Cases = () => {
                                 <CaseCard key={index} caseItem={caseItem} />
                             ))}
                         </Container>
-
                     </Grid>
                 </Grid>
             </Box>

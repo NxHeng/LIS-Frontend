@@ -7,10 +7,8 @@ import { useTaskContext } from './TaskContext';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const CaseContextProvider = ({ children }) => {
-    const [caseItems, setCaseItems] = useState([
-        { id: 1, title: "case 1", date: "6-6-2024", task: "Task 1" }, 
-        { id: 2, title: "case 2", date: "4-6-2024", task: "Task 2" }, 
-        { id: 3, title: "case 3", date: "3-6-2024", task: "Task 3" }]);
+    const [caseItems, setCaseItems] = useState([]);
+    const [caseItemsLoaded, setCaseItemsLoaded] = useState(false);
     const [detailView, setDetailView] = useState('matterDetail');
 
     const [view, setView] = useState('myCases');
@@ -24,7 +22,7 @@ export const CaseContextProvider = ({ children }) => {
         clients: [{ id: 0, value: '' }],
         categoryId: '',
         fields: []
-      });
+    });
 
     const { setTask } = useTaskContext();
 
@@ -76,19 +74,33 @@ export const CaseContextProvider = ({ children }) => {
 
     const createCase = async (formData) => {
         try {
-          const response = await fetch(`${API_URL}/create/case`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-          });
-          const data = await response.json();
-          console.log(data);
+            const response = await fetch(`${API_URL}/case/createCase`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            const data = await response.json();
+            console.log(data);
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      };
+    };
+
+    const fetchCases = async () => {
+        try {
+            const response = await fetch(`${API_URL}/case/getCases`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setCaseItems(data);
+            setCaseItemsLoaded(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <CaseContext.Provider value={{
@@ -108,7 +120,8 @@ export const CaseContextProvider = ({ children }) => {
             toDocuments,
             formData,
             setFormData,
-            createCase
+            createCase,
+            fetchCases
         }}>
             {children}
         </CaseContext.Provider>
