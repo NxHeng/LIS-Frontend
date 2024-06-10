@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { Button, Container, Typography, Stack } from '@mui/material';
 
-import NewCase from '../components/Create/NewCase';
-import NewCaseDetails from '../components/Create/NewCaseDetails';
+import NewCase from '../components/Create/Case/NewCase';
+import NewCaseDetails from '../components/Create/Case/NewCaseDetails';
 
 import CategoryList from '../components/Create/Category/CategoryList';
 import NewCategory from '../components/Create/Category/NewCategory';
@@ -14,6 +14,10 @@ import { useCreateContext } from '../context/CreateContext';
 
 const Create = () => {
     const { view, toNewCase, toCategories } = useCreateContext();
+
+    useEffect(() => {
+        toNewCase();
+    }, []);
 
     return (
         <Container sx={{ p: 2 }}>

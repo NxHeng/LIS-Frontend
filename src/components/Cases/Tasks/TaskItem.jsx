@@ -13,6 +13,7 @@ const TaskItem = ({ task, index, newStatus, onStatusChange }) => {
     const [completed, setCompleted] = useState(status === 'Completed');
 
     const caseId = JSON.parse(localStorage.getItem('caseItem'))._id;
+    const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     const handleCheckboxChange = () => {
         // set task status to completed or pending and updateTask, updateTaskInDatabase
@@ -47,6 +48,7 @@ const TaskItem = ({ task, index, newStatus, onStatusChange }) => {
                         disableRipple
                         inputProps={{ 'aria-labelledby': id }}
                         onChange={handleCheckboxChange}
+                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <ListItemText
                         edge="start"

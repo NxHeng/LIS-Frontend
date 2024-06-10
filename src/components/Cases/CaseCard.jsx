@@ -15,6 +15,13 @@ const CaseCard = ({ caseItem }) => {
     // Format the createdAt date
     const formattedDate = format(new Date(caseItem.createdAt), 'dd MMM yyyy');
 
+    const truncateText = (text, maxLength) => {
+        if (text.length <= maxLength) {
+          return text;
+        }
+        return text.substring(0, maxLength - 3) + '...';
+      }
+
     return (
         <Link to={`/cases/details/${caseItem._id}`} onClick={handleClick} style={{ textDecoration: 'none' }}>
             <Card elevation={5} sx={{ marginBottom: 2, borderRadius: 5 }}>
@@ -31,8 +38,8 @@ const CaseCard = ({ caseItem }) => {
                         <Typography component="span" variant="body1" sx={{ width: '100px', textAlign: 'right', mr: 8 }}>
                             {formattedDate}
                         </Typography>
-                        <Typography component="span" variant="body2" color="primary" sx={{ width: '100px', textAlign: 'right' }}>
-                            {firstTask.description}
+                        <Typography component="span" variant="body2" color="primary" sx={{ width: '150px', textAlign: 'right' }}>
+                            {truncateText(firstTask.description, 25)}
                         </Typography>
                         <ArrowForwardIosIcon sx={{ ml: 3 }} />
                     </Box>

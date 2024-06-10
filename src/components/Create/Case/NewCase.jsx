@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import { Container, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, InputAdornment, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { useCreateContext } from '../../context/CreateContext';
-import { useCategoryContext } from '../../context/CategoryContext';
-import { useCaseContext } from '../../context/CaseContext';
+import { useCreateContext } from '../../../context/CreateContext';
+import { useCategoryContext } from '../../../context/CategoryContext';
+import { useCaseContext } from '../../../context/CaseContext';
 
 const NewCase = () => {
 
@@ -15,6 +15,15 @@ const NewCase = () => {
 
     useEffect(() => {
         fetchCategories();
+        setFormData({
+            matterName: '',
+            fileReference: '',
+            solicitorInCharge: '',
+            clerkInCharge: '',
+            clients: [],
+            categoryId: '',
+            fields: [],
+        });
     }, []);
 
     useEffect(() => {
@@ -72,6 +81,16 @@ const NewCase = () => {
         console.log('Form Data:', finalFormData);
         // console.log('Selected category:', category);
         toNewCaseDetails();
+        // clear the form
+        // setFormData({
+        //     matterName: '',
+        //     fileReference: '',
+        //     solicitorInCharge: '',
+        //     clerkInCharge: '',
+        //     clients: [],
+        //     categoryId: '',
+        //     fields: [],
+        // });
     };
 
     return (
@@ -169,7 +188,7 @@ const NewCase = () => {
                         sx={{ mb: 2 }}
                     >
                         {categories.map((category) => (
-                            <MenuItem key={category._id} value={category._id}>  
+                            <MenuItem key={category._id} value={category._id}>
                                 {category.categoryName}
                             </MenuItem>
                         ))}

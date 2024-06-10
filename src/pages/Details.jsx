@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import { Container, Typography, Box, Button, Grid, Stack, Paper } from '@mui/material';
 
 import MatterDetails from '../components/Cases/MatterDetails';
+import EditMatterDetails from '../components/Cases/EditMatterDetails';
 import CaseDetails from '../components/Cases/CaseDetails';
+import EditCaseDetails from '../components/Cases/EditCaseDetails';
 import Tasks from '../components/Cases/Tasks/Tasks';
 import TaskDetail from '../components/Cases/Tasks/TaskDetail';
 import AddTaskBar from '../components/Cases/Tasks/AddTaskBar';
@@ -10,10 +12,11 @@ import Documents from '../components/Cases/Documents';
 
 import { useCaseContext } from '../context/CaseContext';
 import { useTaskContext } from '../context/TaskContext';
+import { Edit } from '@mui/icons-material';
 
 const Details = () => {
 
-    const { detailView, toMatterDetails, toCaseDetails, toTasks, toDocuments } = useCaseContext();
+    const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments } = useCaseContext();
     const { task } = useTaskContext();
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
@@ -56,8 +59,12 @@ const Details = () => {
                                 {
                                     detailView === 'matterDetails' ? (
                                         <MatterDetails caseItem={caseItem} />
+                                    ) : detailView === 'editMatterDetails' ? (
+                                        <EditMatterDetails caseItem={caseItem} />
                                     ) : detailView === 'caseDetails' ? (
                                         <CaseDetails caseItem={caseItem} />
+                                    ) : detailView === 'editCaseDetails' ? (
+                                        <EditCaseDetails caseItem={caseItem} />
                                     ) : detailView === 'tasks' ? (
                                         <Tasks />
                                     ) : detailView === 'documents' ? (
@@ -69,7 +76,7 @@ const Details = () => {
                     </Grid>
                     {
                         detailView === 'tasks' ? (
-                            <Grid item xs={3} sx={{ backgroundColor: "lightgrey", height: "100vh%" }}>
+                            <Grid item xs={3} sx={{ backgroundColor: "#f8f9fa", height: "100vh%" }}>
                                 <TaskDetail />
                             </Grid>
                         ) : null
@@ -78,7 +85,7 @@ const Details = () => {
                 </Grid>
             </Box>
             {
-                detailView === 'tasks' ? (
+                detailView === 'tasks' && (caseItem.status === 'active' || caseItem.status === 'Active') ? (
                     <AddTaskBar />
                 ) : null
             }

@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, TextField, Button, Typography } from '@mui/material';
 
-import { useCategoryContext } from '../../context/CategoryContext';
-import { useCaseContext } from '../../context/CaseContext';
+import { useCategoryContext } from '../../../context/CategoryContext';
+import { useCaseContext } from '../../../context/CaseContext';
+import { useNavigate } from 'react-router-dom';
+import { useCreateContext } from '../../../context/CreateContext';
 
 const NewCaseDetails = () => {
     const { category } = useCategoryContext();
-    const { formData, setFormData, createCase } = useCaseContext();
+    const { formData, setFormData, createCase, fetchCases } = useCaseContext();
+    const { toNewCase } = useCreateContext();
+    const navigate = useNavigate();
     console.log(formData);
 
     useEffect(() => {
@@ -16,30 +20,30 @@ const NewCaseDetails = () => {
                 value: '', // Initialize with an empty string or a default value
                 _id: field._id
             }));
-    
+
             // Update formData to include the category ID and the fields
             setFormData(currentData => ({
                 ...currentData,
-                categoryId: category._id, 
+                categoryId: category._id,
                 fields: initialFieldsData
             }));
         }
-    }, [category, setFormData]); 
+    }, [category, setFormData]);
 
     const handleFieldChange = (id, event) => {
         const { value } = event.target;
         setFormData(currentData => ({
             ...currentData,
-            fields: currentData.fields.map(field => 
+            fields: currentData.fields.map(field =>
                 field._id === id ? { ...field, value: value } : field
             )
         }));
     };
-    
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
-    
+
         const transformedData = {
             categoryId: formData.categoryId,  // Use categoryId as the key
             matterName: formData.matterName,
@@ -49,11 +53,25 @@ const NewCaseDetails = () => {
             clients: formData.clients.map(client => client.value),  // Extract values from clients array
             fieldValues: formData.fields.map(field => field.value)  // Extract values from fields array
         };
-    
+
+        //clear form
+        setFormData({
+            matterName: '',
+            fileReference: '',
+            solicitorInCharge: '',
+            clerkInCharge: '',
+            clients: [{ id: 0, value: '' }],
+            categoryId: '',
+            fields: []
+        });
+
         createCase(transformedData);
+        fetchCases();
         console.log('Transformed Data:', transformedData);
+        toNewCase();
+        navigate('/cases');
     };
-    
+
 
     const getTypeDescription = (type) => {
         switch (type) {

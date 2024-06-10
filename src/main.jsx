@@ -7,6 +7,7 @@ import { CreateContextProvider } from './context/CreateContext'
 import { CategoryContextProvider } from './context/CategoryContext'
 import { CaseContextProvider } from './context/CaseContext'
 import { TaskContextProvider } from './context/TaskContext'
+import { AuthContextProvider } from './context/AuthContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <CaseContextProvider>
         <CategoryContextProvider>
           <CreateContextProvider>
-            <App />
+            <AuthContextProvider>
+              <App />
+            </AuthContextProvider>
           </CreateContextProvider>
         </CategoryContextProvider>
       </CaseContextProvider>

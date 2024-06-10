@@ -103,7 +103,7 @@ const CategoryUpdate = () => {
         }));
         // To Database
         updateFields(category, transformedFields, categoryName);
-        setTabValue(1);
+        // setTabValue(1);
     };
 
     const handleSaveTask = (event) => {
@@ -116,6 +116,7 @@ const CategoryUpdate = () => {
         }));
         // To Database
         updateTasks(category, transformedTasks);
+        toCategories();
     }
 
     const transformDetailFields = (fields) => {

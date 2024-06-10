@@ -14,16 +14,9 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link, useLocation } from 'react-router-dom';
 
-import { useAuthContext } from '../context/AuthContext';
-import { useCreateContext } from '../context/CreateContext';
+const pages = ['Login', 'Register'];
 
-const pages = ['Home', 'Cases', 'Tasks', 'Notifications', 'Announcement'];
-const settings = ['Profile', 'Account'];
-
-const Navbar = () => {
-    const { user, logout, loading } = useAuthContext();
-    const { toNewCase } = useCreateContext();
-    // const user = JSON.parse(localStorage.getItem('user'));
+const AuthNavbar = () => {
     const location = useLocation();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -43,20 +36,6 @@ const Navbar = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
-
-    const handleLogout = () => {
-        logout();
-        handleCloseUserMenu();
-    };
-
-    const handleCreateButton = () => {
-        handleCloseNavMenu();
-        toNewCase();
-    };
-
-    if (loading) {
-        return null; // Don't render anything while loading
-    }
 
     return (
         <AppBar elevation={0} position="static" sx={{ backgroundColor: '#f8f9fa', color: 'black' }}>
@@ -138,87 +117,22 @@ const Navbar = () => {
                     >
                         LIS
                     </Typography>
-                    <Box sx={{ ml: 35, mr: 3, flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'space-between' }}>
-                        <Box>
-                            {pages.map((page) => (
-                                <Button
-                                    key={page}
-                                    component={Link}
-                                    to={`/${page.toLowerCase()}`}
-                                    onClick={handleCloseNavMenu}
-                                    sx={{
-                                        my: 2,
-                                        color: location.pathname === `/${page.toLowerCase()}` ? 'primary.main' : 'inherit',
-                                        textDecoration: 'none',
-                                    }}
-                                >
-                                    {page}
-                                </Button>
-                            ))}
-                        </Box>
-                        <Box>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'end' }}>
+                        {pages.map((page) => (
                             <Button
-                                key="create"
+                                key={page}
                                 component={Link}
-                                to={`/create`}
-                                onClick={handleCreateButton}
-                                variant={location.pathname === '/create' ? 'outlined' : 'contained'}
+                                to={`/${page.toLowerCase()}`}
+                                onClick={handleCloseNavMenu}
                                 sx={{
                                     my: 2,
-                                    color: location.pathname === `/create` ? 'primary.main' : 'white',
+                                    color: location.pathname === `/${page.toLowerCase()}` ? 'primary.main' : 'inherit',
                                     textDecoration: 'none',
                                 }}
                             >
-                                Create
+                                {page}
                             </Button>
-                        </Box>
-                    </Box>
-
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt={user.username.toUpperCase()} src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography
-                                        textAlign="center"
-                                        component={Link}
-                                        to={`/${setting.toLowerCase()}`}
-                                        sx={{ textDecoration: 'none', color: 'inherit' }}
-                                    >
-                                        {setting}
-                                    </Typography>
-                                </MenuItem>
-                            ))}
-                            <MenuItem key='logout' onClick={handleLogout}>
-                                <Typography
-                                    textAlign="center"
-                                    component={Link}
-                                    to={`/login`}
-                                    sx={{ textDecoration: 'none', color: 'inherit' }}
-                                >
-                                    Logout
-                                </Typography>
-                            </MenuItem>
-                        </Menu>
+                        ))}
                     </Box>
                 </Toolbar>
             </Container>
@@ -226,4 +140,4 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+export default AuthNavbar;

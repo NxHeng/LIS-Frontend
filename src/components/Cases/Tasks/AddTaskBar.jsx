@@ -9,7 +9,7 @@ import { useCaseContext } from '../../../context/CaseContext';
 const StyledAppBar = styled(AppBar)({
     top: 'auto',
     bottom: 0,
-    backgroundColor: 'lightgrey', // Light background
+    backgroundColor: '#f8f9fa', // Light background
     boxShadow: 'none', // No shadow for a flatter design
     borderTop: '1px solid #ccc', // Add a subtle border
 });

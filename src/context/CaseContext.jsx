@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 const CaseContext = createContext();
 
 import { useTaskContext } from './TaskContext';
+import { set } from 'date-fns';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -47,20 +48,23 @@ export const CaseContextProvider = ({ children }) => {
         console.log('Filtering closed cases');
     };
 
-    const filterCategory = (category) => {
-        setFilteredCategory(category);
-        console.log(`Filtering ${category} cases`);
-    };
-
     // Details Page
     const toMatterDetails = () => {
         setTask(null);
         setDetailView('matterDetails');
     }
 
+    const toEditMatterDetails = () => {
+        setDetailView('editMatterDetails');
+    }
+
     const toCaseDetails = () => {
         setTask(null);
         setDetailView('caseDetails');
+    }
+
+    const toEditCaseDetails = () => {
+        setDetailView('editCaseDetails');
     }
 
     const toTasks = () => {
@@ -102,6 +106,7 @@ export const CaseContextProvider = ({ children }) => {
     };
 
     const fetchCases = async () => {
+        setCaseItemsLoaded(false);
         try {
             const response = await fetch(`${API_URL}/case/getCases`);
             if (!response.ok) {
@@ -115,20 +120,67 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
+    const updateCaseAsClosedState = async (id) => {
+        const updatedCaseItems = caseItems.map((item) => {
+            if (item._id === id) {
+                return { ...item, status: 'closed' };
+            }
+            return item;
+        });
+        setCaseItems(updatedCaseItems);
+    };
+
+    const updateCaseAsClosedInDatabase = async (id) => {
+        try {
+            const response = await fetch(`${API_URL}/case/updateCase/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: 'closed' }),
+            });
+            const data = await response.json();
+            console.log(data);
+            updateCaseAsClosedState(id);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const updateCaseInDatabase = async (caseId, updatedData) => {
+        try {
+            const response = await fetch(`${API_URL}/case/updateCase/${caseId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            });
+            const data = await response.json();
+            console.log('Case updated:', data);
+        } catch (error) {
+            console.error('Error updating case:', error);
+        }
+    };
+
+
     return (
         <CaseContext.Provider value={{
             view,
             toMyCases,
             toAllCases,
             filteredCases,
+            setFilteredCases,
             filterActiveCases,
             filterClosedCases,
             filteredCategory,
-            filterCategory,
+            setFilteredCategory,
             caseItems,
             detailView,
             toMatterDetails,
+            toEditMatterDetails,
             toCaseDetails,
+            toEditCaseDetails,
             toTasks,
             toDocuments,
             formData,
@@ -136,6 +188,9 @@ export const CaseContextProvider = ({ children }) => {
             createCase,
             fetchCases,
             fetchCase,
+            updateCaseAsClosedInDatabase,
+            updateCaseInDatabase,
+            caseItemsLoaded
         }}>
             {children}
         </CaseContext.Provider>
