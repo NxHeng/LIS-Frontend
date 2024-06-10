@@ -8,6 +8,7 @@ import { CategoryContextProvider } from './context/CategoryContext'
 import { CaseContextProvider } from './context/CaseContext'
 import { TaskContextProvider } from './context/TaskContext'
 import { AuthContextProvider } from './context/AuthContext.jsx'
+import { DashboardContextProvider } from './context/DashboardContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <CategoryContextProvider>
           <CreateContextProvider>
             <AuthContextProvider>
-              <App />
+              <DashboardContextProvider>
+                <App />
+              </DashboardContextProvider>
             </AuthContextProvider>
           </CreateContextProvider>
         </CategoryContextProvider>
