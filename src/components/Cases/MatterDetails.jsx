@@ -12,10 +12,11 @@ const MatterDetails = () => {
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log(caseItem.status);
-        fetchCategory(caseItem.category);
-    }, []);
+    // useEffect(() => {
+    //     console.log(caseItem.status);
+    //     fetchCategory(caseItem.category);
+    //     console.log(caseItem);
+    // }, []);
 
     const handleClose = () => {
         updateCaseAsClosedInDatabase(caseItem._id);
@@ -62,7 +63,7 @@ const MatterDetails = () => {
                         Clerk In Charge
                     </Typography>
                     <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.clerkInCharge}
+                        {caseItem.clerkInCharge.username}
                     </Typography>
 
                 </Box>
@@ -71,7 +72,7 @@ const MatterDetails = () => {
                         Category
                     </Typography>
                     <Typography variant='h6' sx={{ mb: 2 }}>
-                        {category.categoryName}
+                        {caseItem.category.categoryName}
                     </Typography>
 
                     <Typography variant='h6' color="grey">
@@ -85,7 +86,7 @@ const MatterDetails = () => {
                         Solicitor In Charge
                     </Typography>
                     <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.solicitorInCharge}
+                        {caseItem.solicitorInCharge.username}
                     </Typography>
 
                 </Box>

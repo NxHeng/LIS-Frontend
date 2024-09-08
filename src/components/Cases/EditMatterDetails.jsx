@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Button, TextField } from '@mui/material';
+import { Container, Typography, Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, CircularProgress } from '@mui/material';
 
 import { useCategoryContext } from '../../context/CategoryContext';
 import { useCaseContext } from '../../context/CaseContext';
+import { useUserContext } from '../../context/UserContext';
 
 const EditMatterDetails = () => {
     const { updateCaseInDatabase, fetchCase, toMatterDetails } = useCaseContext();
+    const { getUserList, userList } = useUserContext();
     const { fetchCategory, category } = useCategoryContext();
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
     const [editedData, setEditedData] = useState(caseItem);
+    const [loading, setLoading] = useState(true);
+
+    // useEffect(() => {
+    //     if (caseItem.category) {
+    //         fetchCategory(caseItem.category);
+    //     }
+    // }, [caseItem.category, fetchCategory]);
 
     useEffect(() => {
-        if (caseItem.category) {
-            fetchCategory(caseItem.category);
-        }
-    }, [caseItem.category, fetchCategory]);
+        const fetchData = async () => {
+            await getUserList();
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
 
     const handleSave = () => {
         updateCaseInDatabase(caseItem._id, editedData);
@@ -25,8 +36,30 @@ const EditMatterDetails = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setEditedData({ ...editedData, [name]: value });
+        if (name === 'solicitorInCharge') {
+            setEditedData({
+                ...editedData,
+                solicitorInCharge: { _id: value }
+            });
+        } else if (name === 'clerkInCharge') {
+            setEditedData({
+                ...editedData,
+                clerkInCharge: { _id: value }
+            });
+        } else {
+            setEditedData({ ...editedData, [name]: value });
+        }
     };
+
+    if (loading) {
+        return (
+            <Container>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                    <CircularProgress />
+                </Box>
+            </Container>
+        );
+    }
 
     return (
         <Container>
@@ -50,24 +83,42 @@ const EditMatterDetails = () => {
                     variant="outlined"
                     margin="normal"
                 />
-                <TextField
-                    fullWidth
-                    label="Clerk In Charge"
-                    name="clerkInCharge"
-                    value={editedData.clerkInCharge}
-                    onChange={handleChange}
-                    variant="outlined"
-                    margin="normal"
-                />
-                <TextField
-                    fullWidth
-                    label="Solicitor In Charge"
-                    name="solicitorInCharge"
-                    value={editedData.solicitorInCharge}
-                    onChange={handleChange}
-                    variant="outlined"
-                    margin="normal"
-                />
+                <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
+                    <InputLabel id="solicitor-label">Solicitor In Charge</InputLabel>
+                    <Select
+                        labelId="solicitor-label"
+                        id="solicitor-select"
+                        value={editedData.solicitorInCharge._id || ''}
+                        label="Solicitor In Charge"
+                        name="solicitorInCharge"
+                        onChange={handleChange}
+                    >
+                        {userList.filter(user => user.role !== 'Solicitor').map(user => (
+                            <MenuItem key={user._id} value={user._id}>
+                                {user.username}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
+                    <InputLabel id="clerk-label">Clerk In Charge</InputLabel>
+                    <Select
+                        labelId="clerk-label"
+                        id="clerk-select"
+                        value={editedData.clerkInCharge._id || ''}
+                        label="Clerk In Charge"
+                        name="clerkInCharge"
+                        onChange={handleChange}
+                    >
+                        {userList.filter(user => user.role !== 'Clerk').map(user => (
+                            <MenuItem key={user._id} value={user._id}>
+                                {user.username}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
                 <Button onClick={handleSave} variant="contained" color="primary" sx={{ mt: 2 }}>
                     Save Changes
                 </Button>

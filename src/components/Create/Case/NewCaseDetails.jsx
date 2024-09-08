@@ -91,7 +91,8 @@ const NewCaseDetails = () => {
                         variant="outlined"
                         required
                         fullWidth
-                        label={`${field.name} (${getTypeDescription(field.type)})`}
+                        // label={`${field.name} (${getTypeDescription(field.value)})`}
+                        label={`${field.name}`}
                         value={field.value}
                         onChange={(e) => handleFieldChange(field._id, e)}
                         type={typeof field.value === 'number' ? 'number' : 'text'}

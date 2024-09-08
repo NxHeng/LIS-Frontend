@@ -11,9 +11,18 @@ export const TaskContextProvider = ({ children }) => {
     const [tasksLoaded, setTasksLoaded] = useState(false);
 
     //Find a task by id and set it with new task data
-    const updateTask = (id, taskData) => {
-        setTasks(tasks.map((task) => (task._id === id ? { ...task, ...taskData } : task)));
+    const updateTask = (taskId, taskData) => {
+        setTasks(tasks.map((task) => (task._id === taskId ? { ...task, ...taskData } : task)));
     }
+
+    const updateTaskStatus = (caseId, taskId, newStatus) => {
+        const updatedTask = tasks.find(task => task._id === taskId);
+        if (updatedTask) {
+            updatedTask.status = newStatus;
+            setTasks([...tasks]);  // Or however you manage the tasks state
+            updateTaskInDatabase(caseId, taskId, { status: newStatus });
+        }
+    };
 
     const updateTaskInDatabase = async (caseId, taskId, taskData) => {
         try {
@@ -85,7 +94,7 @@ export const TaskContextProvider = ({ children }) => {
 
 
     return (
-        <TaskContext.Provider value={{ task, tasks, setTasks, setTask, updateTask, tasksLoaded, setTasksLoaded, updateTaskInDatabase, addTaskToDatabase, deleteTask, deleteTaskFromDatabase, fetchTasks }}>
+        <TaskContext.Provider value={{ task, tasks, setTasks, setTask, updateTask, tasksLoaded, setTasksLoaded, updateTaskInDatabase, addTaskToDatabase, deleteTask, deleteTaskFromDatabase, fetchTasks, updateTaskStatus }}>
             {children}
         </TaskContext.Provider>
     );

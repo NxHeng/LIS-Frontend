@@ -6,12 +6,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useCreateContext } from '../../../context/CreateContext';
 import { useCategoryContext } from '../../../context/CategoryContext';
 import { useCaseContext } from '../../../context/CaseContext';
+import { useUserContext } from '../../../context/UserContext';
 
 const NewCase = () => {
 
     const { toNewCaseDetails } = useCreateContext();
     const { formData, setFormData } = useCaseContext();
     const { fetchCategories, categories, setCategory, category, categoriesLoaded, categoryLoaded, setCategoryLoaded } = useCategoryContext();
+    const { userList, getUserList } = useUserContext();
+    
+    // const [solicitor, setSolicitor] = useState('');
+    // const [clerk, setClerk] = useState('');
 
     useEffect(() => {
         fetchCategories();
@@ -33,6 +38,10 @@ const NewCase = () => {
             setCategoryLoaded(true);
         }
     }, [categoriesLoaded, categories]);
+
+    useEffect(() => {
+        getUserList();
+    }, []);
 
     //
     // useEffect(() => {
@@ -95,6 +104,11 @@ const NewCase = () => {
 
     return (
         <Container maxWidth="sm" sx={{ mt: 4 }}>
+            {userList.map((user) => (
+                <Typography key={user._id}>
+                    {user.name}
+                </Typography>
+            ))}
 
             <Box component="form" onSubmit={handleSubmit}>
                 <TextField
@@ -120,7 +134,7 @@ const NewCase = () => {
                     onChange={handleChange}
                     sx={{ mb: 2 }}
                 />
-                <TextField
+                {/* <TextField
                     variant="outlined"
                     required
                     fullWidth
@@ -141,7 +155,45 @@ const NewCase = () => {
                     value={formData.clerkInCharge}
                     onChange={handleChange}
                     sx={{ mb: 2 }}
-                />
+                /> */}
+
+                <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
+                    <InputLabel id="solicitor-label">Solicitor In Charge</InputLabel>
+                    <Select
+                        labelId="solicitor-label"
+                        id="solicitor-select"
+                        value={formData.solicitorInCharge}
+                        label="Solicitor In Charge"
+                        name="solicitorInCharge"
+                        onChange={handleChange}
+                    >
+                        {/* change to === after roles are applied */}
+                        {userList.filter(user => user.role !== 'Solicitor').map(user => (
+                            <MenuItem key={user._id} value={user._id}>
+                                {user.username}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
+                    <InputLabel id="clerk-label">Clerk In Charge</InputLabel>
+                    <Select
+                        labelId="clerk-label"
+                        id="clerk-select"
+                        value={formData.clerkInCharge}
+                        label="Clerk In Charge"
+                        name="clerkInCharge"
+                        onChange={handleChange}
+                    >
+                        {userList.filter(user => user.role !== 'Clerk').map(user => (
+                            <MenuItem key={user._id} value={user._id}>
+                                {user.username}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
                 <Typography>
                     Clients
                 </Typography>

@@ -43,16 +43,16 @@ const Tasks = () => {
         setTasks(reorderedTasks);
     };
 
-    const handleTaskStatusChange = (taskId, newStatus) => {
-        // Find the task in the tasks array and update its status
-        const updatedTasks = tasks.map(task => {
-            if (task.id === taskId) {
-                return { ...task, status: newStatus };
-            }
-            return task;
-        });
-        setTasks(updatedTasks);
-    };
+    // const handleTaskStatusChange = (taskId, newStatus) => {
+    //     // Find the task in the tasks array and update its status
+    //     const updatedTasks = tasks.map(task => {
+    //         if (task.id === taskId) {
+    //             return { ...task, status: newStatus };
+    //         }
+    //         return task;
+    //     });
+    //     setTasks(updatedTasks);
+    // };
 
     if (!tasksLoaded) {
         return (
@@ -70,7 +70,7 @@ const Tasks = () => {
                     {(provided) => (
                         <List {...provided.droppableProps} ref={provided.innerRef}>
                             {tasks.map((task, index) => (
-                                <TaskItem key={task._id} task={task} index={index} onStatusChange={handleTaskStatusChange} />
+                                <TaskItem key={task._id} task={task} index={index} />
                             ))}
                             {provided.placeholder}
                         </List>

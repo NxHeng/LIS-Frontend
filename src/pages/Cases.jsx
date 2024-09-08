@@ -28,7 +28,7 @@ const Cases = () => {
 
     useEffect(() => {
         fetchCategories();
-        fetchCases();
+        toMyCases();
         console.log(caseItemsLoaded);
     }, []);
 
@@ -45,7 +45,7 @@ const Cases = () => {
 
         // Apply category filter if the category is not 'All'
         if (category && category !== 'All') {
-            filtered = filtered.filter(caseItem => caseItem.category === category);
+            filtered = filtered.filter(caseItem => caseItem.category._id === category);
         }
 
         if (status) {
@@ -59,7 +59,6 @@ const Cases = () => {
                 caseItem.clients.some(client => client.toLowerCase().includes(query.toLowerCase()))
             );
         }
-
         setSearchFilteredCases(filtered);
     };
 
@@ -81,6 +80,8 @@ const Cases = () => {
 
     if (!caseItemsLoaded) {
         return <CircularProgress sx={{ml: '120vh', mt: '5vh'}}/>
+    }else{
+        console.log(caseItems);
     }
 
     return (

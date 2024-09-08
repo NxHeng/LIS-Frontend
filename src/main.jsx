@@ -9,6 +9,8 @@ import { CaseContextProvider } from './context/CaseContext'
 import { TaskContextProvider } from './context/TaskContext'
 import { AuthContextProvider } from './context/AuthContext.jsx'
 import { DashboardContextProvider } from './context/DashboardContext.jsx'
+import { AnnouncementContextProvider } from './context/AnnouncementContext.jsx'
+import { UserContextProvider } from './context/UserContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -18,7 +20,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <CreateContextProvider>
             <AuthContextProvider>
               <DashboardContextProvider>
-                <App />
+                <AnnouncementContextProvider>
+                  <UserContextProvider>
+                    <App />
+                  </UserContextProvider>
+                </AnnouncementContextProvider>
               </DashboardContextProvider>
             </AuthContextProvider>
           </CreateContextProvider>

@@ -12,6 +12,8 @@ export const CaseContextProvider = ({ children }) => {
     const [caseItemsLoaded, setCaseItemsLoaded] = useState(false);
     const [detailView, setDetailView] = useState('matterDetail');
 
+    const userId = JSON.parse(localStorage.getItem('user'))._id;
+
     const [view, setView] = useState('myCases');
     const [filteredCases, setFilteredCases] = useState('active');
     const [filteredCategory, setFilteredCategory] = useState('All');
@@ -31,11 +33,13 @@ export const CaseContextProvider = ({ children }) => {
     const toMyCases = () => {
         setView('myCases');
         console.log(view);
+        fetchMyCases(userId);
     };
 
     const toAllCases = () => {
         setView('allCases');
         console.log(view);
+        fetchCases();
     };
 
     const filterActiveCases = () => {
@@ -120,6 +124,21 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
+    const fetchMyCases = async (userId) => {
+        setCaseItemsLoaded(false);
+        try {
+            const response = await fetch(`${API_URL}/case/getMyCases/${userId}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setCaseItems(data);
+            setCaseItemsLoaded(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const updateCaseAsClosedState = async (id) => {
         const updatedCaseItems = caseItems.map((item) => {
             if (item._id === id) {
@@ -187,6 +206,7 @@ export const CaseContextProvider = ({ children }) => {
             setFormData,
             createCase,
             fetchCases,
+            fetchMyCases,
             fetchCase,
             updateCaseAsClosedInDatabase,
             updateCaseInDatabase,

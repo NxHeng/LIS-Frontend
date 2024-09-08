@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { AppBar, Toolbar, Box, Typography, Container, Stack, Button, TextField } from '@mui/material';
+import { AppBar, Toolbar, Box, Typography, Container, Stack, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Info';
+import { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -20,8 +21,8 @@ const TaskDetail = () => {
             return null;
         }
     }, []);
-
     const { task, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask } = useTaskContext();
+    
     const [formData, setFormData] = useState({
         description: '',
         initiationDate: null,
@@ -32,6 +33,7 @@ const TaskDetail = () => {
     });
 
     useEffect(() => {
+        console.log('Task:', task);
         if (task) {
             setFormData({
                 description: task.description || '',
@@ -44,9 +46,21 @@ const TaskDetail = () => {
         }
     }, [task]);
 
-    const handleTaskStatusChange = (newStatus) => {
-        setFormData(prevData => ({ ...prevData, status: newStatus }));
-    };
+    const debouncedSave = debounce((value) => {
+        updateTaskInDatabase(caseId, task._id, formData);
+        updateTask(task._id, formData);
+    }, 1000);
+
+    useEffect(() => {
+        if (formData && formData.description && formData.remark && formData.status) {
+            debouncedSave(formData);
+        }
+
+        // Cleanup function to cancel the debounce on unmount
+        return () => {
+            debouncedSave.cancel();
+        };
+    }, [formData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -57,11 +71,11 @@ const TaskDetail = () => {
         setFormData(prevData => ({ ...prevData, [name]: date || null }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        updateTaskInDatabase(caseId, task._id, formData);
-        updateTask(task._id, formData);
-    };
+    // const handleSubmit = () => {
+    //     e.preventDefault();
+    //     updateTaskInDatabase(caseId, task._id, formData);
+    //     updateTask(task._id, formData);
+    // };
 
     const handleDeleteTask = () => {
         deleteTaskFromDatabase(caseId, task._id);
@@ -82,7 +96,8 @@ const TaskDetail = () => {
         <Container sx={{ pb: 5 }}>
             <Typography variant='h5' sx={{ mt: 3 }}>Task Detail</Typography>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Stack spacing={2} component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                {/* <Stack spacing={2} component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}> */}
+                <Stack spacing={2} component="form" sx={{ mt: 3 }}>
                     <TextField
                         fullWidth
                         label="Description"
@@ -134,21 +149,32 @@ const TaskDetail = () => {
                         >
                             {task.status}
                         </Button> */}
-                                <Button
-                                    type="submit"
-                                    variant='contained'
-                                    endIcon={<EditIcon />}
-                                    color='success'
-                                    sx={{ borderRadius: 3 }}
-                                >
-                                    Update
-                                </Button>
+                                <FormControl fullWidth>
+                                    <InputLabel id="task-status-label">Status</InputLabel>
+                                    <Select
+                                        labelId="task-status-label"
+                                        id="task-status-select"
+                                        value={formData.status}
+                                        name="status"
+                                        onChange={handleChange}
+                                        endIcon={<EditIcon />}
+                                        sx={{ mb: 3 }}
+                                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                                    >
+                                        <MenuItem value="Pending">Pending</MenuItem>
+                                        <MenuItem value="Due">Due</MenuItem>
+                                        <MenuItem value="On Hold">On Hold</MenuItem>
+                                        <MenuItem value="Completed">Completed</MenuItem>
+                                        <MenuItem value="Awaiting Initiation">Awaiting Initiation</MenuItem>
+                                    </Select>
+                                </FormControl>
                                 <Button
                                     variant='contained'
                                     color='error'
                                     endIcon={<DeleteIcon />}
                                     sx={{ borderRadius: 3 }}
                                     onClick={handleDeleteTask}
+                                    {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                                 >
                                     Delete
                                 </Button>
