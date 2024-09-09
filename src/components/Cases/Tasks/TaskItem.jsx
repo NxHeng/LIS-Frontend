@@ -25,7 +25,6 @@ const TaskItem = ({ task, index, onStatusChange, newStatus }) => {
     };
 
     const handleClick = () => {
-        console.log("something");
         setTask(task);
     };
 

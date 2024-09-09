@@ -24,6 +24,22 @@ export const TaskContextProvider = ({ children }) => {
         }
     };
 
+    const updateTasksOrder = async (caseId, tasksData) => {
+        try {
+            const response = await fetch(`${API_URL}/case/updateTasksOrder/${caseId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(tasksData),
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const updateTaskInDatabase = async (caseId, taskId, taskData) => {
         try {
             const response = await fetch(`${API_URL}/case/updateTask/${caseId}/${taskId}`, {
@@ -51,7 +67,7 @@ export const TaskContextProvider = ({ children }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ description: taskData }),
+                body: JSON.stringify({ description: taskData, order: tasks.length }),
             });
             const data = await response.json();
             fetchTasks(caseId);
@@ -94,7 +110,7 @@ export const TaskContextProvider = ({ children }) => {
 
 
     return (
-        <TaskContext.Provider value={{ task, tasks, setTasks, setTask, updateTask, tasksLoaded, setTasksLoaded, updateTaskInDatabase, addTaskToDatabase, deleteTask, deleteTaskFromDatabase, fetchTasks, updateTaskStatus }}>
+        <TaskContext.Provider value={{ task, tasks, setTasks, setTask, updateTask, tasksLoaded, setTasksLoaded, updateTaskInDatabase,updateTasksOrder, addTaskToDatabase, deleteTask, deleteTaskFromDatabase, fetchTasks, updateTaskStatus }}>
             {children}
         </TaskContext.Provider>
     );

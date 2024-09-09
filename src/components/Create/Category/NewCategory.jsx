@@ -8,6 +8,7 @@ import Tab from '@mui/material/Tab';
 
 import { useCategoryContext } from '../../../context/CategoryContext';
 import { useCreateContext } from '../../../context/CreateContext';
+import { ta } from 'date-fns/locale';
 
 const NewCategory = () => {
 
@@ -21,7 +22,7 @@ const NewCategory = () => {
     };
 
     // Case Details Fields
-    const [detailFields, setDetailFields] = useState([{ id: 0, value: '', type: 'string' }]);
+    const [detailFields, setDetailFields] = useState([{ id: 0, value: '', type: 'string', order: 0 }]);
 
     const handleAddDetailField = () => {
         const newId = detailFields.length > 0 ? detailFields[detailFields.length - 1].id + 1 : 0;
@@ -59,11 +60,16 @@ const NewCategory = () => {
 
     const handleAddTaskField = () => {
         const newId = taskFields.length > 0 ? taskFields[taskFields.length - 1].id + 1 : 0;
-        setTaskFields([...taskFields, { id: newId, value: '' }]);
+        const newOrder = newId
+        setTaskFields([...taskFields, { id: newId, value: '', order: newOrder }]);
     };
 
     const handleRemoveTaskField = (id) => {
-        setTaskFields(taskFields.filter(field => field.id !== id));
+        const newFields = taskFields.filter(field => field.id !== id).map((field, index) => ({
+            ...field,
+            order: index // Reorder remaining tasks
+        }));
+        setTaskFields(newFields);
     };
 
     const handleTaskChange = (id, event) => {
@@ -92,6 +98,7 @@ const NewCategory = () => {
         // Handle form submission with fields state
 
         const transformedTasks = transformTaskFields(taskFields);
+        console.log("transformed: ", transformedTasks);
         const newCategory = { ...category, tasks: transformedTasks };
         // To Database
         // console.log(newCategory);
@@ -103,7 +110,7 @@ const NewCategory = () => {
         return fields.map(({ value, type }) => ({ name: value, type }));
     };
     const transformTaskFields = (fields) => {
-        return fields.map(({ value }) => ({ description: value }));
+        return fields.map(({ value, order }) => ({ description: value, order }));
     };
 
     // Tabs Handling

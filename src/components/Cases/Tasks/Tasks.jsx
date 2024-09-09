@@ -8,7 +8,7 @@ import { useTaskContext } from '../../../context/TaskContext';
 
 const Tasks = () => {
 
-    const { tasks, setTasks, tasksLoaded, setTasksLoaded, fetchTasks } = useTaskContext();
+    const { tasks, setTasks, tasksLoaded, setTasksLoaded, fetchTasks, updateTasksOrder } = useTaskContext();
 
     const caseItem = useMemo(() => {
         try {
@@ -27,6 +27,7 @@ const Tasks = () => {
         }
     }, [caseItem?.tasks]);
 
+    // temp
     useEffect(() => {
         if (tasksLoaded) {
             console.log(tasks);
@@ -34,13 +35,20 @@ const Tasks = () => {
     }, [tasksLoaded, tasks]);
 
     const handleOnDragEnd = (result) => {
+        console.log("something happened");
         if (!result.destination) return;
 
         const reorderedTasks = Array.from(tasks);
         const [movedTask] = reorderedTasks.splice(result.source.index, 1);
         reorderedTasks.splice(result.destination.index, 0, movedTask);
+        const updatedTasks = reorderedTasks.map((task, index) => ({
+            ...task,
+            order: index, // Update the order to match the new index
+        }));
 
-        setTasks(reorderedTasks);
+        setTasks(updatedTasks);
+        updateTasksOrder(caseItem._id, updatedTasks);
+        console.log("this is reordered tasks: ", updatedTasks);
     };
 
     // const handleTaskStatusChange = (taskId, newStatus) => {

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 
 const CaseContext = createContext();
 
@@ -12,7 +13,13 @@ export const CaseContextProvider = ({ children }) => {
     const [caseItemsLoaded, setCaseItemsLoaded] = useState(false);
     const [detailView, setDetailView] = useState('matterDetail');
 
-    const userId = JSON.parse(localStorage.getItem('user'))._id;
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    useEffect(() => {
+        if (!user) {
+            <Navigate to="/login" />
+        }
+    }, [user]);
 
     const [view, setView] = useState('myCases');
     const [filteredCases, setFilteredCases] = useState('active');
@@ -20,20 +27,19 @@ export const CaseContextProvider = ({ children }) => {
     const [formData, setFormData] = useState({
         matterName: '',
         fileReference: '',
-        solicitorInCharge: '',
         clerkInCharge: '',
         clients: [{ id: 0, value: '' }],
         categoryId: '',
         fields: []
     });
-
+    
     const { setTask, setTasks, setTasksLoaded } = useTaskContext();
-
+    
     // Case List Page
     const toMyCases = () => {
         setView('myCases');
         console.log(view);
-        fetchMyCases(userId);
+        fetchMyCases(user._id);
     };
 
     const toAllCases = () => {

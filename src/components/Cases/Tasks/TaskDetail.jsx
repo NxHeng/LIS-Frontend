@@ -47,12 +47,15 @@ const TaskDetail = () => {
     }, [task]);
 
     const debouncedSave = debounce((value) => {
+        console.log("triggered");
         updateTaskInDatabase(caseId, task._id, formData);
         updateTask(task._id, formData);
     }, 1000);
 
     useEffect(() => {
-        if (formData && formData.description && formData.remark && formData.status) {
+        // console.log("useEffect triggered");
+        if (formData && (formData.description || formData.remark || formData.status)) {
+            // console.log("after useEffect triggered");
             debouncedSave(formData);
         }
 

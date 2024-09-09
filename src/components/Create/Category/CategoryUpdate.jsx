@@ -32,8 +32,16 @@ const CategoryUpdate = () => {
     useEffect(() => {
         if (categoryLoaded && category) {
             setCategoryName(category.categoryName || '');
-            setDetailFields(category.fields ? category.fields.map((field, index) => ({ id: index, value: field.name, type: field.type })) : []);
-            setTaskFields(category.tasks ? category.tasks.map((task, index) => ({ id: index, value: task.description })) : []);
+            setDetailFields(category.fields ? category.fields.map((field, index) => ({
+                id: index,
+                value: field.name,
+                type: field.type
+            })) : []);
+            setTaskFields(category.tasks ? category.tasks.map((task, index) => ({
+                id: index,
+                value: task.description,
+                order: task.order || index
+            })) : []);
         }
     }, [categoryLoaded, category]);
 
@@ -75,7 +83,8 @@ const CategoryUpdate = () => {
     // Tasks Fields
     const handleAddTaskField = () => {
         const newId = taskFields.length > 0 ? taskFields[taskFields.length - 1].id + 1 : 0;
-        setTaskFields([...taskFields, { id: newId, value: '' }]);
+        const newOrder = newId;
+        setTaskFields([...taskFields, { id: newId, value: '', order: newOrder }]);
     };
 
     const handleRemoveTaskField = (id) => {
@@ -123,7 +132,7 @@ const CategoryUpdate = () => {
         return fields.map(({ value, type }) => ({ name: value, type }));
     };
     const transformTaskFields = (fields) => {
-        return fields.map(({ value }) => ({ description: value }));
+        return fields.map(({ value, order }) => ({ description: value, order }));
     };
 
     const handleDeleteCategory = (event) => {
