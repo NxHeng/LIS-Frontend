@@ -36,7 +36,7 @@ const TaskItem = ({ task, index, onStatusChange, newStatus }) => {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     divider
-                    sx={{ justifyContent: 'flex-start', alignItems: 'center' }}
+                    sx={{ justifyContent: 'flex-start', alignItems: 'center', cursor: "pointer" }}
                     onClick={handleClick}
                 >
                     <Checkbox
@@ -56,7 +56,8 @@ const TaskItem = ({ task, index, onStatusChange, newStatus }) => {
                     />
                     <ListItemText
                         edge="end"
-                        primary={due}
+                        primary={due !== null ? 'Due Date' : 'No Due Date'}
+                        sx={{ textAlign: 'right', mr: 2 }}
                         style={{ textDecoration: status === 'Completed' ? true : false ? 'line-through' : 'none' }}
                     />
                 </ListItem>

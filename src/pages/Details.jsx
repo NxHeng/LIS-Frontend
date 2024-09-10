@@ -16,13 +16,21 @@ import { Edit } from '@mui/icons-material';
 
 const Details = () => {
 
-    const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments } = useCaseContext();
+    const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments, fromTasks, setFromTasks} = useCaseContext();
     const { task } = useTaskContext();
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     useEffect(() => {
         toMatterDetails();
     }, []);
+
+    useEffect(() => {
+        if (fromTasks) {
+            toTasks();  // Ensure this sets the view to tasks
+              // Reset after triggering the switch
+        }
+    }, [fromTasks]);
+    
 
     return (
         <div sx={{ p: 2 }}>

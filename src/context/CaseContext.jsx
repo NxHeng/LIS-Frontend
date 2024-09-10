@@ -11,7 +11,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 export const CaseContextProvider = ({ children }) => {
     const [caseItems, setCaseItems] = useState([]);
     const [caseItemsLoaded, setCaseItemsLoaded] = useState(false);
-    const [detailView, setDetailView] = useState('matterDetail');
+
+    const [fromTasks, setFromTasks] = useState(false);
+    const [detailView, setDetailView] = useState('matterDetails');
 
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -33,7 +35,7 @@ export const CaseContextProvider = ({ children }) => {
         fields: []
     });
     
-    const { setTask, setTasks, setTasksLoaded } = useTaskContext();
+    const { setTask } = useTaskContext();
     
     // Case List Page
     const toMyCases = () => {
@@ -79,6 +81,8 @@ export const CaseContextProvider = ({ children }) => {
 
     const toTasks = () => {
         setDetailView('tasks');
+        setFromTasks(false);
+        console.log('fromTasks:', fromTasks);
     }
 
     const toDocuments = () => {
@@ -216,7 +220,10 @@ export const CaseContextProvider = ({ children }) => {
             fetchCase,
             updateCaseAsClosedInDatabase,
             updateCaseInDatabase,
-            caseItemsLoaded
+            caseItemsLoaded,
+            setDetailView,
+            fromTasks,
+            setFromTasks,
         }}>
             {children}
         </CaseContext.Provider>

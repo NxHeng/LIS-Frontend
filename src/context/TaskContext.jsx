@@ -9,6 +9,8 @@ export const TaskContextProvider = ({ children }) => {
     const [task, setTask] = useState(null);
     const [tasks, setTasks] = useState();
     const [tasksLoaded, setTasksLoaded] = useState(false);
+    // For Central Tasks Page only
+    const [statusFilter, setStatusFilter] = useState("Pending");
 
     //Find a task by id and set it with new task data
     const updateTask = (taskId, taskData) => {
@@ -50,7 +52,7 @@ export const TaskContextProvider = ({ children }) => {
                 body: JSON.stringify(taskData),
             });
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
         } catch (error) {
             console.error(error);
         }
@@ -108,9 +110,51 @@ export const TaskContextProvider = ({ children }) => {
         }
     };
 
+    // Central Tasks Page
+    const getTasksByStaff = async (staffId) => {
+        try {
+            const response = await fetch(`${API_URL}/case/getTasksByStaff/${staffId}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setTasks(data);
+            setTasksLoaded(true);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const filterStatus = (status) => {
+        //filter tasks by status
+        setTask(null);
+        setStatusFilter(status);
+        const filteredTasks = tasks?.filter((task) => task.status === status);
+        console.log(status, " ", filteredTasks);
+        return filteredTasks;
+    }
+
 
     return (
-        <TaskContext.Provider value={{ task, tasks, setTasks, setTask, updateTask, tasksLoaded, setTasksLoaded, updateTaskInDatabase,updateTasksOrder, addTaskToDatabase, deleteTask, deleteTaskFromDatabase, fetchTasks, updateTaskStatus }}>
+        <TaskContext.Provider value={{
+            task,
+            tasks,
+            setTasks,
+            setTask,
+            updateTask,
+            tasksLoaded,
+            setTasksLoaded,
+            updateTaskInDatabase,
+            updateTasksOrder,
+            addTaskToDatabase,
+            deleteTask,
+            deleteTaskFromDatabase,
+            fetchTasks,
+            updateTaskStatus,
+            statusFilter,
+            filterStatus,
+            getTasksByStaff,
+        }}>
             {children}
         </TaskContext.Provider>
     );
