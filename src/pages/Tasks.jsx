@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Container, Typography, Grid, Box, Stack, Button } from '@mui/material';
 
 import { useTaskContext } from '../context/TaskContext';
@@ -7,17 +7,21 @@ import CentralTaskDetail from '../components/Tasks/CentralTaskDetail';
 
 const Tasks = () => {
 
-    const { statusFilter, filterStatus, getTasksByStaff, tasks } = useTaskContext();
-    const [filteredTasks, setFilteredTasks] = useState([]);
+    const { statusFilter, filterStatus, getTasksByStaff, tasks, filteredTasks, setFilteredTasks } = useTaskContext();
+    // const [filteredTasks, setFilteredTasks] = useState([]);
+    const didRunEffect = useRef(false);
 
     useEffect(() => {
         getTasksByStaff(JSON.parse(localStorage.getItem('user'))._id);
     }, []);
 
-    // temp
     useEffect(() => {
-        console.log(tasks);
-    }, [tasks]);
+        if(!didRunEffect){
+            handleStatusFilter("Pending");
+            didRunEffect.current = true;
+        }
+    });
+
 
     const handleStatusFilter = (status) => {
         //filter tasks by status

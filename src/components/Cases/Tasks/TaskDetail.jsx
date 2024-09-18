@@ -28,7 +28,7 @@ const TaskDetail = () => {
         initiationDate: null,
         dueDate: null,
         reminder: '',
-        remark: '',
+        remark: null,
         status: '',
     });
 
@@ -40,7 +40,7 @@ const TaskDetail = () => {
                 initiationDate: task.initiationDate ? parseISO(task.initiationDate) : null,
                 dueDate: task.dueDate ? parseISO(task.dueDate) : null,
                 reminder: task.reminder ? parseISO(task.reminder) : null,
-                remark: task.remark || '',
+                remark: task.remark || null,
                 status: task.status || '',
             });
         }

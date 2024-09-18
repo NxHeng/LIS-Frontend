@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Typography, Container, Stack, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Info';
-import { debounce } from 'lodash';
+import _, { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -14,16 +14,16 @@ import { useCaseContext } from '../../context/CaseContext';
 
 const CentralTaskDetail = () => {
 
-    const caseItem = JSON.parse(localStorage.getItem('caseItem'));
-    const caseId = useMemo(() => {
-        try {
-            return JSON.parse(localStorage.getItem('caseItem'))._id;
-        } catch (error) {
-            console.error('Failed to parse case item from localStorage:', error);
-            return null;
-        }
-    }, []);
-    const { task, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask } = useTaskContext();
+    // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
+    // const caseId = useMemo(() => {
+    //     try {
+    //         return JSON.parse(localStorage.getItem('caseItem'))._id;
+    //     } catch (error) {
+    //         console.error('Failed to parse case item from localStorage:', error);
+    //         return null;
+    //     }
+    // }, []);
+    const { task, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask, updateFilteredTasks } = useTaskContext();
 
     const [formData, setFormData] = useState({
         description: '',
@@ -31,36 +31,60 @@ const CentralTaskDetail = () => {
         dueDate: null,
         reminder: '',
         remark: '',
-        status: '',
+        status: null,
+        caseId: '',
+        clients: [],
+        matterName: '',
+        _id: '',
     });
 
     useEffect(() => {
-        console.log('Task:', task);
+        console.log("Task: ", task);
         if (task) {
             setFormData({
                 description: task.description || '',
                 initiationDate: task.initiationDate ? parseISO(task.initiationDate) : null,
                 dueDate: task.dueDate ? parseISO(task.dueDate) : null,
                 reminder: task.reminder ? parseISO(task.reminder) : null,
-                remark: task.remark || '',
+                remark: task.remark || null,
                 status: task.status || '',
+                caseId: task.caseId || '',
+                clients: task.clients || [],
+                matterName: task.matterName || '',
+                _id: task._id || '',
             });
         }
     }, [task]);
-
+    
     const debouncedSave = debounce((value) => {
-        updateTaskInDatabase(caseId, task._id, formData);
-        updateTask(task._id, formData);
+        updateTaskInDatabase(task.caseId, task._id, formData);
+        updateFilteredTasks(task._id, formData);
+        setTask(formData);
+        console.log("formData: ", formData);
     }, 1000);
 
     useEffect(() => {
-        // console.log("useEffect triggered");
-        if (formData && (formData.description || formData.remark || formData.status)) {
-            // console.log("after useEffect triggered");
-            debouncedSave(formData);
+        if (formData && task) {
+            // Check for actual changes in formData fields
+            if (
+                formData.description !== task.description ||
+                formData.remark !== task.remark ||
+                formData.status !== task.status ||
+                formData.initiationDate !== task.initiationDate ||
+                formData.dueDate !== task.dueDate ||
+                formData.reminder !== task.reminder
+            ) {
+                debouncedSave(formData);
+                // console.log(formData.initiationDate === task.initiationDate);
+                // console.log(formData.remark === task.remark);
+                // console.log(formData.status === task.status);
+                // console.log(formData.initiationDate === task.initiationDate);
+                // console.log(formData.dueDate === task.dueDate);
+                // console.log(formData.reminder === task.reminder);
+            }
         }
 
-        // Cleanup function to cancel the debounce on unmount
+        // Cleanup on unmount
         return () => {
             debouncedSave.cancel();
         };
@@ -77,21 +101,21 @@ const CentralTaskDetail = () => {
 
     // const handleSubmit = () => {
     //     e.preventDefault();
-    //     updateTaskInDatabase(caseId, task._id, formData);
+    //     updateTaskInDatabase(task.caseId, task._id, formData);
     //     updateTask(task._id, formData);
     // };
 
     const handleDeleteTask = () => {
-        deleteTaskFromDatabase(caseId, task._id);
+        deleteTaskFromDatabase(task.caseId, task._id);
         deleteTask(task._id);
         setTask(null);
     };
 
     const { setFromTasks, fromTasks } = useCaseContext();
     const navigate = useNavigate();
-    
+
     const handleTitleClick = () => {
-        setFromTasks(true); 
+        setFromTasks(true);
         navigate(`/cases/details/${task.caseId}`);
     };
 
@@ -108,7 +132,7 @@ const CentralTaskDetail = () => {
         <Container sx={{ pb: 5 }}>
             <Typography variant='h5' sx={{ mt: 3, mb: 2 }}>Task Detail</Typography>
             <Typography variant='h6' color='grey'>Case Title</Typography>
-            <Typography onClick={handleTitleClick} sx={{cursor: "pointer"}} variant='h6'>{task.matterName}</Typography>
+            <Typography onClick={handleTitleClick} sx={{ cursor: "pointer" }} variant='h6'>{task.matterName}</Typography>
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 {/* <Stack spacing={2} component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}> */}
@@ -120,28 +144,24 @@ const CentralTaskDetail = () => {
                         value={formData.description}
                         onChange={handleChange}
                         margin="normal"
-                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <DatePicker
                         label="Initiation Date"
                         value={formData.initiationDate}
                         onChange={(date) => handleDateChange('initiationDate', date)}
                         renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
-                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <DatePicker
                         label="Due Date"
                         value={formData.dueDate}
                         onChange={(date) => handleDateChange('dueDate', date)}
                         renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
-                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <DatePicker
                         label="Reminder"
                         value={formData.reminder}
                         onChange={(date) => handleDateChange('reminder', date)}
                         renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
-                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <TextField
                         fullWidth
@@ -150,12 +170,9 @@ const CentralTaskDetail = () => {
                         value={formData.remark}
                         onChange={handleChange}
                         margin="normal"
-                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
-                    {
-                        caseItem.status === 'active' || caseItem.status === 'Active' ?
-                            <Stack spacing={1} direction="column" sx={{ mt: 2 }}>
-                                {/* <Button
+                    <Stack spacing={1} direction="column" sx={{ mt: 2 }}>
+                        {/* <Button
                             type="submit"
                             variant='contained'
                             color='primary'
@@ -164,37 +181,34 @@ const CentralTaskDetail = () => {
                         >
                             {task.status}
                         </Button> */}
-                                <FormControl fullWidth>
-                                    <InputLabel id="task-status-label">Status</InputLabel>
-                                    <Select
-                                        labelId="task-status-label"
-                                        id="task-status-select"
-                                        value={formData.status}
-                                        name="status"
-                                        onChange={handleChange}
-                                        endIcon={<EditIcon />}
-                                        sx={{ mb: 3 }}
-                                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
-                                    >
-                                        <MenuItem value="Pending">Pending</MenuItem>
-                                        <MenuItem value="Due">Due</MenuItem>
-                                        <MenuItem value="On Hold">On Hold</MenuItem>
-                                        <MenuItem value="Completed">Completed</MenuItem>
-                                        <MenuItem value="Awaiting Initiation">Awaiting Initiation</MenuItem>
-                                    </Select>
-                                </FormControl>
-                                <Button
-                                    variant='contained'
-                                    color='error'
-                                    endIcon={<DeleteIcon />}
-                                    sx={{ borderRadius: 3 }}
-                                    onClick={handleDeleteTask}
-                                    {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
-                                >
-                                    Delete
-                                </Button>
-                            </Stack> : null
-                    }
+                        <FormControl fullWidth>
+                            <InputLabel id="task-status-label">Status</InputLabel>
+                            <Select
+                                labelId="task-status-label"
+                                id="task-status-select"
+                                value={formData.status}
+                                name="status"
+                                onChange={handleChange}
+                                endIcon={<EditIcon />}
+                                sx={{ mb: 3 }}
+                            >
+                                <MenuItem value="Pending">Pending</MenuItem>
+                                <MenuItem value="Due">Due</MenuItem>
+                                <MenuItem value="On Hold">On Hold</MenuItem>
+                                <MenuItem value="Completed">Completed</MenuItem>
+                                <MenuItem value="Awaiting Initiation">Awaiting Initiation</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <Button
+                            variant='contained'
+                            color='error'
+                            endIcon={<DeleteIcon />}
+                            sx={{ borderRadius: 3 }}
+                            onClick={handleDeleteTask}
+                        >
+                            Delete
+                        </Button>
+                    </Stack>
                 </Stack>
             </LocalizationProvider>
         </Container>

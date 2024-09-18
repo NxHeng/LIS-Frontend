@@ -11,10 +11,16 @@ export const TaskContextProvider = ({ children }) => {
     const [tasksLoaded, setTasksLoaded] = useState(false);
     // For Central Tasks Page only
     const [statusFilter, setStatusFilter] = useState("Pending");
+    const [filteredTasks, setFilteredTasks] = useState([]);
 
     //Find a task by id and set it with new task data
     const updateTask = (taskId, taskData) => {
         setTasks(tasks.map((task) => (task._id === taskId ? { ...task, ...taskData } : task)));
+    }
+
+    const updateFilteredTasks = (taskId, taskData) => {
+        console.log("update filtered task TRIGGERED");
+        setFilteredTasks(filteredTasks.map((task) => (task._id === taskId ? { ...task, ...taskData } : task)));
     }
 
     const updateTaskStatus = (caseId, taskId, newStatus) => {
@@ -44,6 +50,7 @@ export const TaskContextProvider = ({ children }) => {
 
     const updateTaskInDatabase = async (caseId, taskId, taskData) => {
         try {
+            console.log("update task in database")
             const response = await fetch(`${API_URL}/case/updateTask/${caseId}/${taskId}`, {
                 method: 'PATCH',
                 headers: {
@@ -52,7 +59,7 @@ export const TaskContextProvider = ({ children }) => {
                 body: JSON.stringify(taskData),
             });
             const data = await response.json();
-            // console.log(data);
+            console.log(data);
         } catch (error) {
             console.error(error);
         }
@@ -141,6 +148,9 @@ export const TaskContextProvider = ({ children }) => {
             tasks,
             setTasks,
             setTask,
+            filteredTasks,
+            setFilteredTasks,
+            updateFilteredTasks,
             updateTask,
             tasksLoaded,
             setTasksLoaded,
