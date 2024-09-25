@@ -8,7 +8,7 @@ import EditCaseDetails from '../components/Cases/EditCaseDetails';
 import Tasks from '../components/Cases/Tasks/Tasks';
 import TaskDetail from '../components/Cases/Tasks/TaskDetail';
 import AddTaskBar from '../components/Cases/Tasks/AddTaskBar';
-import Documents from '../components/Cases/Documents';
+import Documents from '../components/Cases/Documents/Documents';
 
 import { useCaseContext } from '../context/CaseContext';
 import { useTaskContext } from '../context/TaskContext';
