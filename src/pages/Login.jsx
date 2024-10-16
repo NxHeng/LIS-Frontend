@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useAuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
+
+import { useAuthContext } from '../context/AuthContext';
 
 const Login = () => {
     const { login } = useAuthContext();

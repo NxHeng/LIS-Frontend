@@ -29,7 +29,7 @@ const Cases = () => {
     useEffect(() => {
         fetchCategories();
         toMyCases();
-        console.log(caseItemsLoaded);
+        // console.log(caseItemsLoaded);
     }, []);
 
     useEffect(() => {
@@ -65,7 +65,7 @@ const Cases = () => {
     const filterCategory = (category) => {
         setFilteredCategory(category);
         filterCases(searchQuery, category, filteredCases); // Call combined filter logic with current search query
-        console.log(filteredCases);
+        // console.log(filteredCases);
     };
 
     const handleFilterActiveCases = () => {
@@ -81,7 +81,7 @@ const Cases = () => {
     if (!caseItemsLoaded) {
         return <CircularProgress sx={{ml: '120vh', mt: '5vh'}}/>
     }else{
-        console.log(caseItems);
+        // console.log(caseItems);
     }
 
     return (

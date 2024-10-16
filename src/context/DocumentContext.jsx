@@ -1,10 +1,25 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuthContext } from './AuthContext';
 
 const DocumentContext = createContext();
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const DocumentContextProvider = ({ children }) => {
+
+    const { user } = useAuthContext();
+    const [userId, setUserId] = useState(null);
+
+    useEffect(() => {
+        if (!user) {
+            <Navigate to="/login" />
+        }
+        else {
+            setUserId(JSON.parse(localStorage.getItem('user'))._id);
+        }
+    }, [user]);
+
     const [currentFolderId, setCurrentFolderId] = useState(null); // Root folder by default
     const [selectedFolder, setSelectedFolder] = useState(null);
     const [selectedFolderForMove, setSelectedFolderForMove] = useState(null);
@@ -18,8 +33,10 @@ export const DocumentContextProvider = ({ children }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState(null);
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    const userId = user._id;
+    // const userItem = JSON.parse(localStorage.getItem('user'));
+    // const userId = userItem._id;
+
+
 
     const fetchContents = async (caseId) => {
         try {
@@ -237,7 +254,7 @@ export const DocumentContextProvider = ({ children }) => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-    
+
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -247,13 +264,13 @@ export const DocumentContextProvider = ({ children }) => {
             a.click();
             document.body.removeChild(a); // Remove the anchor from the body
             URL.revokeObjectURL(url); // Revoke the object URL
-    
+
             console.log('File downloaded:', url);
         } catch (err) {
             console.error('Error downloading file:', err);
         }
     };
-    
+
     const moveFile = async (fileId, newFolderId, caseId) => {
         try {
             const response = await fetch(`${API_URL}/document/moveFile`, {
@@ -291,7 +308,7 @@ export const DocumentContextProvider = ({ children }) => {
             console.error('Error:', err);
         }
     };
-    
+
 
     return (
         <DocumentContext.Provider value={{

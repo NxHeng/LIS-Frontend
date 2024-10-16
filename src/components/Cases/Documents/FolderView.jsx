@@ -66,8 +66,6 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
         'application/vnd.ms-excel': 'Excel',
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'Excel',
         'application/vnd.ms-powerpoint': 'PPT',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'PPT',
-        'application/vnd.ms-excel': 'Excel',
         'application/zip': 'ZIP',
         'application/x-rar-compressed': 'RAR',
         'application/x-7z-compressed': '7z',

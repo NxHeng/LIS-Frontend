@@ -13,7 +13,7 @@ const AuthContext = createContext({
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const AuthContextProvider = ({ children }) => {
-    const [user, setUser] = useState('testing bruh');
+    const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true); // Manage loading state
 
@@ -42,6 +42,8 @@ export const AuthContextProvider = ({ children }) => {
             setUser(user);
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
+            // console.log("userId:", user._id);
+            // socket?.emit('register', user._id);
 
             return { success: true }; // Return success
         } catch (error) {
@@ -112,7 +114,18 @@ export const AuthContextProvider = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider value={{ user, token, login, logout, register, fetchProfile, setUser, setToken, loading, changePassword }}>
+        <AuthContext.Provider value={{
+            user,
+            token,
+            login,
+            logout,
+            register,
+            fetchProfile,
+            setUser,
+            setToken,
+            loading,
+            changePassword
+        }}>
             {children}
         </AuthContext.Provider>
     );

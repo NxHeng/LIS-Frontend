@@ -12,27 +12,30 @@ import { DashboardContextProvider } from './context/DashboardContext.jsx'
 import { AnnouncementContextProvider } from './context/AnnouncementContext.jsx'
 import { UserContextProvider } from './context/UserContext.jsx'
 import { DocumentContextProvider } from './context/DocumentContext.jsx'
+import { SocketContextProvider } from './context/SocketContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <DocumentContextProvider>
-      <TaskContextProvider>
-        <CaseContextProvider>
-          <CategoryContextProvider>
-            <CreateContextProvider>
-              <AuthContextProvider>
+    <SocketContextProvider>
+      <AuthContextProvider>
+        <TaskContextProvider>
+          <CaseContextProvider>
+            <CategoryContextProvider>
+              <CreateContextProvider>
                 <DashboardContextProvider>
                   <AnnouncementContextProvider>
-                    <UserContextProvider>
-                      <App />
-                    </UserContextProvider>
+                    <DocumentContextProvider>
+                      <UserContextProvider>
+                        <App />
+                      </UserContextProvider>
+                    </DocumentContextProvider>
                   </AnnouncementContextProvider>
                 </DashboardContextProvider>
-              </AuthContextProvider>
-            </CreateContextProvider>
-          </CategoryContextProvider>
-        </CaseContextProvider>
-      </TaskContextProvider>
-    </DocumentContextProvider>
+              </CreateContextProvider>
+            </CategoryContextProvider>
+          </CaseContextProvider>
+        </TaskContextProvider>
+      </AuthContextProvider>
+    </SocketContextProvider>
   </React.StrictMode>,
 )

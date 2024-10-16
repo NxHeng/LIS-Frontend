@@ -14,7 +14,7 @@ const AnnouncementCard = ({ announcement, onClick }) => {
     }
 
     return (
-        <Card onClick={onClick} elevation={5} sx={{ marginBottom: 2, borderRadius: 5 }}>
+        <Card onClick={onClick} elevation={5} sx={{ marginBottom: 2, borderRadius: 5, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)', cursor: 'pointer' }}>
             <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mx: 2 }}>
                 <Typography component="span" variant="h6" sx={{ ml: "10vh" }}>
                     {announcement.title}

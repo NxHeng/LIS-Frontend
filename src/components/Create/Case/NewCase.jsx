@@ -134,35 +134,13 @@ const NewCase = () => {
                     onChange={handleChange}
                     sx={{ mb: 2 }}
                 />
-                {/* <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="solicitorInCharge"
-                    label="Solicitor In Charge"
-                    name="solicitorInCharge"
-                    value={formData.solicitorInCharge}
-                    onChange={handleChange}
-                    sx={{ mb: 2 }}
-                />
-                <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="clerkInCharge"
-                    label="Clerk In Charge"
-                    name="clerkInCharge"
-                    value={formData.clerkInCharge}
-                    onChange={handleChange}
-                    sx={{ mb: 2 }}
-                /> */}
 
                 <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
                     <InputLabel id="solicitor-label">Solicitor In Charge</InputLabel>
                     <Select
                         labelId="solicitor-label"
                         id="solicitor-select"
-                        value={formData.solicitorInCharge}
+                        value={formData.solicitorInCharge || ''}
                         label="Solicitor In Charge"
                         name="solicitorInCharge"
                         onChange={handleChange}

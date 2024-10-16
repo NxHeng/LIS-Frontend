@@ -40,24 +40,24 @@ export const CaseContextProvider = ({ children }) => {
     // Case List Page
     const toMyCases = () => {
         setView('myCases');
-        console.log(view);
+        // console.log(view);
         fetchMyCases(user._id);
     };
 
     const toAllCases = () => {
         setView('allCases');
-        console.log(view);
+        // console.log(view);
         fetchCases();
     };
 
     const filterActiveCases = () => {
         setFilteredCases('active');
-        console.log('Filtering active cases');
+        // console.log('Filtering active cases');
     };
 
     const filterClosedCases = () => {
         setFilteredCases('closed');
-        console.log('Filtering closed cases');
+        // console.log('Filtering closed cases');
     };
 
     // Details Page
@@ -82,7 +82,7 @@ export const CaseContextProvider = ({ children }) => {
     const toTasks = () => {
         setDetailView('tasks');
         setFromTasks(false);
-        console.log('fromTasks:', fromTasks);
+        // console.log('fromTasks:', fromTasks);
     }
 
     const toDocuments = () => {
