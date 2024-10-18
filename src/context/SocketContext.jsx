@@ -21,38 +21,19 @@ export const SocketContextProvider = ({ children }) => {
         socket?.on('newNotification', (notification) => {
             console.log("New notification received", notification); 
             handleNewNotification(notification);
-
-            // Show notification using Snackbar
-            // setSnackbarMessage(`New notification: ${notification.caseTitle || notification.taskTitle}`);
-            // setSnackbarOpen(true);
         });
     }, [socket, userId]);
-
-    // useEffect(() => {
-    //     console.log("Socket ran");
-    //     socket.on('newNotification', (notification) => {
-    //         console.log("New notification received", notification); 
-    //         handleNewNotification(notification);
-
-    //         // Show notification using Snackbar
-    //         setSnackbarMessage(`New notification: ${notification.caseTitle || notification.taskTitle}`);
-    //         setSnackbarOpen(true);
-    //     });
-    // }, [socket]);
 
 
     const handleNewNotification = (notification) => {
         console.log("New notification received", notification); // Log to verify the event handling
         setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-
-        // Show notification using Snackbar
-        // setSnackbarMessage(`New notification: ${notification.caseTitle || notification.taskTitle}`);
-        // setSnackbarOpen(true);
     };
 
     return (
         <SocketContext.Provider value={{
             socket,
+            setNotifications,
             notifications,
             handleNewNotification
         }}>

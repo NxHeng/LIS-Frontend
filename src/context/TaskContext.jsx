@@ -19,7 +19,7 @@ export const TaskContextProvider = ({ children }) => {
     }
 
     const updateFilteredTasks = (taskId, taskData) => {
-        console.log("update filtered task TRIGGERED");
+        // console.log("update filtered task TRIGGERED");
         setFilteredTasks(filteredTasks.map((task) => (task._id === taskId ? { ...task, ...taskData } : task)));
     }
 
@@ -42,7 +42,7 @@ export const TaskContextProvider = ({ children }) => {
                 body: JSON.stringify(tasksData),
             });
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
         } catch (error) {
             console.error(error);
         }
@@ -50,7 +50,7 @@ export const TaskContextProvider = ({ children }) => {
 
     const updateTaskInDatabase = async (caseId, taskId, taskData) => {
         try {
-            console.log("update task in database")
+            // console.log("update task in database");
             const response = await fetch(`${API_URL}/case/updateTask/${caseId}/${taskId}`, {
                 method: 'PATCH',
                 headers: {
@@ -59,7 +59,7 @@ export const TaskContextProvider = ({ children }) => {
                 body: JSON.stringify(taskData),
             });
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
         } catch (error) {
             console.error(error);
         }
@@ -80,7 +80,7 @@ export const TaskContextProvider = ({ children }) => {
             });
             const data = await response.json();
             fetchTasks(caseId);
-            console.log(data);
+            // console.log(data);
         } catch (error) {
             console.error(error);
         }
@@ -96,7 +96,7 @@ export const TaskContextProvider = ({ children }) => {
                 method: 'DELETE',
             });
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
         } catch (error) {
             console.error(error);
         }
@@ -137,7 +137,7 @@ export const TaskContextProvider = ({ children }) => {
         setTask(null);
         setStatusFilter(status);
         const filteredTasks = tasks?.filter((task) => task.status === status);
-        console.log(status, " ", filteredTasks);
+        // console.log(status, " ", filteredTasks);
         return filteredTasks;
     }
 

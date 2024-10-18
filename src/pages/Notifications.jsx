@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
 import { Navigate } from 'react-router-dom';
 import { Box, Button, Container, Grid, Stack, Typography, Card, CardContent, Snackbar, Alert } from '@mui/material';
+import { format } from 'date-fns';
 
 import { useSocketContext } from '../context/SocketContext';
 import { useAuthContext } from '../context/AuthContext';
@@ -9,22 +9,13 @@ import { useAuthContext } from '../context/AuthContext';
 const API_URL = import.meta.env.VITE_API_URL;
 
 const Notifications = () => {
-    // Sample notifications data
-    // const notifications = [
-    //     { id: 1, category: 'Deadlines', taskTitle: 'Prepare and execute an engagement letter', caseTitle: "Turner Investment Properties", date: '2024-09-30' },
-    //     { id: 2, category: 'Reminders', taskTitle: 'Prepare and execute an engagement letter', caseTitle: "Turner Investment Properties", date: '2024-10-01' },
-    //     { id: 3, category: 'Status Changes', caseTitle: "Turner Investment Properties", status: 'Closed' },
-    //     { id: 4, category: 'Details Updates', caseTitle: "Turner Investment Properties", date: '2024-09-29' },
-    //     { id: 5, category: 'New Cases', caseTitle: "Turner Investment Properties", date: '2024-09-30' },
-    //     // More notifications...
-    // ];
 
-    const [notifications, setNotifications] = useState([]);
+    // const [notifications, setNotifications] = useState([]);
     const [statusFilter, setStatusFilter] = useState("All");
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
 
-    const { socket, handleNewNotification } = useSocketContext();
+    const { notifications, setNotifications } = useSocketContext();
 
     const { user } = useAuthContext();
     const [userId, setUserId] = useState(null);
@@ -38,25 +29,9 @@ const Notifications = () => {
         }
     }, [user]);
 
-    // useEffect(() => {
-    //     console.log("Socket ran");
-    //     socket.on('newNotification', (notification) => {
-    //         console.log("New notification received", notification); 
-    //         handleNewNotification(notification);
-
-    //         // Show notification using Snackbar
-    //         setSnackbarMessage(`New notification: ${notification.caseTitle || notification.taskTitle}`);
-    //         setSnackbarOpen(true);
-    //     });
-    // }, [socket]);
-
-
-
-
     useEffect(() => {
         const fetchNotifications = async () => {
             if (!userId) return; // Ensure userId is not null before making the request
-
             try {
                 const response = await fetch(`${API_URL}/notification/getNotifications?userId=${userId}`);
                 if (!response.ok) {
@@ -64,6 +39,7 @@ const Notifications = () => {
                 }
                 const data = await response.json();
                 setNotifications(data);
+                console.log('Notifications:', data);
             } catch (error) {
                 console.error('Failed to fetch notifications:', error);
             }
@@ -90,6 +66,14 @@ const Notifications = () => {
     const filteredNotifications = statusFilter === "All"
         ? notifications
         : notifications.filter(notification => notification.type === statusFilter);
+
+    const formatDate = (date) => {
+        return format(new Date(date), "yyyy-MM-dd");
+    };
+
+    const capitalizeWord = (word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    };
 
     // Render different card designs for each category
     const renderNotificationCard = (notification) => {
@@ -118,25 +102,25 @@ const Notifications = () => {
                         {/* Middle Section (taskTitle + caseTitle) */}
                         <Box sx={{ flexBasis: '45%', textAlign: 'left' }}>
 
-                            <Typography sx={{ fontWeight: 'bold' }}>{notification.taskId && notification.taskId.description && notification.caseId.matterName}
-                            </Typography>
-                            <Typography>
-                                {notification.taskId && notification.caseId.matterName
-                                }
-                            </Typography>
-
                             <Typography sx={{ fontWeight: 'bold' }}>{notification.caseId && notification.caseId.matterName}
                             </Typography>
+
+                            <Typography>
+                                {notification.taskId && notification.caseId.tasks.find(task => task._id === notification.taskId).description}
+                            </Typography>
+
+                            {/* <Typography sx={{ fontWeight: 'bold' }}>{notification.caseId && notification.caseId.matterName}
+                            </Typography> */}
 
                         </Box>
 
                         {/* Right Section (date/status) */}
                         <Box sx={{ flexBasis: '20%', textAlign: 'right' }}>
                             {notification.type === 'deadline' && (
-                                <Typography color="error" sx={{ fontWeight: 'bold' }}>{notification.date}</Typography>
+                                <Typography color="error" sx={{ fontWeight: 'bold' }}>{formatDate(notification.caseId.tasks.find(task => task._id === notification.taskId).dueDate)}</Typography>
                             )}
                             {notification.type === 'reminder' && (
-                                <Typography color="error" sx={{ fontWeight: 'bold' }}>{notification.date}</Typography>
+                                <Typography color="error" sx={{ fontWeight: 'bold' }}>{formatDate(notification.caseId.tasks.find(task => task._id === notification.taskId).reminder)}</Typography>
                             )}
                             {notification.type === 'new_case' && (
                                 <Typography color="green" sx={{ fontWeight: 'bold' }}>New</Typography>
@@ -145,7 +129,7 @@ const Notifications = () => {
                                 <Typography color="dodgerblue" sx={{ fontWeight: 'bold' }}>Updated</Typography>
                             )}
                             {notification.type === 'status_change' && (
-                                <Typography color="darkorange" sx={{ fontWeight: 'bold' }}>{notification.status}</Typography>
+                                <Typography color="darkorange" sx={{ fontWeight: 'bold' }}>{capitalizeWord(notification.caseId.status)}</Typography>
                             )}
                         </Box>
                     </Stack>

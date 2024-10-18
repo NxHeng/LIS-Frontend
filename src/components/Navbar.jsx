@@ -14,7 +14,6 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { Card, CardContent, Stack } from '@mui/material';
 
 import { Link, useLocation } from 'react-router-dom';
 
@@ -38,7 +37,8 @@ const Navbar = () => {
     const [snackbarMessage, setSnackbarMessage] = useState("");
 
     useEffect(() => {
-        if (notifications.length > 0) {
+        // Only show Snackbar if notifications arrive and you're not on the Notifications page
+        if ((notifications.length > 0) && (location.pathname !== "/notifications")) {
             setSnackbarMessage(`${notifications[0].message}`);
             setSnackbarOpen(true);
         }
@@ -76,69 +76,6 @@ const Navbar = () => {
             return; // Prevent closing if clicked away
         }
         setSnackbarOpen(false);
-    };
-
-    // Render different card designs for each category
-    const renderNotificationCard = (notification) => {
-        return (
-            <Card key={notification._id} sx={{ mb: 2, borderRadius: 5, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
-                <CardContent>
-                    <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-                        {/* Left Section (icon + time) */}
-                        <Box sx={{ flexBasis: '30%', pl: 2 }}>
-                            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                                {notification.type === 'deadline' && 'Task Deadline Approaching'}
-                                {notification.type === 'reminder' && 'Task Reminder'}
-                                {notification.type === 'new_case' && 'New Case Created'}
-                                {notification.type === 'detail_update' && 'Detail Updated'}
-                                {notification.type === 'status_change' && 'Case Status Changed'}
-                            </Typography>
-                            <Typography variant='body2'>
-                                2 minutes ago
-                            </Typography>
-                        </Box>
-
-                        <Box sx={{ px: 1 }}>
-                            |
-                        </Box>
-
-                        {/* Middle Section (taskTitle + caseTitle) */}
-                        <Box sx={{ flexBasis: '45%', textAlign: 'left' }}>
-
-                            <Typography sx={{ fontWeight: 'bold' }}>{notification.taskId && notification.taskId.description && notification.caseId.matterName}
-                            </Typography>
-                            <Typography>
-                                {notification.taskId && notification.caseId.matterName
-                                }
-                            </Typography>
-
-                            <Typography sx={{ fontWeight: 'bold' }}>{notification.caseId && notification.caseId.matterName}
-                            </Typography>
-
-                        </Box>
-
-                        {/* Right Section (date/status) */}
-                        <Box sx={{ flexBasis: '20%', textAlign: 'right' }}>
-                            {notification.type === 'deadline' && (
-                                <Typography color="error" sx={{ fontWeight: 'bold' }}>{notification.date}</Typography>
-                            )}
-                            {notification.type === 'reminder' && (
-                                <Typography color="error" sx={{ fontWeight: 'bold' }}>{notification.date}</Typography>
-                            )}
-                            {notification.type === 'new_case' && (
-                                <Typography color="green" sx={{ fontWeight: 'bold' }}>New</Typography>
-                            )}
-                            {notification.type === 'detail_update' && (
-                                <Typography color="dodgerblue" sx={{ fontWeight: 'bold' }}>Updated</Typography>
-                            )}
-                            {notification.type === 'status_change' && (
-                                <Typography color="darkorange" sx={{ fontWeight: 'bold' }}>{notification.status}</Typography>
-                            )}
-                        </Box>
-                    </Stack>
-                </CardContent>
-            </Card>
-        );
     };
 
     if (loading) {

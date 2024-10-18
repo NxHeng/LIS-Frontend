@@ -7,7 +7,7 @@ import { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { parseISO } from 'date-fns';
+import { parseISO, isValid } from 'date-fns';
 import { useTaskContext } from '../../../context/TaskContext';
 
 const TaskDetail = () => {
@@ -22,32 +22,34 @@ const TaskDetail = () => {
         }
     }, []);
     const { task, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask } = useTaskContext();
-    
+
     const [formData, setFormData] = useState({
         description: '',
         initiationDate: null,
         dueDate: null,
-        reminder: '',
-        remark: null,
+        reminder: null,
+        remark: '',
         status: '',
     });
 
     useEffect(() => {
-        console.log('Task:', task);
         if (task) {
+            console.log('Task initiationDate:', task.initiationDate);
+            console.log('Parsed initiationDate:', isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null);
+    
             setFormData({
                 description: task.description || '',
-                initiationDate: task.initiationDate ? parseISO(task.initiationDate) : null,
-                dueDate: task.dueDate ? parseISO(task.dueDate) : null,
-                reminder: task.reminder ? parseISO(task.reminder) : null,
-                remark: task.remark || null,
+                initiationDate: task.initiationDate && isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null,
+                dueDate: task.dueDate && isValid(parseISO(task.dueDate)) ? parseISO(task.dueDate) : null,
+                reminder: task.reminder && isValid(parseISO(task.reminder)) ? parseISO(task.reminder) : null,
+                remark: task.remark || '',
                 status: task.status || '',
             });
         }
     }, [task]);
+    
 
     const debouncedSave = debounce((value) => {
-        console.log("triggered");
         updateTaskInDatabase(caseId, task._id, formData);
         updateTask(task._id, formData);
     }, 1000);
@@ -114,21 +116,21 @@ const TaskDetail = () => {
                         label="Initiation Date"
                         value={formData.initiationDate}
                         onChange={(date) => handleDateChange('initiationDate', date)}
-                        renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                        slots={{ textField: TextField }}
                         {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <DatePicker
                         label="Due Date"
                         value={formData.dueDate}
                         onChange={(date) => handleDateChange('dueDate', date)}
-                        renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                        slots={{ textField: TextField }}
                         {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <DatePicker
                         label="Reminder"
                         value={formData.reminder}
                         onChange={(date) => handleDateChange('reminder', date)}
-                        renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                        slots={{ textField: TextField }}
                         {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <TextField
@@ -152,25 +154,26 @@ const TaskDetail = () => {
                         >
                             {task.status}
                         </Button> */}
-                                <FormControl fullWidth>
-                                    <InputLabel id="task-status-label">Status</InputLabel>
-                                    <Select
-                                        labelId="task-status-label"
-                                        id="task-status-select"
-                                        value={formData.status}
-                                        name="status"
-                                        onChange={handleChange}
-                                        endIcon={<EditIcon />}
-                                        sx={{ mb: 3 }}
-                                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
-                                    >
-                                        <MenuItem value="Pending">Pending</MenuItem>
-                                        <MenuItem value="Due">Due</MenuItem>
-                                        <MenuItem value="On Hold">On Hold</MenuItem>
-                                        <MenuItem value="Completed">Completed</MenuItem>
-                                        <MenuItem value="Awaiting Initiation">Awaiting Initiation</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <FormControl fullWidth>
+                                        <InputLabel id="task-status-label">Status</InputLabel>
+                                        <Select
+                                            labelId="task-status-label"
+                                            id="task-status-select"
+                                            value={formData.status}
+                                            name="status"
+                                            onChange={handleChange}
+                                            sx={{ mb: 3 }}
+                                            {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                                        >
+                                            <MenuItem value="Pending">Pending</MenuItem>
+                                            <MenuItem value="Due">Due</MenuItem>
+                                            <MenuItem value="On Hold">On Hold</MenuItem>
+                                            <MenuItem value="Completed">Completed</MenuItem>
+                                            <MenuItem value="Awaiting Initiation">Awaiting Initiation</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Stack>
                                 <Button
                                     variant='contained'
                                     color='error'
