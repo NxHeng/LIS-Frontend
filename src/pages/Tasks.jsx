@@ -16,17 +16,20 @@ const Tasks = () => {
     }, []);
 
     useEffect(() => {
-        if(!didRunEffect){
+        console.log("didRunEffect: ", didRunEffect.current);
+        console.log(tasks);
+        if (tasks && tasks.length > 0 && !didRunEffect.current) {
             handleStatusFilter("Pending");
-            didRunEffect.current = true;
+            didRunEffect.current = true; // Set to true after first run
         }
-    });
+    }, [tasks]);
 
 
     const handleStatusFilter = (status) => {
         //filter tasks by status
-        filterStatus(status);
-        const result = tasks?.filter((task) => task.status === status);
+        console.log("Running filter");
+        const result = filterStatus(status);
+        // const result = tasks?.filter((task) => task.status === status);
         setFilteredTasks(result);
         console.log(status, " ", filteredTasks);
     }

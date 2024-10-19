@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Typography, Container, Stack, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Info';
 import _, { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { parseISO } from 'date-fns';
+import { parseISO, isValid } from 'date-fns';
 import { useTaskContext } from '../../context/TaskContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,9 +28,9 @@ const CentralTaskDetail = () => {
         description: '',
         initiationDate: null,
         dueDate: null,
-        reminder: '',
+        reminder: null,
         remark: '',
-        status: null,
+        status: '',
         caseId: '',
         clients: [],
         matterName: '',
@@ -39,14 +38,17 @@ const CentralTaskDetail = () => {
     });
 
     useEffect(() => {
-        console.log("Task: ", task);
         if (task) {
+            console.log("Task: ", task);
+            console.log('Task initiationDate:', task.initiationDate);
+            console.log('Parsed initiationDate:', isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null);
+            
             setFormData({
                 description: task.description || '',
-                initiationDate: task.initiationDate ? parseISO(task.initiationDate) : null,
-                dueDate: task.dueDate ? parseISO(task.dueDate) : null,
-                reminder: task.reminder ? parseISO(task.reminder) : null,
-                remark: task.remark || null,
+                initiationDate: task.initiationDate || null,
+                dueDate: task.dueDate || null,
+                reminder: task.reminder || null,
+                remark: task.remark || '',
                 status: task.status || '',
                 caseId: task.caseId || '',
                 clients: task.clients || [],
@@ -59,8 +61,8 @@ const CentralTaskDetail = () => {
     const debouncedSave = debounce((value) => {
         updateTaskInDatabase(task.caseId, task._id, formData);
         updateFilteredTasks(task._id, formData);
-        setTask(formData);
-        console.log("formData: ", formData);
+        // setTask(formData);
+        console.log("debounce formData: ", formData);
     }, 1000);
 
     useEffect(() => {
@@ -96,7 +98,11 @@ const CentralTaskDetail = () => {
     };
 
     const handleDateChange = (name, date) => {
-        setFormData(prevData => ({ ...prevData, [name]: date || null }));
+        console.log('Date:', date);
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: date ? date.toISOString() : null // Convert back to ISO string
+        }));
     };
 
     // const handleSubmit = () => {
@@ -147,21 +153,21 @@ const CentralTaskDetail = () => {
                     />
                     <DatePicker
                         label="Initiation Date"
-                        value={formData.initiationDate}
+                        value={formData.initiationDate ? new Date(formData.initiationDate) : null}
                         onChange={(date) => handleDateChange('initiationDate', date)}
-                        renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                        slots={{ textField: TextField }}
                     />
                     <DatePicker
                         label="Due Date"
-                        value={formData.dueDate}
+                        value={formData.dueDate ? new Date(formData.dueDate) : null}
                         onChange={(date) => handleDateChange('dueDate', date)}
-                        renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                        slots={{ textField: TextField }}
                     />
                     <DatePicker
                         label="Reminder"
-                        value={formData.reminder}
+                        value={formData.reminder ? new Date(formData.reminder) : null}
                         onChange={(date) => handleDateChange('reminder', date)}
-                        renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                        slots={{ textField: TextField }}
                     />
                     <TextField
                         fullWidth
@@ -189,7 +195,6 @@ const CentralTaskDetail = () => {
                                 value={formData.status}
                                 name="status"
                                 onChange={handleChange}
-                                endIcon={<EditIcon />}
                                 sx={{ mb: 3 }}
                             >
                                 <MenuItem value="Pending">Pending</MenuItem>

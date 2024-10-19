@@ -1,12 +1,13 @@
 import React from 'react';
 import { ListItem, ListItemText, Checkbox } from '@mui/material';
+import { format } from 'date-fns';
 
 import { useTaskContext } from '../../context/TaskContext';
 
 const CentralTaskItem = ({ task, onStatusChange, newStatus }) => {
     const { setTask, updateTaskStatus } = useTaskContext();
 
-    const { id, description, due, status, caseId } = task;
+    const { id, description, dueDate, status, caseId } = task;
 
     // const caseId = JSON.parse(localStorage.getItem('caseItem'))._id;
     // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
@@ -18,6 +19,10 @@ const CentralTaskItem = ({ task, onStatusChange, newStatus }) => {
 
     const handleClick = () => {
         setTask(task);
+    };
+
+    const formatDate = (date) => {
+        return format(new Date(date), "yyyy-MM-dd");
     };
 
     return (
@@ -43,7 +48,7 @@ const CentralTaskItem = ({ task, onStatusChange, newStatus }) => {
             />
             <ListItemText
                 edge="end"
-                primary={due !== null ? 'Due Date' : 'No Due Date'}
+                primary={dueDate !== null ? formatDate(dueDate) : ''}
                 sx={{ textAlign: 'right', mr: 2 }}
                 style={{ textDecoration: status === 'Completed' ? 'line-through' : 'none' }}
             />

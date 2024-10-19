@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { AppBar, Toolbar, Box, Typography, Container, Stack, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Typography, Container, Stack, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import InfoIcon from '@mui/icons-material/Info';
-import EditIcon from '@mui/icons-material/Info';
 import { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -34,14 +32,15 @@ const TaskDetail = () => {
 
     useEffect(() => {
         if (task) {
-            console.log('Task initiationDate:', task.initiationDate);
-            console.log('Parsed initiationDate:', isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null);
+            console.log("Task: ", task);
+            // console.log('Task initiationDate:', task.initiationDate);
+            // console.log('Parsed initiationDate:', isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null);
     
             setFormData({
                 description: task.description || '',
-                initiationDate: task.initiationDate && isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null,
-                dueDate: task.dueDate && isValid(parseISO(task.dueDate)) ? parseISO(task.dueDate) : null,
-                reminder: task.reminder && isValid(parseISO(task.reminder)) ? parseISO(task.reminder) : null,
+                initiationDate: task.initiationDate || null,
+                dueDate: task.dueDate || null,
+                reminder: task.reminder || null,
                 remark: task.remark || '',
                 status: task.status || '',
             });
@@ -55,9 +54,8 @@ const TaskDetail = () => {
     }, 1000);
 
     useEffect(() => {
-        // console.log("useEffect triggered");
-        if (formData && (formData.description || formData.remark || formData.status)) {
-            // console.log("after useEffect triggered");
+        if (formData && (formData.description || formData.initiationDate || formData.dueDate || formData.reminder || formData.remark || formData.status)) {
+            // console.log("trigger debounce???");
             debouncedSave(formData);
         }
 
@@ -73,15 +71,13 @@ const TaskDetail = () => {
     };
 
     const handleDateChange = (name, date) => {
-        setFormData(prevData => ({ ...prevData, [name]: date || null }));
+        console.log('Date:', date);
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: date ? date.toISOString() : null // Convert back to ISO string
+        }));
     };
-
-    // const handleSubmit = () => {
-    //     e.preventDefault();
-    //     updateTaskInDatabase(caseId, task._id, formData);
-    //     updateTask(task._id, formData);
-    // };
-
+    
     const handleDeleteTask = () => {
         deleteTaskFromDatabase(caseId, task._id);
         deleteTask(task._id);
@@ -114,21 +110,21 @@ const TaskDetail = () => {
                     />
                     <DatePicker
                         label="Initiation Date"
-                        value={formData.initiationDate}
+                        value={formData.initiationDate ? new Date(formData.initiationDate) : null}
                         onChange={(date) => handleDateChange('initiationDate', date)}
                         slots={{ textField: TextField }}
                         {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <DatePicker
                         label="Due Date"
-                        value={formData.dueDate}
+                        value={formData.dueDate ? new Date(formData.dueDate) : null}
                         onChange={(date) => handleDateChange('dueDate', date)}
                         slots={{ textField: TextField }}
                         {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <DatePicker
                         label="Reminder"
-                        value={formData.reminder}
+                        value={formData.reminder ? new Date(formData.reminder) : null}
                         onChange={(date) => handleDateChange('reminder', date)}
                         slots={{ textField: TextField }}
                         {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
