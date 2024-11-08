@@ -132,7 +132,7 @@ const Announcement = () => {
                 {/* Announcement List */}
                 <Grid item xs={7} sx={{ height: '90vh', overflowY: 'auto', px: 2, mt: 2 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, ml: 3 }}>
-                        <Typography variant="h2">Announcements</Typography>
+                        <Typography variant="h3">Announcements</Typography>
                         <Button
                             variant="contained"
                             sx={{ borderRadius: 2 }}

@@ -6,23 +6,22 @@ const SocketContext = createContext();
 export const SocketContextProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
     const [notifications, setNotifications] = useState([]);
-    const [userId, setUserId] = useState(null);
+    // const [userId, setUserId] = useState(null);
 
-    useEffect(() => {
-        //get userid from local storage
-        setUserId(JSON.parse(localStorage.getItem('user'))._id);
-        setSocket(io("http://localhost:5000"));
-    }, []);
+    // useEffect(() => {
+    //     setUserId(JSON.parse(localStorage.getItem('user'))._id);
+    //     setSocket(io("http://localhost:5000"));
+    // }, []);
 
-    useEffect(() => {
-        socket?.emit("register", userId.toString());
-        console.log(userId, socket);
-        // console.log("Socket ran");
-        socket?.on('newNotification', (notification) => {
-            console.log("New notification received", notification); 
-            handleNewNotification(notification);
-        });
-    }, [socket, userId]);
+    // useEffect(() => {
+    //     socket?.emit("register", userId.toString());
+    //     console.log(userId, socket);
+    //     // console.log("Socket ran");
+    //     socket?.on('newNotification', (notification) => {
+    //         console.log("New notification received", notification); 
+    //         handleNewNotification(notification);
+    //     });
+    // }, [socket, userId]);
 
 
     const handleNewNotification = (notification) => {
@@ -33,6 +32,7 @@ export const SocketContextProvider = ({ children }) => {
     return (
         <SocketContext.Provider value={{
             socket,
+            setSocket,
             setNotifications,
             notifications,
             handleNewNotification

@@ -4,7 +4,6 @@ import { Navigate } from 'react-router-dom';
 const CaseContext = createContext();
 
 import { useTaskContext } from './TaskContext';
-import { set } from 'date-fns';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -15,13 +14,13 @@ export const CaseContextProvider = ({ children }) => {
     const [fromTasks, setFromTasks] = useState(false);
     const [detailView, setDetailView] = useState('matterDetails');
 
-    const user = JSON.parse(localStorage.getItem('user'));
+    // const user = JSON.parse(localStorage.getItem('user'));
 
-    useEffect(() => {
-        if (!user) {
-            <Navigate to="/login" />
-        }
-    }, [user]);
+    // useEffect(() => {
+    //     if (!user) {
+    //         <Navigate to="/login" />
+    //     }
+    // }, [user]);
 
     const [view, setView] = useState('myCases');
     const [filteredCases, setFilteredCases] = useState('active');
@@ -38,10 +37,10 @@ export const CaseContextProvider = ({ children }) => {
     const { setTask } = useTaskContext();
     
     // Case List Page
-    const toMyCases = () => {
+    const toMyCases = (userId) => {
         setView('myCases');
         // console.log(view);
-        fetchMyCases(user._id);
+        fetchMyCases(userId);
     };
 
     const toAllCases = () => {

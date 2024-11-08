@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Box, Button, Container, Grid, Stack, Typography, Card, CardContent, Snackbar, Alert } from '@mui/material';
-import { format } from 'date-fns';
+import { format, formatDistanceStrict  } from 'date-fns';
 
 import { useSocketContext } from '../context/SocketContext';
 import { useAuthContext } from '../context/AuthContext';
@@ -91,7 +91,7 @@ const Notifications = () => {
                                 {notification.type === 'status_change' && 'Case Status Changed'}
                             </Typography>
                             <Typography variant='body2'>
-                                2 minutes ago
+                            {formatDistanceStrict(new Date(notification.createdAt), new Date(), { addSuffix: true })}
                             </Typography>
                         </Box>
 

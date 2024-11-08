@@ -25,10 +25,11 @@ const Cases = () => {
     const { categories, fetchCategories } = useCategoryContext();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchFilteredCases, setSearchFilteredCases] = useState([]);
+    const userId = JSON.parse(localStorage.getItem('user'))._id;
 
     useEffect(() => {
         fetchCategories();
-        toMyCases();
+        toMyCases(userId);
         // console.log(caseItemsLoaded);
     }, []);
 
@@ -92,7 +93,7 @@ const Cases = () => {
                     {/* Side Navigation */}
                     <Grid item xs={2}>
                         <Stack>
-                            <Button onClick={toMyCases} variant={view === 'myCases' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
+                            <Button onClick={() => toMyCases(userId)} variant={view === 'myCases' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
                                 My Cases
                             </Button>
                             <Button onClick={toAllCases} variant={view === 'allCases' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >

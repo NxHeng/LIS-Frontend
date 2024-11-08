@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 
 const Register = () => {
-    const { register } = useAuthContext();
+    const { register, setMessage } = useAuthContext();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -12,8 +12,20 @@ const Register = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        await register(username, email, password);
-        navigate('/login');
+        try {
+            const result = await register(username, email, password);
+            if (result.success) {
+                setMessage(result.message);
+                navigate('/login');
+            }
+            else {
+                setMessage(result.message);
+            }
+        } catch (error) {
+            console.error('Register error:', error);
+            setMessage('An error occurred. Please try again.');
+        }
+
     };
 
     return (

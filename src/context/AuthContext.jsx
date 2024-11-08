@@ -16,6 +16,7 @@ export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true); // Manage loading state
+    const [message, setMessage] = useState(null);
 
     useEffect(() => {
         const checkUser = async () => {
@@ -35,9 +36,18 @@ export const AuthContextProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            const response = await axios.post(`${API_URL}/user/login`, { email, password });
-            // Ensure correct response data access
-            const { token, user } = response.data;
+            const response = await fetch(`${API_URL}/user/login`, {
+                method: 'POST',  // Specify the method
+                headers: {
+                    'Content-Type': 'application/json', // Set content type
+                },
+                body: JSON.stringify({ email, password }), // Convert body to JSON
+            });
+            const data = await response.json(); // Wait for response and parse JSON
+            if (!response.ok) { // Check if response is ok
+                throw new Error(data.message || 'Login failed');
+            }
+            const { token, user } = data;
             setToken(token);
             setUser(user);
             localStorage.setItem('token', token);
@@ -48,7 +58,7 @@ export const AuthContextProvider = ({ children }) => {
             return { success: true }; // Return success
         } catch (error) {
             console.error('Login failed:', error.response ? error.response.data : error.message);
-            return { success: false, message: error.response?.data?.message || error.message }; // Return error message
+            return { success: false, message: error.response ? error.response.data : error.message }; // Return error message
         } finally {
             setLoading(false); // End loading
         }
@@ -57,7 +67,7 @@ export const AuthContextProvider = ({ children }) => {
     const register = async (username, email, password) => {
         try {
             await axios.post(`${API_URL}/user/register`, { username, email, password });
-            return { success: true };
+            return { success: true, message: 'Your account has been submitted for approval' };
         } catch (error) {
             console.error('Registration failed:', error.response ? error.response.data : error.message);
             return { success: false, message: error.response?.data?.message || error.message };
@@ -90,6 +100,7 @@ export const AuthContextProvider = ({ children }) => {
             setToken(null);
             localStorage.removeItem('token');
             localStorage.removeItem('user');
+            localStorage.removeItem('caseItem');
             setLoading(false);
         }
     };
@@ -111,8 +122,6 @@ export const AuthContextProvider = ({ children }) => {
         }
     };
 
-
-
     return (
         <AuthContext.Provider value={{
             user,
@@ -124,7 +133,9 @@ export const AuthContextProvider = ({ children }) => {
             setUser,
             setToken,
             loading,
-            changePassword
+            changePassword,
+            message,
+            setMessage
         }}>
             {children}
         </AuthContext.Provider>

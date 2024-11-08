@@ -15,6 +15,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import ChangePassword from "./pages/ChangePassword";
+import ManageUsers from "./pages/ManageUsers";
 
 import { useAuthContext } from './context/AuthContext';
 
@@ -50,6 +51,7 @@ function App() {
             <Route path="/create" element={<Create />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/changepassword" element={<ChangePassword />} />
+            <Route path="/manageusers" element={<ManageUsers />} />
           </Route>
         </Routes>
         {/* <Footer /> */}

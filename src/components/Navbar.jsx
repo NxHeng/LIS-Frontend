@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import io from 'socket.io-client';
 
 import { Link, useLocation } from 'react-router-dom';
 
@@ -22,12 +23,12 @@ import { useCreateContext } from '../context/CreateContext';
 import { useSocketContext } from '../context/SocketContext';
 
 const pages = ['Home', 'Cases', 'Tasks', 'Notifications', 'Announcement'];
-const settings = ['Profile', 'Account'];
+const settings = ['Profile', 'Account', 'Manage Users'];
 
 const Navbar = () => {
     const { user, logout, loading } = useAuthContext();
     const { toNewCase } = useCreateContext();
-    const { notifications } = useSocketContext();
+    const { socket, setSocket, notifications } = useSocketContext();
     // const user = JSON.parse(localStorage.getItem('user'));
     const location = useLocation();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -35,6 +36,23 @@ const Navbar = () => {
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
+
+    // const [userId, setUserId] = useState(null);
+
+    useEffect(() => {
+        // setUserId(user._id);
+        setSocket(io("http://localhost:5000"));
+    }, []);
+
+    useEffect(() => {
+        socket?.emit("register", user._id.toString());
+        console.log(user._id, socket);
+        // console.log("Socket ran");
+        socket?.on('newNotification', (notification) => {
+            console.log("New notification received", notification); 
+            handleNewNotification(notification);
+        });
+    }, [socket]);
 
     useEffect(() => {
         // Only show Snackbar if notifications arrive and you're not on the Notifications page
@@ -238,7 +256,7 @@ const Navbar = () => {
                                         <Typography
                                             textAlign="center"
                                             component={Link}
-                                            to={`/${setting.toLowerCase()}`}
+                                            to={`/${setting.toLowerCase().replace(' ', '')}`}
                                             sx={{ textDecoration: 'none', color: 'inherit' }}
                                         >
                                             {setting}
