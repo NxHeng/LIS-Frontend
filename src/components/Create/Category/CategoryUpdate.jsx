@@ -53,7 +53,7 @@ const CategoryUpdate = () => {
     // Case Details Fields
     const handleAddDetailField = () => {
         const newId = detailFields.length > 0 ? detailFields[detailFields.length - 1].id + 1 : 0;
-        setDetailFields([...detailFields, { id: newId, value: '', type: 'string' }]);
+        setDetailFields([...detailFields, { id: newId, value: '', type: 'text' }]);
     };
 
     const handleRemoveDetailField = (id) => {
@@ -113,6 +113,7 @@ const CategoryUpdate = () => {
         // To Database
         updateFields(category, transformedFields, categoryName);
         // setTabValue(1);
+        toCategories();
     };
 
     const handleSaveTask = (event) => {
@@ -219,8 +220,11 @@ const CategoryUpdate = () => {
                                         value={field.type}
                                         onChange={(e) => handleDetailTypeChange(field.id, e.target.value)}
                                     >
-                                        <MenuItem value="string">String</MenuItem>
+                                        <MenuItem value="text">Text</MenuItem>
+                                        <MenuItem value="date">Date</MenuItem>
+                                        <MenuItem value="price">Price</MenuItem>
                                         <MenuItem value="number">Number</MenuItem>
+                                        <MenuItem value="stakeholder">Stakeholder</MenuItem>
                                         {/* Add more types here */}
                                     </Select>
                                 </FormControl>

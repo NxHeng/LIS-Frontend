@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Box, Button, Container, Grid, Stack, Typography, Card, CardContent, Snackbar, Alert } from '@mui/material';
-import { format, formatDistanceStrict  } from 'date-fns';
+import { format, formatDistanceStrict } from 'date-fns';
 
 import { useSocketContext } from '../context/SocketContext';
 import { useAuthContext } from '../context/AuthContext';
@@ -78,7 +78,17 @@ const Notifications = () => {
     // Render different card designs for each category
     const renderNotificationCard = (notification) => {
         return (
-            <Card key={notification._id} sx={{ mb: 2, borderRadius: 5, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
+            <Card key={notification._id} sx={{
+                marginBottom: 2,
+                borderRadius: 5,
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                cursor: 'pointer',  // Changes cursor to pointer on hover
+                transition: 'transform 0.3s ease',  // Smooth transition for zoom effect
+                '&:hover': {
+                    transform: 'scale(1.05)',  // Slightly scales up the card on hover
+                    boxShadow: '0px 6px 24px rgba(0, 0, 0, 0.15)' // Optional: enhance shadow on hover for extra depth
+                }
+            }}>
                 <CardContent>
                     <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
                         {/* Left Section (icon + time) */}
@@ -91,7 +101,7 @@ const Notifications = () => {
                                 {notification.type === 'status_change' && 'Case Status Changed'}
                             </Typography>
                             <Typography variant='body2'>
-                            {formatDistanceStrict(new Date(notification.createdAt), new Date(), { addSuffix: true })}
+                                {formatDistanceStrict(new Date(notification.createdAt), new Date(), { addSuffix: true })}
                             </Typography>
                         </Box>
 

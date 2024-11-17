@@ -11,7 +11,12 @@ const FileFolderDetails = ({ item, handleRename, handleDelete }) => {
     const defaultText = "No file or folder selected";
 
     return (
-        <Card sx={{ maxWidth: 600, margin: 'auto', mt: 5, boxShadow: 3 }}>
+        <Card sx={{
+            maxWidth: 600, mt: 5, 
+            borderRadius: 3,
+            mr: 2,
+            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+        }}>
             <CardHeader
                 avatar={
                     <Avatar sx={{ bgcolor: isFolder ? 'primary.main' : 'green' }}>

@@ -12,7 +12,21 @@ const CategoryCard = ({ category }) => {
     };
 
     return (
-        <Card onClick={handleClick} elevation={3} sx={{ marginBottom: 2, borderRadius: 5 }}>
+        <Card
+            onClick={handleClick}
+            elevation={3}
+            sx={{
+                marginBottom: 2,
+                borderRadius: 5,
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                cursor: 'pointer',  // Changes cursor to pointer on hover
+                transition: 'transform 0.3s ease',  // Smooth transition for zoom effect
+                '&:hover': {
+                    transform: 'scale(1.05)',  // Slightly scales up the card on hover
+                    boxShadow: '0px 6px 24px rgba(0, 0, 0, 0.15)' // Optional: enhance shadow on hover for extra depth
+                }
+            }}
+        >
             <CardContent>
                 <Typography variant="h6">
                     {category.categoryName}

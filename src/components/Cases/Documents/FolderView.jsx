@@ -294,7 +294,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
                 />
             </Container>
             {/* Buttons */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 1 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 1, mt: 1 }}>
                 <NewItem caseId={caseId} createFolder={createFolder} uploadFile={uploadFile} />
                 <SortFilter
                     selectedDate={selectedDate}
@@ -307,7 +307,13 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
             </Box>
 
             {/* Main Content */}
-            <TableContainer component={Paper} sx={{ maxHeight: '65vh', overflow: 'auto', mb: 5 }}>
+            <TableContainer component={Paper} sx={{
+                maxHeight: '65vh',
+                overflow: 'auto',
+                mt: 1,
+                borderRadius: 3,
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+            }}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -407,7 +413,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
                     item={selectedFile ? selectedFile : selectedFolder}
                     handleRename={handleRename}
                     handleDownload={handleDownload}
-                    handleDelete={handleDelete} 
+                    handleDelete={handleDelete}
                 />
             </Box>
 

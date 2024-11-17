@@ -5,16 +5,26 @@ const AnnouncementCard = ({ announcement, onClick }) => {
 
     const formatDateTime = (dateTime) => {
         const date = dateTime.substring(0, 10);
-        const time = dateTime.substring(11, 19);
+        const time = dateTime.substring(11, 16);
 
         const [year, month, day] = date.split('-');
-        const reversedDate = `${day}-${month}-${year}`;
+        const reversedDate = `${day}/${month}/${year}`;
 
-        return `${time} ${reversedDate}`;
+        return `${reversedDate} ${time}`;
     }
 
     return (
-        <Card onClick={onClick} elevation={5} sx={{ marginBottom: 2, borderRadius: 5, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)', cursor: 'pointer' }}>
+        <Card onClick={onClick} elevation={5} sx={{
+            marginBottom: 2,
+            borderRadius: 5,
+            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+            cursor: 'pointer',  // Changes cursor to pointer on hover
+            transition: 'transform 0.3s ease',  // Smooth transition for zoom effect
+            '&:hover': {
+                transform: 'scale(1.05)',  // Slightly scales up the card on hover
+                boxShadow: '0px 6px 24px rgba(0, 0, 0, 0.15)' // Optional: enhance shadow on hover for extra depth
+            }
+        }}>
             <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mx: 2 }}>
                 <Typography component="span" variant="h6" sx={{ ml: "10vh" }}>
                     {announcement.title}

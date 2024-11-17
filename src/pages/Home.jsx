@@ -37,12 +37,23 @@ const Home = () => {
         maintainAspectRatio: false, // Disable maintain aspect ratio for custom sizing
     };
 
+    const paperStyle = {
+        borderRadius: 5,
+        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+        cursor: 'pointer',
+        transition: 'transform 0.3s ease',
+        '&:hover': {
+            transform: 'scale(1.05)',
+            boxShadow: '0px 6px 24px rgba(0, 0, 0, 0.15)'
+        }
+    };
+
     return (
         <Container sx={{ p: 2 }}>
             <Typography variant='h2' sx={{ mb: 1 }}>Dashboard</Typography>
             <Grid container spacing={3}>
                 <Grid item xs={6}>
-                    <Paper elevation={4} >
+                    <Paper elevation={4} sx={paperStyle} >
                         <Box p={3}>
                             <Typography variant="h6">Active Cases</Typography>
                             <Box sx={{ width: 300, height: 300, margin: '0 auto', p: 2 }}>
@@ -54,7 +65,7 @@ const Home = () => {
                 <Grid item xs={12} sm={6} md={6}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} sm={6} md={6}>
-                            <Paper elevation={4}>
+                            <Paper elevation={4} sx={paperStyle}>
                                 <Box p={3}>
                                     <Typography variant="h6">Total Cases</Typography>
                                     <Typography variant="h4">{statistics.totalCases}</Typography>
@@ -62,7 +73,7 @@ const Home = () => {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6} md={6}>
-                            <Paper elevation={4}>
+                            <Paper elevation={4} sx={paperStyle}>
                                 <Box p={3}>
                                     <Typography variant="h6">Active Cases</Typography>
                                     <Typography variant="h4">{statistics.activeCases}</Typography>
@@ -70,7 +81,7 @@ const Home = () => {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6} md={6}>
-                            <Paper elevation={4}>
+                            <Paper elevation={4} sx={paperStyle}>
                                 <Box p={3}>
                                     <Typography variant="h6">Closed Cases</Typography>
                                     <Typography variant="h4">{statistics.closedCases}</Typography>
@@ -78,7 +89,7 @@ const Home = () => {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6} md={6}>
-                            <Paper elevation={4}>
+                            <Paper elevation={4} sx={paperStyle}>
                                 <Box p={3}>
                                     <Typography variant="h6">Total Tasks</Typography>
                                     <Typography variant="h4">{statistics.totalTasks}</Typography>

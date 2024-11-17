@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Typography, Box, Button } from '@mui/material';
+import { Container, Typography, Box, Button, TableContainer, TableBody, TableHead, TableCell, Table, TableRow, Paper } from '@mui/material';
 
 import { useCategoryContext } from '../../context/CategoryContext';
 import { useCaseContext } from '../../context/CaseContext';
@@ -30,7 +30,7 @@ const MatterDetails = () => {
     return (
         <Container>
             {
-                caseItem.status === 'active' || caseItem.status === 'Active'  ? <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
+                caseItem.status === 'active' || caseItem.status === 'Active' ? <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
                     <Button onClick={handleEdit} variant="contained" sx={{ mr: 1, borderRadius: 5, width: "10vh" }} >
                         Edit
                     </Button>
@@ -43,7 +43,7 @@ const MatterDetails = () => {
                 </Box> : null
             }
 
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            {/* <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Box>
                     <Typography variant='h6' color="grey">
                         Matter Name
@@ -90,7 +90,45 @@ const MatterDetails = () => {
                     </Typography>
 
                 </Box>
-            </Box>
+            </Box> */}
+
+
+            <TableContainer component={Paper} sx={{ boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align='left' sx={{ width: '35%', fontWeight: 'bold' }}>Title</TableCell>
+                            <TableCell align='left' sx={{ width: '65%', fontWeight: 'bold' }}>Description</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow >
+                            <TableCell align='left'>Matter Name</TableCell>
+                            <TableCell align='left'>{caseItem.matterName}</TableCell>
+                        </TableRow>
+                        <TableRow >
+                            <TableCell align='left'>File Reference</TableCell>
+                            <TableCell align='left'>{caseItem.fileReference}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell align='left'>Category</TableCell>
+                            <TableCell align='left'>{caseItem.category.categoryName}</TableCell>
+                        </TableRow>
+                        <TableRow >
+                            <TableCell align='left'>Status</TableCell>
+                            <TableCell align='left'>{caseItem.status}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell align='left'>Clerk In Charge</TableCell>
+                            <TableCell align='left'>{caseItem.clerkInCharge.username}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell align='left'>Solicitor In Charge</TableCell>
+                            <TableCell align='left'>{caseItem.solicitorInCharge.username}</TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Container>
     );
 }
