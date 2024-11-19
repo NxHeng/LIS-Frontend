@@ -21,6 +21,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
 import { useCreateContext } from '../context/CreateContext';
 import { useSocketContext } from '../context/SocketContext';
+import { useAnnouncementContext } from '../context/AnnouncementContext';
 
 const pages = ['Home', 'Cases', 'Tasks', 'Notifications', 'Announcement'];
 const settings = ['Profile', 'Account', 'Manage Users'];
@@ -28,7 +29,9 @@ const settings = ['Profile', 'Account', 'Manage Users'];
 const Navbar = () => {
     const { user, logout, loading } = useAuthContext();
     const { toNewCase } = useCreateContext();
-    const { socket, setSocket, notifications } = useSocketContext();
+    const { socket, setSocket, notifications, handleNewNotification, handleNewAnnouncement } = useSocketContext();
+    const { announcements } = useAnnouncementContext();
+
     // const user = JSON.parse(localStorage.getItem('user'));
     const location = useLocation();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -49,9 +52,16 @@ const Navbar = () => {
         console.log(user._id, socket);
         // console.log("Socket ran");
         socket?.on('newNotification', (notification) => {
-            console.log("New notification received", notification); 
+            console.log("New notification received", notification);
             handleNewNotification(notification);
         });
+
+        // Listen for new announcements
+        socket?.on('newAnnouncement', (announcement) => {
+            console.log("New announcement received", announcement);
+            handleNewAnnouncement(announcement); // Function to handle announcement
+        });
+
     }, [socket]);
 
     useEffect(() => {
@@ -61,6 +71,15 @@ const Navbar = () => {
             setSnackbarOpen(true);
         }
     }, [notifications]);
+
+    useEffect(() => {
+        // Only show Snackbar if announcements arrive and you're not on the Announcement page
+        if ((announcements.length > 0) && (location.pathname !== "/announcement")) {
+            console.log("Announcements: ", announcements);
+            setSnackbarMessage(`New Announcement '${announcements[0].title}'`);
+            setSnackbarOpen(true);
+        }
+    }, [announcements]);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);

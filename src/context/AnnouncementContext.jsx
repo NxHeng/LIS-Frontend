@@ -16,8 +16,9 @@ export const AnnouncementContextProvider = ({ children }) => {
         try {
             const response = await fetch(`${API_URL}/announcement/getAnnouncements`);
             const data = await response.json();
+            // const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
             setAnnouncements(data);
-            setAnnouncementsLoaded(false);
+            setAnnouncementsLoaded(data);
         } catch (error) {
             console.error('Error fetching announcements:', error);
             setAnnouncementsLoaded(false);

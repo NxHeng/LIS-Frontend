@@ -4,10 +4,10 @@ import CollapsibleRow from './CollapsibleRow';
 
 import { useCaseContext } from '../../context/CaseContext';
 
-const CaseDetails = () => {
+const CaseDetails = ({ caseItem }) => {
 
     const { toEditCaseDetails } = useCaseContext();
-    const caseItem = JSON.parse(localStorage.getItem('caseItem'));
+    // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     // Separate fields by type
     const textNumberStakeholderFields = caseItem.fields.filter(field => field.type === 'text' || field.type === 'number' || field.type === 'stakeholder');

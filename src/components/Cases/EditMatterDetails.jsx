@@ -5,11 +5,11 @@ import { useCategoryContext } from '../../context/CategoryContext';
 import { useCaseContext } from '../../context/CaseContext';
 import { useUserContext } from '../../context/UserContext';
 
-const EditMatterDetails = () => {
+const EditMatterDetails = ({caseItem}) => {
     const { updateCaseInDatabase, fetchCase, toMatterDetails } = useCaseContext();
     const { getUserList, userList } = useUserContext();
     const { fetchCategory, category } = useCategoryContext();
-    const caseItem = JSON.parse(localStorage.getItem('caseItem'));
+    // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
     const [editedData, setEditedData] = useState(caseItem);
     const [loading, setLoading] = useState(true);
 

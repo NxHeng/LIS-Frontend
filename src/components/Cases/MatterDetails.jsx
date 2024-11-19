@@ -5,11 +5,11 @@ import { useCategoryContext } from '../../context/CategoryContext';
 import { useCaseContext } from '../../context/CaseContext';
 import { useNavigate } from 'react-router-dom';
 
-const MatterDetails = () => {
+const MatterDetails = ({ caseItem }) => {
 
     const { updateCaseAsClosedInDatabase, toEditMatterDetails } = useCaseContext();
     const { fetchCategory, category } = useCategoryContext();
-    const caseItem = JSON.parse(localStorage.getItem('caseItem'));
+    // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
     const navigate = useNavigate();
 
     // useEffect(() => {

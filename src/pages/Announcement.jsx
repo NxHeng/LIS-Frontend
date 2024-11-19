@@ -38,7 +38,8 @@ const Announcement = () => {
 
     // Get announcements for the current page
     const startIndex = (currentPage - 1) * announcementsPerPage;
-    const currentAnnouncements = announcements.slice(startIndex, startIndex + announcementsPerPage);
+    const sortedAnnouncements = announcements.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const currentAnnouncements = sortedAnnouncements.slice(startIndex, startIndex + announcementsPerPage);
 
     const handlePageChange = (event, value) => {
         setCurrentPage(value);

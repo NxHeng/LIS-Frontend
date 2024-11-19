@@ -16,7 +16,7 @@ import { Edit } from '@mui/icons-material';
 
 const Details = () => {
 
-    const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments, fromTasks, setFromTasks} = useCaseContext();
+    const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments, fromTasks, fromNotificationsToTasks, fromNotificationsToCaseDetails, setFromTasks, setFromNotificationsToTasks, setFromNotificationsToCaseDetails } = useCaseContext();
     const { task } = useTaskContext();
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
@@ -25,12 +25,19 @@ const Details = () => {
     }, []);
 
     useEffect(() => {
-        if (fromTasks) {
-            toTasks();  // Ensure this sets the view to tasks
-              // Reset after triggering the switch
+        if (fromTasks || fromNotificationsToTasks) {
+            toTasks();
         }
-    }, [fromTasks]);
-    
+        else if (fromNotificationsToCaseDetails) {
+            toCaseDetails();
+        }
+
+        setFromTasks(false);
+        setFromNotificationsToTasks(false);
+        setFromNotificationsToCaseDetails(false);
+
+    }, [fromTasks, fromNotificationsToTasks, fromNotificationsToCaseDetails]);
+
 
     return (
         <div sx={{ p: 2 }}>

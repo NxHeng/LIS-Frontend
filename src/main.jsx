@@ -16,26 +16,26 @@ import { SocketContextProvider } from './context/SocketContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <SocketContextProvider>
-      <AuthContextProvider>
-        <TaskContextProvider>
-          <CaseContextProvider>
-            <CategoryContextProvider>
-              <CreateContextProvider>
-                <DashboardContextProvider>
-                  <AnnouncementContextProvider>
+    <AnnouncementContextProvider>
+      <SocketContextProvider>
+        <AuthContextProvider>
+          <TaskContextProvider>
+            <CaseContextProvider>
+              <CategoryContextProvider>
+                <CreateContextProvider>
+                  <DashboardContextProvider>
                     <DocumentContextProvider>
                       <UserContextProvider>
                         <App />
                       </UserContextProvider>
                     </DocumentContextProvider>
-                  </AnnouncementContextProvider>
-                </DashboardContextProvider>
-              </CreateContextProvider>
-            </CategoryContextProvider>
-          </CaseContextProvider>
-        </TaskContextProvider>
-      </AuthContextProvider>
-    </SocketContextProvider>
+                  </DashboardContextProvider>
+                </CreateContextProvider>
+              </CategoryContextProvider>
+            </CaseContextProvider>
+          </TaskContextProvider>
+        </AuthContextProvider>
+      </SocketContextProvider>
+    </AnnouncementContextProvider>
   </React.StrictMode>,
 )

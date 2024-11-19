@@ -1,11 +1,15 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import io from 'socket.io-client';
 
+import { useAnnouncementContext } from '../context/AnnouncementContext';
+
 const SocketContext = createContext();
 
 export const SocketContextProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
     const [notifications, setNotifications] = useState([]);
+
+    const { setAnnouncements } = useAnnouncementContext();
     // const [userId, setUserId] = useState(null);
 
     // useEffect(() => {
@@ -29,13 +33,19 @@ export const SocketContextProvider = ({ children }) => {
         setNotifications((prevNotifications) => [notification, ...prevNotifications]);
     };
 
+    const handleNewAnnouncement = (announcement) => {
+        console.log("New announcement received", announcement); // Log to verify the event handling
+        setAnnouncements((prevNotifications) => [announcement, ...prevNotifications]);
+    }
+
     return (
         <SocketContext.Provider value={{
             socket,
             setSocket,
             setNotifications,
             notifications,
-            handleNewNotification
+            handleNewNotification,
+            handleNewAnnouncement
         }}>
             {children}
         </SocketContext.Provider>

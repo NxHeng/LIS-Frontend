@@ -1,17 +1,22 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
+import { format } from 'date-fns';
 
 const AnnouncementCard = ({ announcement, onClick }) => {
 
-    const formatDateTime = (dateTime) => {
-        const date = dateTime.substring(0, 10);
-        const time = dateTime.substring(11, 16);
+    // const formatDate = (dateTime) => {
+    //     const date = dateTime.substring(0, 10);
+    //     const time = dateTime.substring(11, 16);
 
-        const [year, month, day] = date.split('-');
-        const reversedDate = `${day}/${month}/${year}`;
+    //     const [year, month, day] = date.split('-');
+    //     const reversedDate = `${day}/${month}/${year}`;
 
-        return `${reversedDate} ${time}`;
-    }
+    //     return `${reversedDate} ${time}`;
+    // }
+
+    const formatDate = (date) => {
+        return format(new Date(date), "yyyy-MM-dd");
+    };
 
     return (
         <Card onClick={onClick} elevation={5} sx={{
@@ -30,7 +35,7 @@ const AnnouncementCard = ({ announcement, onClick }) => {
                     {announcement.title}
                 </Typography>
                 <Typography variant="body1" sx={{ mr: "10vh" }}>
-                    {formatDateTime(announcement.date)}
+                    {formatDate(announcement.date)}
                 </Typography>
             </CardContent>
         </Card>

@@ -12,15 +12,9 @@ export const CaseContextProvider = ({ children }) => {
     const [caseItemsLoaded, setCaseItemsLoaded] = useState(false);
 
     const [fromTasks, setFromTasks] = useState(false);
+    const [fromNotificationsToTasks, setFromNotificationsToTasks] = useState(false);
+    const [fromNotificationsToCaseDetails, setFromNotificationsToCaseDetails] = useState(false);
     const [detailView, setDetailView] = useState('matterDetails');
-
-    // const user = JSON.parse(localStorage.getItem('user'));
-
-    // useEffect(() => {
-    //     if (!user) {
-    //         <Navigate to="/login" />
-    //     }
-    // }, [user]);
 
     const [view, setView] = useState('myCases');
     const [filteredCases, setFilteredCases] = useState('active');
@@ -223,6 +217,10 @@ export const CaseContextProvider = ({ children }) => {
             setDetailView,
             fromTasks,
             setFromTasks,
+            fromNotificationsToTasks,
+            setFromNotificationsToTasks,
+            fromNotificationsToCaseDetails,
+            setFromNotificationsToCaseDetails,
         }}>
             {children}
         </CaseContext.Provider>

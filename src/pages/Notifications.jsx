@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Box, Button, Container, Grid, Stack, Typography, Card, CardContent, Snackbar, Alert } from '@mui/material';
 import { format, formatDistanceStrict } from 'date-fns';
+import { Link } from 'react-router-dom';
 
 import { useSocketContext } from '../context/SocketContext';
 import { useAuthContext } from '../context/AuthContext';
+import { useCaseContext } from '../context/CaseContext';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,8 +18,8 @@ const Notifications = () => {
     const [snackbarMessage, setSnackbarMessage] = useState("");
 
     const { notifications, setNotifications } = useSocketContext();
-
     const { user } = useAuthContext();
+    const { toTasks, toCaseDetails, toMatterDetails, setFromNotificationsToTasks, setFromNotificationsToCaseDetails } = useCaseContext();
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
@@ -48,6 +50,20 @@ const Notifications = () => {
         fetchNotifications();
     }, [userId]);
 
+    const handleClick = async (notification) => {
+        switch (notification.type) {
+            case 'deadline':
+                setFromNotificationsToTasks(true);
+                break;
+            case 'reminder':
+                setFromNotificationsToTasks(true);
+                break;
+            case 'detail_update':
+                setFromNotificationsToCaseDetails(true);
+                break;
+        }
+        localStorage.setItem('caseItem', JSON.stringify(notification.caseId));
+    };
 
     // Close Snackbar
     const handleCloseSnackbar = (event, reason) => {
@@ -199,7 +215,15 @@ const Notifications = () => {
                                     {filteredNotifications && filteredNotifications.length > 0 ? (
                                         filteredNotifications.map((notification) => (
                                             <Grid item xs={12} key={notification._id}>
-                                                {renderNotificationCard(notification)}
+                                                {notification.caseId ? (
+                                                    <Link
+                                                        to={`/cases/details/${notification.caseId._id}`}
+                                                        onClick={() => handleClick(notification)}
+                                                        style={{ textDecoration: 'none' }}
+                                                    >
+                                                        {renderNotificationCard(notification)}
+                                                    </Link>
+                                                ) : null}
                                             </Grid>
                                         ))
                                     ) : (
