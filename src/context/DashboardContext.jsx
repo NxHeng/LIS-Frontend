@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 
 const DashboardContext = createContext();
 
@@ -15,18 +14,25 @@ export const DashboardContextProvider = ({ children }) => {
 
     const fetchStatistics = async () => {
         try {
-            const response = await axios.get(`${API_URL}/dashboard/getStatistics`, {
+            const response = await fetch(`${API_URL}/dashboard/getStatistics`, {
+                method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',  // Optional, depending on the API
                 }
             });
-            setStatistics(response.data);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setStatistics(data);
         } catch (error) {
             console.error('Failed to fetch statistics:', error);
         } finally {
             setLoading(false);
         }
     };
+    
 
     return (
         <DashboardContext.Provider value={{ statistics, loading, fetchStatistics }}>

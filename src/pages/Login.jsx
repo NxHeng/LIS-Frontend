@@ -1,67 +1,136 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { TextField, Button, Container, Typography, Box, Snackbar, Alert, Card, CardContent, Stack } from '@mui/material';
 import { useAuthContext } from '../context/AuthContext';
-import { set } from 'lodash';
 
 const Login = () => {
     const { login, setMessage } = useAuthContext();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        const processLogin = async () => {
-            try {
-                const result = await login(email, password);
-                console.log('Login Result:', result.message);
-                if (result.success) {
-                    console.log('Login successful!');
-                    navigate('/home');
-                } else {
-                    // Handle unsuccessful login
-                    console.log('Login failed:', result.message);
-                    setMessage(result.message);
-                }
-            } catch (error) {
-                // Handle unexpected errors
-                console.error('Login error:', error);
-                setMessage('An error occurred. Please try again.');
+        try {
+            const result = await login(email, password);
+            if (result.success) {
+                console.log('Login successful!');
+                navigate(result.role === 'client' ? '/client/mycases' : '/home'); 
+            } else {
+                setMessage(result.message);
             }
+        } catch (error) {
+            setMessage('An error occurred. Please try again.');
         }
-        processLogin();
     };
 
     return (
-        <Container>
-            <Container sx={{ mt: 10 }}>
-                <Typography variant="h4" gutterBottom>Login</Typography>
-                <Box component="form" onSubmit={handleLogin} sx={{ mt: 2 }}>
-                    <TextField
-                        fullWidth
-                        label="Email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => {
-                            setEmail(e.target.value);
-                        }}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => {
-                            setPassword(e.target.value);
-                        }}
-                        margin="normal"
-                    />
-                    <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>Login</Button>
-                </Box>
+        <>
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundImage: 'url(/geometric-wallpaper-1.jpg)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    filter: 'blur(10px)',
+                    zIndex: -1,
+                    backdropFilter: 'blur(8px)'
+                }}
+            />
+            <Container component="main"
+                maxWidth="xs"
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '80vh',
+                    position: 'relative',
+                }}>
+
+                <Card sx={{ width: '100%', padding: 3, borderRadius: 5, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
+                    <CardContent>
+                        <Typography variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
+                            Welcome Back!
+                        </Typography>
+                        <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
+                            <Stack direction="column" spacing={3}>
+                                <TextField
+                                    fullWidth
+                                    label="Email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    margin="normal"
+                                    variant="outlined"
+                                />
+                                <TextField
+                                    fullWidth
+                                    label="Password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    margin="normal"
+                                    variant="outlined"
+                                />
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    fullWidth
+                                    sx={{
+                                        padding: '10px',
+                                        fontSize: '16px',
+                                        textTransform: 'none',
+                                        borderRadius: 3,
+                                        '&:hover': {
+                                            backgroundColor: '#1976d2',
+                                        },
+                                    }}
+                                >
+                                    Login
+                                </Button>
+
+                                <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+                                    No account?{' '}
+                                    <Box
+                                        component={Link}
+                                        to='/register-client'
+                                        sx={{
+                                            textDecoration: 'none',
+                                            color: 'primary.main',
+                                            fontWeight: 'bold',
+                                            '&:hover': {
+                                                textDecoration: 'underline',
+                                                color: 'primary.dark',
+                                            },
+                                        }}
+                                    >
+                                        Create an account
+                                    </Box>
+                                </Typography>
+
+                            </Stack>
+                        </Box>
+                    </CardContent>
+                </Card>
+
+                {/* <Snackbar
+                    open={openSnackbar}
+                    autoHideDuration={6000}
+                    onClose={handleCloseSnackbar}
+                >
+                    <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+                        {snackbarMessage}
+                    </Alert>
+                </Snackbar> */}
             </Container>
-        </Container>
+        </>
     );
 };
 

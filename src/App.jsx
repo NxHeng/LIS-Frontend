@@ -12,7 +12,8 @@ import Notifications from "./pages/Notifications";
 import Announcement from "./pages/Announcement";
 import Create from "./pages/Create";
 import Login from './pages/Login';
-import Register from './pages/Register';
+import StaffRegister from './pages/StaffRegister';
+import ClientRegister from './pages/ClientRegister';
 import Profile from './pages/Profile';
 import ChangePassword from "./pages/ChangePassword";
 import ManageUsers from "./pages/ManageUsers";
@@ -39,7 +40,8 @@ function App() {
           {/* Auth Routes */}
           <Route element={<AuthRoutes />}>
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register-staff" element={<StaffRegister />} />
+            <Route path="/register-client" element={<ClientRegister />} />
           </Route>
 
           {/* Protected Routes */}

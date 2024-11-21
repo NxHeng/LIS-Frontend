@@ -19,7 +19,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import { set } from 'lodash';
 
-const pages = ['Login', 'Register'];
+const pages = ['Login', 'Register-Client'];
 
 const AuthNavbar = () => {
     const location = useLocation();
@@ -131,7 +131,7 @@ const AuthNavbar = () => {
                                             to={`/${page.toLowerCase()}`}
                                             sx={{ textDecoration: 'none', color: 'inherit' }}
                                         >
-                                            {page}
+                                            {page === 'Register-Client' ? 'Register' : page}
                                         </Typography>
                                     </MenuItem>
                                 ))}
@@ -167,7 +167,7 @@ const AuthNavbar = () => {
                                         textDecoration: 'none',
                                     }}
                                 >
-                                    {page}
+                                    {page === 'Register-Client' ? 'Register' : page}
                                 </Button>
                             ))}
                         </Box>

@@ -44,6 +44,7 @@ export const AuthContextProvider = ({ children }) => {
                 body: JSON.stringify({ email, password }), // Convert body to JSON
             });
             const data = await response.json(); // Wait for response and parse JSON
+            console.log(data);
             if (!response.ok) { // Check if response is ok
                 throw new Error(data.message || 'Login failed');
             }
@@ -54,8 +55,7 @@ export const AuthContextProvider = ({ children }) => {
             localStorage.setItem('user', JSON.stringify(user));
             // console.log("userId:", user._id);
             // socket?.emit('register', user._id);
-
-            return { success: true }; // Return success
+            return { success: true, role: user.role }; // Return success
         } catch (error) {
             console.error('Login failed:', error.response ? error.response.data : error.message);
             return { success: false, message: error.response ? error.response.data : error.message }; // Return error message
@@ -66,8 +66,35 @@ export const AuthContextProvider = ({ children }) => {
 
     const register = async (username, email, password) => {
         try {
-            await axios.post(`${API_URL}/user/register`, { username, email, password });
-            return { success: true, message: 'Your account has been submitted for approval' };
+            // await axios.post(`${API_URL}/user/register`, { username, email, password });
+            const response = await fetch(`${API_URL}/user/register`, { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, email, password }),
+            });
+            const data = await response.json();
+            console.log(data);
+            return { success: true, message: 'Your staff account has been submitted for approval' };
+        } catch (error) {
+            console.error('Registration failed:', error.response ? error.response.data : error.message);
+            return { success: false, message: error.response?.data?.message || error.message };
+        }
+    };
+
+    const clientRegister = async (username, email, password, phone, ic) => {
+        try {
+            const response = await fetch(`${API_URL}/user/clientRegister`, { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, email, password, phone, ic }),
+            });
+            const data = await response.json();
+            console.log(data);
+            return { success: true, message: 'Your client account has been submitted for approval' };
         } catch (error) {
             console.error('Registration failed:', error.response ? error.response.data : error.message);
             return { success: false, message: error.response?.data?.message || error.message };
@@ -76,14 +103,24 @@ export const AuthContextProvider = ({ children }) => {
 
     const fetchProfile = async (authToken) => {
         try {
-            const response = await axios.get(`${API_URL}/user/profile`, {
-                headers: { Authorization: `Bearer ${authToken}` }
+            const response = await fetch(`${API_URL}/user/profile`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json',
+                }
             });
-            setUser(response.data);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Error: ${errorData.error}, Details: ${errorData.details}`);
+            }
+            const data = await response.json();
+            setUser(data);
         } catch (error) {
-            console.error('Failed to fetch profile:', error.response ? error.response.data : error.message);
+            console.error('Failed to fetch profile:', error.message);
         }
     };
+    
 
     const logout = async () => {
         setLoading(true);
@@ -129,6 +166,7 @@ export const AuthContextProvider = ({ children }) => {
             login,
             logout,
             register,
+            clientRegister,
             fetchProfile,
             setUser,
             setToken,
