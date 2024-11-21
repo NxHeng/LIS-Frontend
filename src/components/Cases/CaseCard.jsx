@@ -41,7 +41,7 @@ const CaseCard = ({ caseItem }) => {
                             {caseItem.matterName}
                         </Typography>
                         <Typography variant="body1">
-                            {caseItem.clients[0]}
+                            {caseItem.clients[0].name}
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>

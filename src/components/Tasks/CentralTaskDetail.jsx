@@ -8,6 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { parseISO, isValid } from 'date-fns';
 import { useTaskContext } from '../../context/TaskContext';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 import { useCaseContext } from '../../context/CaseContext';
 
@@ -23,6 +24,7 @@ const CentralTaskDetail = () => {
     //     }
     // }, []);
     const { task, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask, updateFilteredTasks } = useTaskContext();
+    const user = jwtDecode(localStorage.getItem('token'));
 
     const [formData, setFormData] = useState({
         description: '',
@@ -42,7 +44,7 @@ const CentralTaskDetail = () => {
             console.log("Task: ", task);
             console.log('Task initiationDate:', task.initiationDate);
             console.log('Parsed initiationDate:', isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null);
-            
+
             setFormData({
                 description: task.description || '',
                 initiationDate: task.initiationDate || null,
@@ -57,7 +59,7 @@ const CentralTaskDetail = () => {
             });
         }
     }, [task]);
-    
+
     const debouncedSave = debounce((value) => {
         updateTaskInDatabase(task.caseId, task._id, formData);
         updateFilteredTasks(task._id, formData);
@@ -204,15 +206,17 @@ const CentralTaskDetail = () => {
                                 <MenuItem value="Awaiting Initiation">Awaiting Initiation</MenuItem>
                             </Select>
                         </FormControl>
-                        <Button
-                            variant='contained'
-                            color='error'
-                            endIcon={<DeleteIcon />}
-                            sx={{ borderRadius: 3 }}
-                            onClick={handleDeleteTask}
-                        >
-                            Delete
-                        </Button>
+                        {user.role === 'admin' || user.role === 'solicitor' && (
+                            <Button
+                                variant='contained'
+                                color='error'
+                                endIcon={<DeleteIcon />}
+                                sx={{ borderRadius: 3 }}
+                                onClick={handleDeleteTask}
+                            >
+                                Delete
+                            </Button>
+                        )}
                     </Stack>
                 </Stack>
             </LocalizationProvider>

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { Button, Container, Typography, Stack } from '@mui/material';
+import { jwtDecode } from 'jwt-decode';
 
 import NewCase from '../components/Create/Case/NewCase';
 import NewCaseDetails from '../components/Create/Case/NewCaseDetails';
@@ -14,6 +15,7 @@ import { useCreateContext } from '../context/CreateContext';
 
 const Create = () => {
     const { view, toNewCase, toCategories } = useCreateContext();
+    const user = jwtDecode(localStorage.getItem('token'));
 
     useEffect(() => {
         toNewCase();
@@ -27,13 +29,15 @@ const Create = () => {
                     <Grid item xs={2}>
                         <Stack>
                             {/* New Case */}
-                            <Button onClick={toNewCase} variant={view === 'newCase' || view === 'newCaseDetails' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >New Case</Button>
+                            {user.role === 'admin' &&
+                                <>
+                                    <Button onClick={toNewCase} variant={view === 'newCase' || view === 'newCaseDetails' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >New Case</Button>
 
-                            <Typography variant='h5' sx={{ py: 1 }}>Manage</Typography>
-
-                            {/* Categories */}
-                            <Button onClick={toCategories} variant={view === 'categories' || view === 'newCategory' || view === 'categoryUpdate' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >Categories</Button>
-
+                                    {/* Categories */}
+                                    <Typography variant='h5' sx={{ py: 1 }}>Manage</Typography>
+                                    <Button onClick={toCategories} variant={view === 'categories' || view === 'newCategory' || view === 'categoryUpdate' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >Categories</Button>
+                                </>
+                            }
                         </Stack>
                     </Grid>
                     <Grid item xs={8}>
@@ -42,11 +46,11 @@ const Create = () => {
                                 <NewCase />
                             ) : view === 'newCaseDetails' ? (
                                 <NewCaseDetails />
-                            ) : view === 'categories' ? (
+                            ) : view === 'categories' && user.role === 'admin' ? (
                                 <CategoryList />
-                            ) : view === 'newCategory' ? (
+                            ) : view === 'newCategory' && user.role === 'admin' ? (
                                 <NewCategory />
-                            ) : view === 'categoryUpdate' ? (
+                            ) : view === 'categoryUpdate' && user.role === 'admin' ? (
                                 <CategoryUpdate />
                             ) : null
                         }

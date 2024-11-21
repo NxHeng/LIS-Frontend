@@ -7,9 +7,11 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { parseISO, isValid } from 'date-fns';
 import { useTaskContext } from '../../../context/TaskContext';
+import { jwtDecode } from 'jwt-decode';
 
 const TaskDetail = () => {
 
+    const user = jwtDecode(localStorage.getItem('token'));
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
     const caseId = useMemo(() => {
         try {
@@ -35,7 +37,7 @@ const TaskDetail = () => {
             console.log("Task: ", task);
             // console.log('Task initiationDate:', task.initiationDate);
             // console.log('Parsed initiationDate:', isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null);
-    
+
             setFormData({
                 description: task.description || '',
                 initiationDate: task.initiationDate || null,
@@ -46,7 +48,7 @@ const TaskDetail = () => {
             });
         }
     }, [task]);
-    
+
 
     const debouncedSave = debounce((value) => {
         updateTaskInDatabase(caseId, task._id, formData);
@@ -77,7 +79,7 @@ const TaskDetail = () => {
             [name]: date ? date.toISOString() : null // Convert back to ISO string
         }));
     };
-    
+
     const handleDeleteTask = () => {
         deleteTaskFromDatabase(caseId, task._id);
         deleteTask(task._id);
@@ -170,16 +172,18 @@ const TaskDetail = () => {
                                         </Select>
                                     </FormControl>
                                 </Stack>
-                                <Button
-                                    variant='contained'
-                                    color='error'
-                                    endIcon={<DeleteIcon />}
-                                    sx={{ borderRadius: 3 }}
-                                    onClick={handleDeleteTask}
-                                    {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
-                                >
-                                    Delete
-                                </Button>
+                                {user.role === 'admin' || user.role === 'solicitor' && (
+                                    <Button
+                                        variant='contained'
+                                        color='error'
+                                        endIcon={<DeleteIcon />}
+                                        sx={{ borderRadius: 3 }}
+                                        onClick={handleDeleteTask}
+                                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                                    >
+                                        Delete
+                                    </Button>
+                                )}
                             </Stack> : null
                     }
                 </Stack>

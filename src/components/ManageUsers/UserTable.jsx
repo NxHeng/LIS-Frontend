@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Select, MenuItem, Stack } from '@mui/material';
 import { is } from 'date-fns/locale';
 
-const UserTable = ({ users, isPending, isRejected, isStaff, isCustomer, handleApprove, handleDeleteUser, handleRoleChange, handleReject }) => {
+const UserTable = ({ users, isPending, isRejected, isStaff, isClient, handleApprove, handleDeleteUser, handleRoleChange, handleReject }) => {
   const [editingUserId, setEditingUserId] = useState(null);
   const [selectedRole, setSelectedRole] = useState({});
 
@@ -44,7 +44,7 @@ const UserTable = ({ users, isPending, isRejected, isStaff, isCustomer, handleAp
                       <MenuItem value="solicitor">Solicitor</MenuItem>
                       <MenuItem value="clerk">Clerk</MenuItem>
                       <MenuItem value="admin">Admin</MenuItem>
-                      {/* <MenuItem value="customer">Customer</MenuItem> */}
+                      {/* <MenuItem value="client">Client</MenuItem> */}
                     </Select>
                   ) : (
                     user.role.charAt(0).toUpperCase() + user.role.slice(1)
@@ -79,8 +79,8 @@ const UserTable = ({ users, isPending, isRejected, isStaff, isCustomer, handleAp
                 <TableCell colSpan={4} align="center">No pending users found</TableCell>
               ) : isRejected ? (
                 <TableCell colSpan={4} align="center">No rejected users found</TableCell>
-              ) : isCustomer ? (
-                <TableCell colSpan={4} align="center">No customers found</TableCell>
+              ) : isClient ? (
+                <TableCell colSpan={4} align="center">No clients found</TableCell>
               ) : (
                 <TableCell colSpan={4} align="center">No staffs found</TableCell>
               )}

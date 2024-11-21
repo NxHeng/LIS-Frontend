@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Container, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, InputAdornment, IconButton } from '@mui/material';
+import { Container, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, InputAdornment, IconButton, Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useCreateContext } from '../../../context/CreateContext';
@@ -14,7 +14,7 @@ const NewCase = () => {
     const { formData, setFormData } = useCaseContext();
     const { fetchCategories, categories, setCategory, category, categoriesLoaded, categoryLoaded, setCategoryLoaded } = useCategoryContext();
     const { userList, getUserList } = useUserContext();
-    
+
     // const [solicitor, setSolicitor] = useState('');
     // const [clerk, setClerk] = useState('');
 
@@ -64,10 +64,10 @@ const NewCase = () => {
     };
 
     // Clients Fields
-    const handleClientChange = (id, event) => {
+    const handleClientChange = (id, event, field) => {
         const newClients = formData.clients.map(client => {
             if (client.id === id) {
-                return { ...client, value: event.target.value };
+                return { ...client, [field]: event.target.value };
             }
             return client;
         });
@@ -75,7 +75,7 @@ const NewCase = () => {
     };
     const handleAddClient = () => {
         const newId = formData.clients.length > 0 ? formData.clients[formData.clients.length - 1].id + 1 : 0;
-        setFormData({ ...formData, clients: [...formData.clients, { id: newId, value: '' }] });
+        setFormData({ ...formData, clients: [...formData.clients, { id: newId, name: '', icNumber: '' }] });
     };
     const handleRemoveClient = (id) => {
         setFormData({ ...formData, clients: formData.clients.filter(client => client.id !== id) });
@@ -176,15 +176,27 @@ const NewCase = () => {
                     Clients
                 </Typography>
                 {formData.clients.map((client, index) => (
-                    <Box key={client.id} sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Stack direction='row' spacing={2} key={client.id} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                        {/* Client Name Input */}
                         <TextField
                             variant="outlined"
                             required
                             fullWidth
-                            value={client.value}
-                            onChange={(e) => handleClientChange(client.id, e)}
-                            label={`Client ${index + 1}`}
-                            sx={{ mb: 2 }}
+                            value={client.name || ''}
+                            onChange={(e) => handleClientChange(client.id, e, 'name')}
+                            label={`Client Name ${index + 1}`}
+                            sx={{ flex: 1 }}
+                        />
+
+                        {/* Client IC Input */}
+                        <TextField
+                            variant="outlined"
+                            required
+                            fullWidth
+                            value={client.icNumber || ''}
+                            onChange={(e) => handleClientChange(client.id, e, 'icNumber')}
+                            label={`Client IC ${index + 1}`}
+                            sx={{ flex: 1 }}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
@@ -198,7 +210,7 @@ const NewCase = () => {
                                 ),
                             }}
                         />
-                    </Box>
+                    </Stack>
                 ))}
                 <Button
                     onClick={handleAddClient}

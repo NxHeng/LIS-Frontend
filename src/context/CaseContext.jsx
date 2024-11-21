@@ -23,7 +23,7 @@ export const CaseContextProvider = ({ children }) => {
         matterName: '',
         fileReference: '',
         clerkInCharge: '',
-        clients: [{ id: 0, value: '' }],
+        clients: [{ id: 0, name: '', icNumber: '' }],
         categoryId: '',
         fields: []
     });

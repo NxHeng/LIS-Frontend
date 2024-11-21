@@ -3,12 +3,13 @@ import { Container, Typography, Grid, Box, Stack, Button, Autocomplete, InputAdo
 import SearchIcon from '@mui/icons-material/Search';
 import AnnouncementCard from '../components/Announcement/AnnouncementCard.jsx';
 import { useAnnouncementContext } from '../context/AnnouncementContext.jsx';
-import { grey } from '@mui/material/colors';
+import { jwtDecode } from "jwt-decode";
 
 
 const Announcement = () => {
 
     const { announcements, selectedAnnouncement, setSelectedAnnouncement, createAnnouncement, fetchAnnouncements, setAnnouncementsLoaded, updateAnnouncement, deleteAnnouncement } = useAnnouncementContext();
+    // const user = JSON.parse(localStorage.getItem('user'));
     const [panel, setPanel] = useState('detail');
     const [newAnnouncement, setNewAnnouncement] = useState({
         title: '',
@@ -16,6 +17,8 @@ const Announcement = () => {
     });
     const [editForm, setEditForm] = useState({ title: '', description: '' });
     const [isDeleting, setIsDeleting] = useState(false);
+
+    const user = jwtDecode(localStorage.getItem('token'));
 
 
     // Handle input change
@@ -134,13 +137,15 @@ const Announcement = () => {
                 <Grid item xs={7} sx={{ height: '90vh', overflowY: 'auto', px: 2, mt: 2 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, ml: 3 }}>
                         <Typography variant="h3">Announcements</Typography>
-                        <Button
-                            variant="contained"
-                            sx={{ borderRadius: 2 }}
-                            onClick={() => setPanel('add')} // Switch to add panel
-                        >
-                            Add Announcement
-                        </Button>
+                        {user?.role === 'admin' && (
+                            <Button
+                                variant="contained"
+                                sx={{ borderRadius: 2 }}
+                                onClick={() => setPanel('add')} // Switch to add panel
+                            >
+                                Add Announcement
+                            </Button>
+                        )}
                     </Box>
 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, ml: 3 }}>
@@ -174,23 +179,25 @@ const Announcement = () => {
                     <Grid item xs={5} sx={{ height: '90vh', bgcolor: "#f8f9fa", p: 4 }}>
                         <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                             <Typography variant="h5">Announcement Detail</Typography>
-                            <Box sx={{ display: "flex", justifyContent: "normal" }}>
-                                <Button
-                                    variant="contained"
-                                    sx={{ px: 5, borderRadius: 2, mr: 2 }}
-                                    onClick={() => setPanel('edit')} // Switch to edit panel
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    sx={{ px: 5, borderRadius: 2 }}
-                                    onClick={handleDelete}
-                                    color='error'
-                                >
-                                    Delete
-                                </Button>
-                            </Box>
+                            {user?.role === 'admin' && (
+                                <Box sx={{ display: "flex", justifyContent: "normal" }}>
+                                    <Button
+                                        variant="contained"
+                                        sx={{ px: 5, borderRadius: 2, mr: 2 }}
+                                        onClick={() => setPanel('edit')} // Switch to edit panel
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        sx={{ px: 5, borderRadius: 2 }}
+                                        onClick={handleDelete}
+                                        color='error'
+                                    >
+                                        Delete
+                                    </Button>
+                                </Box>
+                            )}
                         </Box>
                         <Stack spacing={3}>
                             <Box>

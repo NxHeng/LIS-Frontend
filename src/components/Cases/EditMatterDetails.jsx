@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, CircularProgress } from '@mui/material';
+import { Container, Typography, Box, Button, TextField, FormControl, InputLabel, Select, MenuItem, CircularProgress, Stack } from '@mui/material';
 
 import { useCategoryContext } from '../../context/CategoryContext';
 import { useCaseContext } from '../../context/CaseContext';
 import { useUserContext } from '../../context/UserContext';
 
-const EditMatterDetails = ({caseItem}) => {
+const EditMatterDetails = ({ caseItem }) => {
     const { updateCaseInDatabase, fetchCase, toMatterDetails } = useCaseContext();
     const { getUserList, userList } = useUserContext();
     const { fetchCategory, category } = useCategoryContext();
@@ -34,9 +34,18 @@ const EditMatterDetails = ({caseItem}) => {
         toMatterDetails();
     };
 
-    const handleChange = (e) => {
+    const handleChange = (e, index, field) => {
         const { name, value } = e.target;
-        if (name === 'solicitorInCharge') {
+
+        if (name === 'clients' || name === 'icNumber') {
+            // Update client details
+            setEditedData(currentData => ({
+                ...currentData,
+                clients: currentData.clients.map((client, i) =>
+                    i === index ? { ...client, [field]: value } : client
+                )
+            }));
+        } else if (name === 'solicitorInCharge') {
             setEditedData({
                 ...editedData,
                 solicitorInCharge: { _id: value }
@@ -50,6 +59,7 @@ const EditMatterDetails = ({caseItem}) => {
             setEditedData({ ...editedData, [name]: value });
         }
     };
+
 
     if (loading) {
         return (
@@ -93,7 +103,8 @@ const EditMatterDetails = ({caseItem}) => {
                         name="solicitorInCharge"
                         onChange={handleChange}
                     >
-                        {userList.filter(user => user.role !== 'Solicitor').map(user => (
+                        {/* {userList.filter(user => user.role == 'solicitor').map(user => ( */}
+                        {userList.filter(user => user.role === 'clerk' || user.role === 'solicitor' || user.role === 'admin').map(user => (
                             <MenuItem key={user._id} value={user._id}>
                                 {user.username}
                             </MenuItem>
@@ -111,7 +122,8 @@ const EditMatterDetails = ({caseItem}) => {
                         name="clerkInCharge"
                         onChange={handleChange}
                     >
-                        {userList.filter(user => user.role !== 'Clerk').map(user => (
+                        {/* {userList.filter(user => user.role === 'clerk').map(user => ( */}
+                        {userList.filter(user => user.role === 'clerk' || user.role === 'solicitor' || user.role === 'admin').map(user => (
                             <MenuItem key={user._id} value={user._id}>
                                 {user.username}
                             </MenuItem>
@@ -119,13 +131,36 @@ const EditMatterDetails = ({caseItem}) => {
                     </Select>
                 </FormControl>
 
+                {editedData.clients.map((client, index) => (
+                    <Stack direction="row" spacing={2} sx={{ mb: 3 }} key={index}>
+                        <TextField
+                            fullWidth
+                            label={`Client ${index + 1}`}
+                            name="clients"
+                            value={client.name}
+                            onChange={(e) => handleChange(e, index, 'name')}
+                            variant="outlined"
+                            margin="normal"
+                        />
+                        <TextField
+                            fullWidth
+                            label={`Client IC ${index + 1}`}
+                            name="icNumber"
+                            value={client.icNumber}
+                            onChange={(e) => handleChange(e, index, 'icNumber')}
+                            variant="outlined"
+                            margin="normal"
+                        />
+                    </Stack>
+                ))}
+
                 <Button onClick={handleSave} variant="contained" color="primary" sx={{ mt: 2 }}>
                     Save Changes
                 </Button>
                 <Button onClick={toMatterDetails} variant="outlined" sx={{ mt: 2, ml: 2 }}>
                     Cancel
                 </Button>
-            </Box>
+            </Box >
         </Container>
     );
 };

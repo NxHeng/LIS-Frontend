@@ -92,7 +92,7 @@ const ManageUsers = () => {
                     <Tabs value={tabValue} onChange={handleTabChange} aria-label="user management tabs">
                         <Tab label="Pending" {...a11yProps(0)} />
                         <Tab label="Staffs" {...a11yProps(1)} />
-                        <Tab label="Customers" {...a11yProps(2)} />
+                        <Tab label="Clients" {...a11yProps(2)} />
                         <Tab label="Rejected" {...a11yProps(3)} />
                     </Tabs>
                 </Box>
@@ -119,8 +119,8 @@ const ManageUsers = () => {
 
                 <CustomTabPanel value={tabValue} index={2}>
                     <UserTable
-                        users={activeUsers.filter(user => user.role === 'customer')}
-                        isCustomer={true}
+                        users={activeUsers.filter(user => user.role === 'client')}
+                        isClient={true}
                         onEdit={handleOpenDialog}
                     />
                 </CustomTabPanel>

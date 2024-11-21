@@ -119,13 +119,19 @@ const MatterDetails = ({ caseItem }) => {
                             <TableCell align='left'>{caseItem.status}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell align='left'>Clerk In Charge</TableCell>
-                            <TableCell align='left'>{caseItem.clerkInCharge.username}</TableCell>
-                        </TableRow>
-                        <TableRow>
                             <TableCell align='left'>Solicitor In Charge</TableCell>
                             <TableCell align='left'>{caseItem.solicitorInCharge.username}</TableCell>
                         </TableRow>
+                        <TableRow>
+                            <TableCell align='left'>Clerk In Charge</TableCell>
+                            <TableCell align='left'>{caseItem.clerkInCharge.username}</TableCell>
+                        </TableRow>
+                        {caseItem.clients.map((client, index) => (
+                            <TableRow key={index}>
+                                <TableCell align='left'>Client {index + 1}</TableCell>
+                                <TableCell align='left'>{client.name} ({client.icNumber})</TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>

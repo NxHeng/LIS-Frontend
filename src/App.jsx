@@ -17,13 +17,16 @@ import Profile from './pages/Profile';
 import ChangePassword from "./pages/ChangePassword";
 import ManageUsers from "./pages/ManageUsers";
 
+import MyCases from "./pages/MyCases";
+import MyDetails from "./pages/MyDetails";
+
 import { useAuthContext } from './context/AuthContext';
 
 import AuthRoutes from './AuthRoutes';
 import ProtectedRoute from './ProtectedRoutes';
 
 function App() {
-  const { loading } = useAuthContext();
+  const { loading, user } = useAuthContext();
 
   if (loading) {
     return null; // Render nothing or a loader while checking authentication
@@ -41,17 +44,39 @@ function App() {
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/cases" element={<Cases />} />
-            <Route path="/cases/details/:id" element={<Details />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/announcement" element={<Announcement />} />
-            <Route path="/create" element={<Create />} />
+            {/* Shared Routes */}
             <Route path="/profile" element={<Profile />} />
             <Route path="/changepassword" element={<ChangePassword />} />
-            <Route path="/manageusers" element={<ManageUsers />} />
+
+            {/* Staff Routes */}
+            {user?.role !== 'client' && (
+              <>
+                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/cases" element={<Cases />} />
+                <Route path="/cases/details/:id" element={<Details />} />
+                <Route path="/tasks" element={<Tasks />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/announcement" element={<Announcement />} />
+                <Route path="/create" element={<Create />} />
+              </>
+            )}
+
+            {/* Admin Routes */}
+            {user?.role === 'admin' && (
+              <>
+                <Route path="/manageusers" element={<ManageUsers />} />
+              </>
+            )}
+
+            {/* Client Routes */}
+            {user?.role === 'client' && (
+              <>
+                <Route path="/client/mycases" element={<MyCases />} />
+                <Route path="/client/mycases/:id" element={<MyDetails />} />
+              </>
+            )}
+
           </Route>
         </Routes>
         {/* <Footer /> */}

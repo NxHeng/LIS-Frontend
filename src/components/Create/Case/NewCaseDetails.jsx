@@ -66,7 +66,7 @@ const NewCaseDetails = () => {
             fileReference: formData.fileReference,
             solicitorInCharge: formData.solicitorInCharge,
             clerkInCharge: formData.clerkInCharge,
-            clients: formData.clients.map(client => client.value),
+            clients: formData.clients.map(({ name, icNumber }) => ({ name, icNumber })),
             fieldValues: formData.fields.map(field => ({
                 value: field.value,
                 remarks: field.remarks,
@@ -82,7 +82,7 @@ const NewCaseDetails = () => {
             fileReference: '',
             solicitorInCharge: '',
             clerkInCharge: '',
-            clients: [{ id: 0, value: '' }],
+            clients: [{ id: 0, name: '', icNumber: '' }],
             categoryId: '',
             fields: []
         });

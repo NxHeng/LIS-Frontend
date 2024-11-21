@@ -1,8 +1,12 @@
 // ContextMenu.js
 import React from 'react';
 import { Menu, MenuItem, Typography } from '@mui/material';
+import { jwtDecode } from 'jwt-decode';
 
 const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDelete, handleRename, handleDownload, selectedFile }) => {
+
+    const user = jwtDecode(localStorage.getItem('token'));
+
     return (
         <Menu
             open={Boolean(anchorPosition)}
@@ -17,8 +21,8 @@ const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDele
             <Typography variant="h6" sx={{ px: 2, my: 1 }} color='textSecondary'>
                 Actions
             </Typography>
-            <MenuItem onClick={handleMove}>Move</MenuItem> 
-            <MenuItem onClick={handleDelete}>Delete</MenuItem>
+            <MenuItem onClick={handleMove}>Move</MenuItem>
+            {user.role === 'admin' || user.role === 'solicitor' ? <MenuItem onClick={handleDelete}>Delete</MenuItem> : null}
             <MenuItem onClick={handleRename}>Rename</MenuItem>
             {selectedFile ? <MenuItem onClick={handleDownload}>Download</MenuItem> : null}
         </Menu>

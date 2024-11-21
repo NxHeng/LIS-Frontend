@@ -15,6 +15,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import io from 'socket.io-client';
+import { jwtDecode } from 'jwt-decode';
 
 import { Link, useLocation } from 'react-router-dom';
 
@@ -27,10 +28,11 @@ const pages = ['Home', 'Cases', 'Tasks', 'Notifications', 'Announcement'];
 const settings = ['Profile', 'Account', 'Manage Users'];
 
 const Navbar = () => {
-    const { user, logout, loading } = useAuthContext();
+    const { logout, loading } = useAuthContext();
     const { toNewCase } = useCreateContext();
     const { socket, setSocket, notifications, handleNewNotification, handleNewAnnouncement } = useSocketContext();
     const { announcements } = useAnnouncementContext();
+    const user = jwtDecode(localStorage.getItem('token'));
 
     // const user = JSON.parse(localStorage.getItem('user'));
     const location = useLocation();
@@ -122,16 +124,18 @@ const Navbar = () => {
     return (
         <>
             {/* Snackbar for displaying new notifications */}
-            <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={4000} // Closes automatically after 4 seconds
-                onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} // Positioning of the Snackbar
-            >
-                <Alert onClose={handleCloseSnackbar} severity="info" sx={{ width: '100%' }}>
-                    {snackbarMessage}
-                </Alert>
-            </Snackbar>
+            {user?.role !== 'client' && (
+                <Snackbar
+                    open={snackbarOpen}
+                    autoHideDuration={4000} // Closes automatically after 4 seconds
+                    onClose={handleCloseSnackbar}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} // Positioning of the Snackbar
+                >
+                    <Alert onClose={handleCloseSnackbar} severity="info" sx={{ width: '100%' }}>
+                        {snackbarMessage}
+                    </Alert>
+                </Snackbar>
+            )}
 
             <AppBar elevation={0} position="static" sx={{ backgroundColor: '#f8f9fa', color: 'black' }}>
                 <Container maxWidth="xl">
@@ -212,41 +216,57 @@ const Navbar = () => {
                         >
                             LIS
                         </Typography>
-                        <Box sx={{ ml: 35, mr: 3, flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'space-between' }}>
-                            <Box>
-                                {pages.map((page) => (
+                        {user.role === 'client' ? (
+                            <Button
+                                key="My Cases"
+                                component={Link}
+                                to="/mycases"
+                                onClick={handleCloseNavMenu}
+                                sx={{
+                                    my: 2,
+                                    color: location.pathname === "/mycases" ? 'primary.main' : 'inherit',
+                                    textDecoration: 'none',
+                                }}
+                            >
+                                My Cases
+                            </Button>
+                        ) : (
+                            <Box sx={{ ml: 35, mr: 3, flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'space-between' }}>
+                                <Box>
+                                    {pages.map((page) => (
+                                        <Button
+                                            key={page}
+                                            component={Link}
+                                            to={`/${page.toLowerCase()}`}
+                                            onClick={handleCloseNavMenu}
+                                            sx={{
+                                                my: 2,
+                                                color: location.pathname === `/${page.toLowerCase()}` ? 'primary.main' : 'inherit',
+                                                textDecoration: 'none',
+                                            }}
+                                        >
+                                            {page}
+                                        </Button>
+                                    ))}
+                                </Box>
+                                <Box>
                                     <Button
-                                        key={page}
+                                        key="create"
                                         component={Link}
-                                        to={`/${page.toLowerCase()}`}
-                                        onClick={handleCloseNavMenu}
+                                        to={`/create`}
+                                        onClick={handleCreateButton}
+                                        variant={location.pathname === '/create' ? 'outlined' : 'contained'}
                                         sx={{
                                             my: 2,
-                                            color: location.pathname === `/${page.toLowerCase()}` ? 'primary.main' : 'inherit',
+                                            color: location.pathname === `/create` ? 'primary.main' : 'white',
                                             textDecoration: 'none',
                                         }}
                                     >
-                                        {page}
+                                        Create
                                     </Button>
-                                ))}
+                                </Box>
                             </Box>
-                            <Box>
-                                <Button
-                                    key="create"
-                                    component={Link}
-                                    to={`/create`}
-                                    onClick={handleCreateButton}
-                                    variant={location.pathname === '/create' ? 'outlined' : 'contained'}
-                                    sx={{
-                                        my: 2,
-                                        color: location.pathname === `/create` ? 'primary.main' : 'white',
-                                        textDecoration: 'none',
-                                    }}
-                                >
-                                    Create
-                                </Button>
-                            </Box>
-                        </Box>
+                        )}
 
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
@@ -271,16 +291,18 @@ const Navbar = () => {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                        <Typography
-                                            textAlign="center"
-                                            component={Link}
-                                            to={`/${setting.toLowerCase().replace(' ', '')}`}
-                                            sx={{ textDecoration: 'none', color: 'inherit' }}
-                                        >
-                                            {setting}
-                                        </Typography>
-                                    </MenuItem>
+                                    setting === 'Manage Users' && user.role !== 'admin' ? null : (
+                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                            <Typography
+                                                textAlign="center"
+                                                component={Link}
+                                                to={`/${setting.toLowerCase().replace(' ', '')}`}
+                                                sx={{ textDecoration: 'none', color: 'inherit' }}
+                                            >
+                                                {setting}
+                                            </Typography>
+                                        </MenuItem>
+                                    )
                                 ))}
                                 <MenuItem key='logout' onClick={handleLogout}>
                                     <Typography
