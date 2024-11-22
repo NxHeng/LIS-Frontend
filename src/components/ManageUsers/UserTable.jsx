@@ -6,6 +6,7 @@ import { is } from 'date-fns/locale';
 const UserTable = ({ users, isPending, isRejected, isStaff, isClient, handleApprove, handleDeleteUser, handleRoleChange, handleReject }) => {
   const [editingUserId, setEditingUserId] = useState(null);
   const [selectedRole, setSelectedRole] = useState({});
+  const userId = JSON.parse(localStorage.getItem('user'))._id;
 
   const handleEditClick = (userId, currentRole) => {
     setEditingUserId(userId);
@@ -23,20 +24,40 @@ const UserTable = ({ users, isPending, isRejected, isStaff, isClient, handleAppr
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ width: '25%' }}>Email</TableCell>
-            <TableCell sx={{ width: '25%' }}>Username</TableCell>
-            <TableCell sx={{ width: '25%' }}>Role</TableCell>
-            <TableCell sx={{ width: '25%' }}>Actions</TableCell>
+            {isStaff &&
+              <>
+                <TableCell sx={{ width: '25%' }}>Email</TableCell>
+                <TableCell sx={{ width: '25%' }}>Username</TableCell>
+                <TableCell sx={{ width: '25%' }}>Role</TableCell>
+                <TableCell sx={{ width: '25%' }}>Actions</TableCell>
+              </>
+            }
+            {isClient &&
+              <>
+                <TableCell sx={{ width: '15%' }}>Email</TableCell>
+                <TableCell sx={{ width: '15%' }}>Username</TableCell>
+                <TableCell sx={{ width: '15%' }}>NRIC</TableCell>
+                <TableCell sx={{ width: '15%' }}>Phone</TableCell>
+                <TableCell sx={{ width: '15%' }}>Role</TableCell>
+                <TableCell sx={{ width: '25%' }}>Actions</TableCell>
+              </>
+            }
           </TableRow>
         </TableHead>
         <TableBody>
           {users.length > 0 ? (
             users.map((user) => (
               <TableRow key={user._id}>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.username}</TableCell>
+                <TableCell>{user.email || 'N/A'}</TableCell>
+                <TableCell>{user.username || 'N/A'}</TableCell>
+                {isClient && (
+                  <>
+                    <TableCell>{user.ic || 'N/A'}</TableCell>
+                    <TableCell>{user.phone || 'N/A'}</TableCell>
+                  </>
+                )}
                 <TableCell>
-                  {editingUserId === user._id ? (
+                  {editingUserId === user._id && isStaff ? (
                     <Select
                       value={selectedRole[user._id]}
                       onChange={(e) => setSelectedRole({ ...selectedRole, [user._id]: e.target.value })}
@@ -44,10 +65,11 @@ const UserTable = ({ users, isPending, isRejected, isStaff, isClient, handleAppr
                       <MenuItem value="solicitor">Solicitor</MenuItem>
                       <MenuItem value="clerk">Clerk</MenuItem>
                       <MenuItem value="admin">Admin</MenuItem>
-                      {/* <MenuItem value="client">Client</MenuItem> */}
                     </Select>
                   ) : (
-                    user.role.charAt(0).toUpperCase() + user.role.slice(1)
+                    user.role === 'client-pending' ? 'Pending' :
+                      user.role === 'client-rejected' ? 'Rejected' :
+                        user.role.charAt(0).toUpperCase() + user.role.slice(1)
                   )}
                 </TableCell>
                 <TableCell>
@@ -65,7 +87,9 @@ const UserTable = ({ users, isPending, isRejected, isStaff, isClient, handleAppr
                       {editingUserId === user._id ? (
                         <Button variant="contained" color="primary" onClick={() => handleSaveClick(user._id)}>Save</Button>
                       ) : (
-                        <Button variant="contained" color="primary" onClick={() => handleEditClick(user._id, user.role)}>Edit</Button>
+                        isStaff && (
+                          <Button disabled={user._id === userId} variant="contained" color="primary" onClick={() => handleEditClick(user._id, user.role)}>Edit</Button>
+                        )
                       )}
                       <Button variant="contained" color="error" onClick={() => handleDeleteUser(user._id)}>Delete</Button>
                     </Stack>
@@ -76,13 +100,13 @@ const UserTable = ({ users, isPending, isRejected, isStaff, isClient, handleAppr
           ) : (
             <TableRow>
               {isPending ? (
-                <TableCell colSpan={4} align="center">No pending users found</TableCell>
+                <TableCell colSpan={isClient ? 6 : 4} align="center">No pending users found</TableCell>
               ) : isRejected ? (
-                <TableCell colSpan={4} align="center">No rejected users found</TableCell>
+                <TableCell colSpan={isClient ? 6 : 4} align="center">No rejected users found</TableCell>
               ) : isClient ? (
-                <TableCell colSpan={4} align="center">No clients found</TableCell>
+                <TableCell colSpan={isClient ? 6 : 4} align="center">No clients found</TableCell>
               ) : (
-                <TableCell colSpan={4} align="center">No staffs found</TableCell>
+                <TableCell colSpan={isClient ? 6 : 4} align="center">No staffs found</TableCell>
               )}
             </TableRow>
           )}

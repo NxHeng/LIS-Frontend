@@ -1,14 +1,18 @@
 // ManageUsers.jsx
-import React, { useState, useEffect } from 'react';
-import { Button, Box, Typography, Divider, Container, Tabs, Tab } from '@mui/material';
+import React, { useState, useEffect, act } from 'react';
+import { Button, Box, Typography, Stack, Container, Tabs, Tab } from '@mui/material';
 import UserTable from '../components/ManageUsers/UserTable';
 import UserApprovalDialog from '../components/ManageUsers/UserApprovalDialog';
 import { useUserContext } from '../context/UserContext';
 
 const ManageUsers = () => {
-    const [pendingUsers, setPendingUsers] = useState([]);
-    const [activeUsers, setActiveUsers] = useState([]);
-    const [rejectedUsers, setRejectedUsers] = useState([]);
+    const [pendingStaffs, setPendingStaffs] = useState([]);
+    const [pendingClients, setPendingClients] = useState([]);
+    const [activeStaffs, setActiveStaffs] = useState([]);
+    const [activeClients, setActiveClients] = useState([]);
+    const [rejectedStaffs, setRejectedStaffs] = useState([]);
+    const [rejectedClients, setRejectedClients] = useState([]);
+
     const [selectedUser, setSelectedUser] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [tabValue, setTabValue] = useState(0);
@@ -23,23 +27,37 @@ const ManageUsers = () => {
     useEffect(() => {
         // Filter users into pending and active
         if (userList.length) {
-            setPendingUsers(userList.filter(user => user.role === 'pending'));
-            setActiveUsers(userList.filter(user => user.role !== 'pending' && user.role !== 'rejected'));
-            setRejectedUsers(userList.filter(user => user.role === 'rejected'));
+            setPendingStaffs(userList.filter(user => user.role === 'pending'));
+            setActiveStaffs(userList.filter(
+                user => user.role === 'clerk' || user.role === 'solicitor' || user.role === 'admin'
+            ));
+            setRejectedStaffs(userList.filter(user => user.role === 'rejected'));
+
+            setPendingClients(userList.filter(user => user.role === 'client-pending'));
+            setActiveClients(userList.filter(user => user.role === 'client'));
+            setRejectedClients(userList.filter(user => user.role === 'client-rejected'));
         }
     }, [userList]);
 
-    const handleApprove = async (userId) => {
+    const handleApproveStaff = async (userId) => {
         updateUserRole(userId, 'clerk');
-        const tempUser = pendingUsers.find(user => user._id === userId);
+        const tempUser = pendingStaffs.find(user => user._id === userId);
         tempUser.role = 'clerk';
-        setActiveUsers([...activeUsers, tempUser]);
-        setPendingUsers(pendingUsers.filter(user => user._id !== userId));
+        setActiveStaffs([...activeStaffs, tempUser]);
+        setPendingStaffs(pendingStaffs.filter(user => user._id !== userId));
+    };
+
+    const handleApproveClient = async (userId) => {
+        updateUserRole(userId, 'client');
+        const tempUser = pendingClients.find(user => user._id === userId);
+        tempUser.role = 'client';
+        setActiveClients([...activeClients, tempUser]);
+        setPendingClients(pendingClients.filter(user => user._id !== userId));
     };
 
     const handleRoleChange = async (userId, newRole) => {
         updateUserRole(userId, newRole);
-        setActiveUsers(activeUsers.map(user => {
+        setActiveStaffs(activeStaffs.map(user => {
             if (user._id === userId) {
                 return { ...user, role: newRole };
             }
@@ -47,27 +65,34 @@ const ManageUsers = () => {
         }));
     };
 
-    const handleReject = async (userId) => {
+    const handleRejectStaff = async (userId) => {
         updateUserRole(userId, 'rejected');
-        const tempUser = pendingUsers.find(user => user._id === userId);
+        const tempUser = pendingStaffs.find(user => user._id === userId);
         tempUser.role = 'rejected';
-        setRejectedUsers([...rejectedUsers, tempUser]);
-        setPendingUsers(pendingUsers.filter(user => user._id !== userId));
+        setRejectedStaffs([...rejectedStaffs, tempUser]);
+        setPendingStaffs(pendingStaffs.filter(user => user._id !== userId));
     };
+
+    const handleRejectClient = async (userId) => {
+        updateUserRole(userId, 'client-rejected');
+        const tempUser = pendingClients.find(user => user._id === userId);
+        tempUser.role = 'client-rejected';
+        setRejectedClients([...rejectedClients, tempUser]);
+        setPendingClients(pendingClients.filter(user => user._id !== userId));
+    };
+
 
     const handleDeleteActiveUser = async (userId) => {
         deleteUser(userId);
-        setActiveUsers(activeUsers.filter(user => user._id !== userId));
+        setActiveStaffs(activeStaffs.filter(user => user._id !== userId));
+        setActiveClients(activeClients.filter(user => user._id !== userId));
     };
 
     const handleDeleteRejectedUser = async (userId) => {
         deleteUser(userId);
-        setRejectedUsers(rejectedUsers.filter(user => user._id !== userId));
+        setRejectedStaffs(rejectedStaffs.filter(user => user._id !== userId));
+        setRejectedClients(rejectedClients.filter(user => user._id !== userId));
     };
-
-    useEffect(() => {
-        console.log('Active Users:', activeUsers);
-    }, [activeUsers]);
 
     const handleOpenDialog = (user) => {
         setSelectedUser(user);
@@ -83,7 +108,6 @@ const ManageUsers = () => {
         setTabValue(newValue);
     };
 
-
     return (
         <Container sx={{ p: 2 }}>
             <Typography variant='h3'>Manage Users</Typography>
@@ -91,47 +115,109 @@ const ManageUsers = () => {
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={tabValue} onChange={handleTabChange} aria-label="user management tabs">
                         <Tab label="Pending" {...a11yProps(0)} />
-                        <Tab label="Staffs" {...a11yProps(1)} />
-                        <Tab label="Clients" {...a11yProps(2)} />
-                        <Tab label="Rejected" {...a11yProps(3)} />
+                        <Tab label="Active" {...a11yProps(1)} />
+                        <Tab label="Rejected" {...a11yProps(2)} />
                     </Tabs>
                 </Box>
 
+                {/* Pending Users */}
                 <CustomTabPanel value={tabValue} index={0}>
-                    <UserTable
-                        users={pendingUsers}
-                        handleApprove={handleApprove}
-                        onEdit={handleOpenDialog}
-                        isPending={true}
-                        handleReject={handleReject}
-                    />
+                    <Stack direction='column' spacing={5}>
+                        <Box>
+                            <Typography variant='h4'>
+                                Staffs
+                            </Typography>
+                            <UserTable
+                                users={pendingStaffs}
+                                handleApprove={handleApproveStaff}
+                                onEdit={handleOpenDialog}
+                                isStaff={true}
+                                isPending={true}
+                                handleReject={handleRejectStaff}
+                            />
+                        </Box>
+                        <Box>
+                            <Typography variant='h4'>
+                                Clients
+                            </Typography>
+                            <UserTable
+                                users={pendingClients}
+                                handleApprove={handleApproveClient}
+                                onEdit={handleOpenDialog}
+                                isClient={true}
+                                isPending={true}
+                                handleReject={handleRejectClient}
+                            />
+                        </Box>
+                    </Stack>
                 </CustomTabPanel>
 
+                {/* Active Users */}
                 <CustomTabPanel value={tabValue} index={1}>
-                    <UserTable
-                        users={activeUsers}
-                        isStaff={true}
-                        handleRoleChange={handleRoleChange}
-                        onEdit={handleOpenDialog}
-                        handleDeleteUser={handleDeleteActiveUser}
-                    />
+                    <Stack direction='column' spacing={5}>
+                        <Box>
+                            <Typography variant='h4'>
+                                Staffs
+                            </Typography>
+                            <UserTable
+                                users={activeStaffs}
+                                isStaff={true}
+                                handleRoleChange={handleRoleChange}
+                                onEdit={handleOpenDialog}
+                                handleDeleteUser={handleDeleteActiveUser}
+                            />
+                        </Box>
+                        <Box>
+                            <Typography variant='h4'>
+                                Clients
+                            </Typography>
+                            <UserTable
+                                users={activeClients}
+                                isClient={true}
+                                handleRoleChange={handleRoleChange}
+                                onEdit={handleOpenDialog}
+                                handleDeleteUser={handleDeleteActiveUser}
+                            />
+                        </Box>
+                    </Stack>
                 </CustomTabPanel>
 
-                <CustomTabPanel value={tabValue} index={2}>
+                {/* <CustomTabPanel value={tabValue} index={2}>
                     <UserTable
                         users={activeUsers.filter(user => user.role === 'client')}
                         isClient={true}
                         onEdit={handleOpenDialog}
                     />
-                </CustomTabPanel>
+                </CustomTabPanel> */}
 
-                <CustomTabPanel value={tabValue} index={3}>
-                    <UserTable
-                        users={rejectedUsers}
-                        isRejected={true}
-                        onEdit={handleOpenDialog}
-                        handleDeleteUser={handleDeleteRejectedUser}
-                    />
+                {/* Rejected Users */}
+                <CustomTabPanel value={tabValue} index={2}>
+                    <Stack direction='column' spacing={5}>
+                        <Box>
+                            <Typography variant='h4'>
+                                Staffs
+                            </Typography>
+                            <UserTable
+                                users={rejectedStaffs}
+                                isRejected={true}
+                                isStaff={true}
+                                onEdit={handleOpenDialog}
+                                handleDeleteUser={handleDeleteRejectedUser}
+                            />
+                        </Box>
+                        <Box>
+                            <Typography variant='h4'>
+                                Clients
+                            </Typography>
+                            <UserTable
+                                users={rejectedClients}
+                                isRejected={true}
+                                isClient={true}
+                                onEdit={handleOpenDialog}
+                                handleDeleteUser={handleDeleteRejectedUser}
+                            />
+                        </Box>
+                    </Stack>
                 </CustomTabPanel>
 
                 {selectedUser && (
