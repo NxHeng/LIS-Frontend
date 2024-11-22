@@ -127,6 +127,21 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
+    const fetchCasesByClient = async (icNumber) => {
+        setCaseItemsLoaded(false);
+        try {
+            const response = await fetch(`${API_URL}/case/getCasesByClient/${icNumber}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setCaseItems(data);
+            setCaseItemsLoaded(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const fetchMyCases = async (userId) => {
         setCaseItemsLoaded(false);
         try {
@@ -221,6 +236,7 @@ export const CaseContextProvider = ({ children }) => {
             setFromNotificationsToTasks,
             fromNotificationsToCaseDetails,
             setFromNotificationsToCaseDetails,
+            fetchCasesByClient
         }}>
             {children}
         </CaseContext.Provider>

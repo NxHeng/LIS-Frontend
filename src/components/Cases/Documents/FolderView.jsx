@@ -32,6 +32,7 @@ import ItemDetail from './ItemDetail';
 
 import { useDocumentContext } from '../../../context/DocumentContext';
 import FilePreviewDialog from './FilePreviewDialog';
+import { jwtDecode } from 'jwt-decode';
 
 const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
 
@@ -45,6 +46,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
 
     const caseItem = localStorage.getItem('caseItem');
     const caseId = JSON.parse(caseItem)._id;
+    const user = jwtDecode(localStorage.getItem('token'));
 
     const [selectedDate, setSelectedDate] = useState(null); // Date filter state
     const [filterByType, setFilterByType] = useState('all'); // Filter by type state
@@ -294,17 +296,19 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
                 />
             </Container>
             {/* Buttons */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 1, mt: 1 }}>
-                <NewItem caseId={caseId} createFolder={createFolder} uploadFile={uploadFile} />
-                <SortFilter
-                    selectedDate={selectedDate}
-                    setSelectedDate={setSelectedDate}
-                    filterByType={filterByType}
-                    setFilterByType={setFilterByType}
-                    sortBy={sortBy}
-                    setSortBy={setSortBy}
-                />
-            </Box>
+            {user.role !== 'client' && (
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 1, mt: 1 }}>
+                    <NewItem caseId={caseId} createFolder={createFolder} uploadFile={uploadFile} />
+                    <SortFilter
+                        selectedDate={selectedDate}
+                        setSelectedDate={setSelectedDate}
+                        filterByType={filterByType}
+                        setFilterByType={setFilterByType}
+                        sortBy={sortBy}
+                        setSortBy={setSortBy}
+                    />
+                </Box>
+            )}
 
             {/* Main Content */}
             <TableContainer component={Paper} sx={{
@@ -412,8 +416,8 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
                 <ItemDetail
                     item={selectedFile ? selectedFile : selectedFolder}
                     handleRename={handleRename}
-                    handleDownload={handleDownload}
                     handleDelete={handleDelete}
+                    handleDownload={handleDownload}
                 />
             </Box>
 

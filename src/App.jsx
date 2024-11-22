@@ -17,6 +17,7 @@ import ClientRegister from './pages/ClientRegister';
 import Profile from './pages/Profile';
 import ChangePassword from "./pages/ChangePassword";
 import ManageUsers from "./pages/ManageUsers";
+import ErrorPage from "./pages/ErrorPage";
 
 import MyCases from "./pages/MyCases";
 import MyDetails from "./pages/MyDetails";
@@ -75,10 +76,12 @@ function App() {
             {user?.role === 'client' && (
               <>
                 <Route path="/client/mycases" element={<MyCases />} />
-                <Route path="/client/mycases/:id" element={<MyDetails />} />
+                <Route path="/client/mycases/details/:id" element={<MyDetails />} />
               </>
             )}
 
+            {/* Catch-all route for undefined paths */}
+            <Route path="*" element={<ErrorPage />} />
           </Route>
         </Routes>
         {/* <Footer /> */}

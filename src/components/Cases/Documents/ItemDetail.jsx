@@ -5,14 +5,16 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
+import { jwtDecode } from 'jwt-decode';
 
-const FileFolderDetails = ({ item, handleRename, handleDelete }) => {
+const FileFolderDetails = ({ item, handleRename, handleDelete, handleDownload }) => {
     const isFolder = !!item?.folderName;
     const defaultText = "No file or folder selected";
+    const user = jwtDecode(localStorage.getItem('token'));
 
     return (
         <Card sx={{
-            maxWidth: 600, mt: 5, 
+            maxWidth: 600, mt: 5,
             borderRadius: 3,
             mr: 2,
             boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
@@ -28,19 +30,23 @@ const FileFolderDetails = ({ item, handleRename, handleDelete }) => {
                 action={
                     item && (
                         <Stack direction="row" spacing={1}>
-                            <Tooltip title="Edit">
-                                <IconButton color="primary" onClick={() => handleRename()}>
-                                    <EditIcon />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Delete">
-                                <IconButton color="error" onClick={() => handleDelete()}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Tooltip>
+                            {user.role !== 'client' && (
+                                <>
+                                    <Tooltip title="Edit">
+                                        <IconButton color="primary" onClick={() => handleRename()}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Delete">
+                                        <IconButton color="error" onClick={() => handleDelete()}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </>
+                            )}
                             {!isFolder && (
                                 <Tooltip title="Download">
-                                    <IconButton color="success">
+                                    <IconButton color="success" onClick={() => handleDownload()}>
                                         <DownloadIcon />
                                     </IconButton>
                                 </Tooltip>

@@ -39,6 +39,8 @@ const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+    const [initialNotificationLoad, setInitialNotificationLoad] = useState(true);
+    const [initialAnnouncementLoad, setInitialAnnouncementLoad] = useState(true);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -52,7 +54,8 @@ const Navbar = () => {
     useEffect(() => {
         socket?.emit("register", user._id.toString());
         console.log(user._id, socket);
-        // console.log("Socket ran");
+        
+        // Listen for new notifications
         socket?.on('newNotification', (notification) => {
             console.log("New notification received", notification);
             handleNewNotification(notification);
@@ -67,19 +70,45 @@ const Navbar = () => {
     }, [socket]);
 
     useEffect(() => {
-        // Only show Snackbar if notifications arrive and you're not on the Notifications page
-        if ((notifications.length > 0) && (location.pathname !== "/notifications")) {
-            setSnackbarMessage(`${notifications[0].message}`);
-            setSnackbarOpen(true);
+        if (!initialNotificationLoad && (notifications.length > 0) && (location.pathname !== "/notifications")) {
+            // When receive notifications after initial load
+            const latestNotification = notifications[0];
+            if (latestNotification) {
+                setSnackbarMessage(`New Notification '${latestNotification.message}'`);
+                setSnackbarOpen(true);
+            }
+        } else {
+            setInitialNotificationLoad(false); // Mark initial load as done
         }
     }, [notifications]);
 
+    // useEffect(() => {
+    //     // Only show Snackbar if notifications arrive and you're not on the Notifications page
+    //     if ((notifications.length > 0) && (location.pathname !== "/notifications")) {
+    //         setSnackbarMessage(`${notifications[0].message}`);
+    //         setSnackbarOpen(true);
+    //     }
+    // }, [notifications]);
+
+    // useEffect(() => {
+    //     // Only show Snackbar if announcements arrive and you're not on the Announcement page
+    //     if ((announcements.length > 0) && (location.pathname !== "/announcement")) {
+    //         console.log("Announcements: ", announcements);
+    //         setSnackbarMessage(`New Announcement '${announcements[0].title}'`);
+    //         setSnackbarOpen(true);
+    //     }
+    // }, [announcements]);
+
     useEffect(() => {
-        // Only show Snackbar if announcements arrive and you're not on the Announcement page
-        if ((announcements.length > 0) && (location.pathname !== "/announcement")) {
-            console.log("Announcements: ", announcements);
-            setSnackbarMessage(`New Announcement '${announcements[0].title}'`);
-            setSnackbarOpen(true);
+        if (!initialAnnouncementLoad && (announcements.length > 0) && (location.pathname !== "/announcement")) {
+            // When receive announcements after initial load
+            const latestAnnouncement = announcements[0];
+            if (latestAnnouncement) {
+                setSnackbarMessage(`New Announcement '${latestAnnouncement.title}'`);
+                setSnackbarOpen(true);
+            }
+        } else {
+            setInitialAnnouncementLoad(false); // Mark initial load as done
         }
     }, [announcements]);
 
@@ -217,19 +246,21 @@ const Navbar = () => {
                             LIS
                         </Typography>
                         {user.role === 'client' ? (
-                            <Button
-                                key="My Cases"
-                                component={Link}
-                                to="/mycases"
-                                onClick={handleCloseNavMenu}
-                                sx={{
-                                    my: 2,
-                                    color: location.pathname === "/mycases" ? 'primary.main' : 'inherit',
-                                    textDecoration: 'none',
-                                }}
-                            >
-                                My Cases
-                            </Button>
+                            <Box sx={{ ml: '30%', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                                <Button
+                                    key="My Cases"
+                                    component={Link}
+                                    to="/client/mycases"
+                                    onClick={handleCloseNavMenu}
+                                    sx={{
+                                        my: 2,
+                                        color: location.pathname === "/client/mycases" ? 'primary.main' : 'inherit',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    My Cases
+                                </Button>
+                            </Box>
                         ) : (
                             <Box sx={{ ml: 35, mr: 3, flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'space-between' }}>
                                 <Box>
@@ -268,7 +299,7 @@ const Navbar = () => {
                             </Box>
                         )}
 
-                        <Box sx={{ flexGrow: 0 }}>
+                        <Box sx={{ ml: 'auto', flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <Avatar alt={user.username.toUpperCase()} src="/static/images/avatar/2.jpg" />

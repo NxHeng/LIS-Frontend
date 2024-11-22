@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Container, Typography, Box, Button, TableContainer, TableBody, TableHead, TableCell, Table, TableRow, Paper } from '@mui/material';
+import { jwtDecode } from 'jwt-decode';
 
 import { useCategoryContext } from '../../context/CategoryContext';
 import { useCaseContext } from '../../context/CaseContext';
@@ -10,6 +11,7 @@ const MatterDetails = ({ caseItem }) => {
     const { updateCaseAsClosedInDatabase, toEditMatterDetails } = useCaseContext();
     const { fetchCategory, category } = useCategoryContext();
     // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
+    const user = jwtDecode(localStorage.getItem('token'));
     const navigate = useNavigate();
 
     // useEffect(() => {
@@ -30,7 +32,8 @@ const MatterDetails = ({ caseItem }) => {
     return (
         <Container>
             {
-                caseItem.status === 'active' || caseItem.status === 'Active' ? <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
+                caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' ? 
+                <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
                     <Button onClick={handleEdit} variant="contained" sx={{ mr: 1, borderRadius: 5, width: "10vh" }} >
                         Edit
                     </Button>
@@ -42,56 +45,6 @@ const MatterDetails = ({ caseItem }) => {
                     </Button>
                 </Box> : null
             }
-
-            {/* <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Box>
-                    <Typography variant='h6' color="grey">
-                        Matter Name
-                    </Typography>
-                    <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.matterName}
-                    </Typography>
-
-                    <Typography variant='h6' color="grey">
-                        File Reference
-                    </Typography>
-                    <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.fileReference}
-                    </Typography>
-
-                    <Typography variant='h6' color="grey">
-                        Clerk In Charge
-                    </Typography>
-                    <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.clerkInCharge.username}
-                    </Typography>
-
-                </Box>
-                <Box>
-                    <Typography variant='h6' color="grey">
-                        Category
-                    </Typography>
-                    <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.category.categoryName}
-                    </Typography>
-
-                    <Typography variant='h6' color="grey">
-                        Status
-                    </Typography>
-                    <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.status}
-                    </Typography>
-
-                    <Typography variant='h6' color="grey">
-                        Solicitor In Charge
-                    </Typography>
-                    <Typography variant='h6' sx={{ mb: 2 }}>
-                        {caseItem.solicitorInCharge.username}
-                    </Typography>
-
-                </Box>
-            </Box> */}
-
 
             <TableContainer component={Paper} sx={{ boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
                 <Table>

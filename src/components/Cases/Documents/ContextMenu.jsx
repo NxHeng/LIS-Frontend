@@ -21,9 +21,11 @@ const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDele
             <Typography variant="h6" sx={{ px: 2, my: 1 }} color='textSecondary'>
                 Actions
             </Typography>
-            <MenuItem onClick={handleMove}>Move</MenuItem>
-            {user.role === 'admin' || user.role === 'solicitor' ? <MenuItem onClick={handleDelete}>Delete</MenuItem> : null}
-            <MenuItem onClick={handleRename}>Rename</MenuItem>
+            {user.role !== 'client' && <MenuItem onClick={handleMove}>Move</MenuItem>}
+            {user.role === 'admin' || user.role === 'solicitor' &&
+                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+            }
+            {user.role !== 'client' && <MenuItem onClick={handleRename}>Rename</MenuItem>}
             {selectedFile ? <MenuItem onClick={handleDownload}>Download</MenuItem> : null}
         </Menu>
     );

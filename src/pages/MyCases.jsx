@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Typography, Grid, Box, Stack, Button, Autocomplete, InputAdornment, TextField, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-import CaseCard from '../components/Cases/CaseCard';
+import ClientCaseCard from '../components/Cases/ClientCaseCard';
 
 import { useCaseContext } from '../context/CaseContext';
 import { useCategoryContext } from '../context/CategoryContext';
@@ -10,19 +10,19 @@ import { useCategoryContext } from '../context/CategoryContext';
 const MyCases = () => {
     const {
         caseItems,
-        toMyCases,
         filteredCases,
         filteredCategory,
-        caseItemsLoaded
+        caseItemsLoaded,
+        fetchCasesByClient
     } = useCaseContext();
     const { categories, fetchCategories } = useCategoryContext();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchFilteredCases, setSearchFilteredCases] = useState([]);
-    const userId = JSON.parse(localStorage.getItem('user'))._id;
+    const userIc = JSON.parse(localStorage.getItem('user')).ic;
 
     useEffect(() => {
         fetchCategories();
-        toMyCases(userId);
+        fetchCasesByClient(userIc);
     }, []);
 
     useEffect(() => {
@@ -47,45 +47,40 @@ const MyCases = () => {
     };
 
     if (!caseItemsLoaded) {
-        return <CircularProgress sx={{ml: '120vh', mt: '5vh'}}/>
-    }else{
+        return <CircularProgress sx={{ ml: '120vh', mt: '5vh' }} />
+    } else {
         // console.log(caseItems);
     }
 
     return (
-        <Container sx={{ p: 2 }}>
-            <Typography variant='h2'>My Cases</Typography>
-            <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={2}>         
-
-                    {/* Main Content */}
-                    <Grid item xs={8}>
-                        <Container maxWidth="md">
-                            <Autocomplete
-                                freeSolo
-                                id="case-search-bar"
-                                disableClearable
-                                options={caseItems.map((option) => option.matterName)}
-                                value={searchQuery}
-                                onInputChange={handleSearchChange}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Search Cases"
-                                        InputProps={{
-                                            ...params.InputProps,
-                                            type: 'search',
-                                            endAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SearchIcon />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                )}
-                            />
-                        </Container>
-                        {/* <Container sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+        <Container maxWidth="sm" sx={{ p: 2, mt: 5 }}>
+            {/* <Typography variant='h3'>My Cases</Typography> */}
+            <Container maxWidth="sm">
+                <Autocomplete
+                    freeSolo
+                    id="case-search-bar"
+                    disableClearable
+                    options={caseItems.map((option) => option.matterName)}
+                    value={searchQuery}
+                    onInputChange={handleSearchChange}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label="Search Cases"
+                            InputProps={{
+                                ...params.InputProps,
+                                type: 'search',
+                                endAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    )}
+                />
+            </Container>
+            {/* <Container sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                             <Button variant='contained' sx={{ mx: 1 }}>
                                 Date
                             </Button>
@@ -93,14 +88,11 @@ const MyCases = () => {
                                 Sort
                             </Button>
                         </Container> */}
-                        <Container sx={{ mt: 2 }}>
-                            {searchFilteredCases.map((caseItem, index) => (
-                                <CaseCard key={index} caseItem={caseItem} />
-                            ))}
-                        </Container>
-                    </Grid>
-                </Grid>
-            </Box>
+            <Container sx={{ mt: 2 }}>
+                {searchFilteredCases.map((caseItem, index) => (
+                    <ClientCaseCard key={index} caseItem={caseItem} />
+                ))}
+            </Container>
         </Container>
     );
 };
