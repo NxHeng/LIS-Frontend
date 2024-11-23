@@ -7,10 +7,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
 import { jwtDecode } from 'jwt-decode';
 
-const FileFolderDetails = ({ item, handleRename, handleDelete, handleDownload }) => {
+const FileFolderDetails = ({ item, handleRename, handleDelete, handleDownload, isTemporary }) => {
     const isFolder = !!item?.folderName;
     const defaultText = "No file or folder selected";
-    const user = jwtDecode(localStorage.getItem('token'));
+    const token = localStorage.getItem('token');
+    const user = token ? jwtDecode(token) : {};
 
     return (
         <Card sx={{
@@ -30,7 +31,7 @@ const FileFolderDetails = ({ item, handleRename, handleDelete, handleDownload })
                 action={
                     item && (
                         <Stack direction="row" spacing={1}>
-                            {user.role !== 'client' && (
+                            {user.role !== 'client' && !isTemporary && (
                                 <>
                                     <Tooltip title="Edit">
                                         <IconButton color="primary" onClick={() => handleRename()}>

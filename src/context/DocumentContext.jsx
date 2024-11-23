@@ -54,8 +54,6 @@ export const DocumentContextProvider = ({ children }) => {
     };
 
     const fetchFolders = async (caseId) => {
-        // console.log('HELLO');
-        // console.log(caseId, selectedFolderForMove?._id);
         try {
             const params = new URLSearchParams({
                 caseId: caseId,

@@ -7,8 +7,6 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SortIcon from '@mui/icons-material/Sort';
 
-
-
 const SortFilter = ({ selectedDate, setSelectedDate, filterByType, setFilterByType, sortBy, setSortBy }) => {
     const [anchorElDate, setAnchorElDate] = useState(null);
     const [anchorElType, setAnchorElType] = useState(null);

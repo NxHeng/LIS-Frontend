@@ -7,8 +7,7 @@ const Login = () => {
     const { login, setMessage } = useAuthContext();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
+
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {

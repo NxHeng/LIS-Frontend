@@ -18,6 +18,8 @@ import Profile from './pages/Profile';
 import ChangePassword from "./pages/ChangePassword";
 import ManageUsers from "./pages/ManageUsers";
 import ErrorPage from "./pages/ErrorPage";
+import TempDetail from "./pages/TempDetail";
+import ExpiredPage from "./pages/ExpiredPage";
 
 import MyCases from "./pages/MyCases";
 import MyDetails from "./pages/MyDetails";
@@ -43,6 +45,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register-staff" element={<StaffRegister />} />
             <Route path="/register-client" element={<ClientRegister />} />
+            {/* Temp Detail Route */}
+            <Route path="/temporary/:caseId/:token" element={<TempDetail />} />
+            {/* Expired Page Route */}
+            <Route path="/temporary/expired" element={<ExpiredPage />} />
           </Route>
 
           {/* Protected Routes */}
@@ -83,6 +89,7 @@ function App() {
             {/* Catch-all route for undefined paths */}
             <Route path="*" element={<ErrorPage />} />
           </Route>
+
         </Routes>
         {/* <Footer /> */}
       </BrowserRouter>

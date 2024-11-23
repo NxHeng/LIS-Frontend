@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import axios from 'axios';
 
 const AuthContext = createContext({
     user: null,
@@ -126,9 +125,16 @@ export const AuthContextProvider = ({ children }) => {
         setLoading(true);
         console.log(`Bearer ${token}`);
         try {
-            const response = await axios.post(`${API_URL}/user/logout`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
+            //fetch
+            const response = await fetch(`${API_URL}/user/logout`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
+            // const response = await axios.post(`${API_URL}/user/logout`, {}, {
+            //     headers: { Authorization: `Bearer ${token}` }
+            // });
             console.log(response);
         } catch (error) {
             console.error('Logout failed:', error.response ? error.response.data : error.message);
@@ -143,14 +149,23 @@ export const AuthContextProvider = ({ children }) => {
     };
     const changePassword = async ({ oldPassword, newPassword }) => {
         try {
-            const response = await axios.post(`${API_URL}/user/changePassword`, {
-                oldPassword,
-                newPassword
-            }, {
+            //fetch
+            const response = await fetch(`${API_URL}/user/changePassword`, {
+                method: 'POST',
                 headers: {
-                    Authorization: `Bearer ${token}`  // Ensure you're sending the token
-                }
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ oldPassword, newPassword })
             });
+            // const response = await axios.post(`${API_URL}/user/changePassword`, {
+            //     oldPassword,
+            //     newPassword
+            // }, {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`  // Ensure you're sending the token
+            //     }
+            // });
             console.log(response);
             return { success: true };
         } catch (error) {

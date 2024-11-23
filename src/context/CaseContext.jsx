@@ -10,6 +10,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 export const CaseContextProvider = ({ children }) => {
     const [caseItems, setCaseItems] = useState([]);
     const [caseItemsLoaded, setCaseItemsLoaded] = useState(false);
+    const [isTemporary, setIsTemporary] = useState(false);
 
     const [fromTasks, setFromTasks] = useState(false);
     const [fromNotificationsToTasks, setFromNotificationsToTasks] = useState(false);
@@ -27,9 +28,9 @@ export const CaseContextProvider = ({ children }) => {
         categoryId: '',
         fields: []
     });
-    
+
     const { setTask } = useTaskContext();
-    
+
     // Case List Page
     const toMyCases = (userId) => {
         setView('myCases');
@@ -200,6 +201,35 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
+    const generateLink = async (caseId) => {
+        try {
+            const response = await fetch(`${API_URL}/link/generate-link`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ caseId }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to generate link: ${response.statusText}`);
+            }
+            // Parse the response body as JSON
+            const data = await response.json();
+            const tempLink = `${window.location.origin}/temporary/${caseId}/${data.token}`;
+            console.log('Temporary link generated:', tempLink);
+
+            // Copy the link to clipboard
+            await navigator.clipboard.writeText(tempLink);
+            console.log('Temporary link copied to clipboard.');
+
+            return tempLink;
+        } catch (error) {
+            console.error('Error generating link:', error);
+        }
+    };
+
+
 
     return (
         <CaseContext.Provider value={{
@@ -236,7 +266,10 @@ export const CaseContextProvider = ({ children }) => {
             setFromNotificationsToTasks,
             fromNotificationsToCaseDetails,
             setFromNotificationsToCaseDetails,
-            fetchCasesByClient
+            fetchCasesByClient,
+            generateLink,
+            isTemporary,
+            setIsTemporary
         }}>
             {children}
         </CaseContext.Provider>

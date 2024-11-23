@@ -7,8 +7,9 @@ import { useCaseContext } from '../../context/CaseContext';
 
 const CaseDetails = ({ caseItem }) => {
 
-    const { toEditCaseDetails } = useCaseContext();
-    const user = jwtDecode(localStorage.getItem('token'));
+    const { toEditCaseDetails, isTemporary } = useCaseContext();
+    const token = localStorage.getItem('token');
+    const user = token ? jwtDecode(token) : {};
     // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     // Separate fields by type
@@ -18,7 +19,7 @@ const CaseDetails = ({ caseItem }) => {
     return (
         <Container maxWidth={false} sx={{ width: '100%' }}>
             {
-                caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' ?
+                caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' && !isTemporary ?
                     <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
                         <Button onClick={toEditCaseDetails} variant="contained" sx={{ mr: 1, borderRadius: 5, width: "10vh", mb: 3 }} >
                             Edit

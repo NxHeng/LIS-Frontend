@@ -16,11 +16,12 @@ import { Edit } from '@mui/icons-material';
 
 const Details = () => {
 
-    const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments, fromTasks, fromNotificationsToTasks, fromNotificationsToCaseDetails, setFromTasks, setFromNotificationsToTasks, setFromNotificationsToCaseDetails } = useCaseContext();
+    const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments, fromTasks, fromNotificationsToTasks, fromNotificationsToCaseDetails, setFromTasks, setFromNotificationsToTasks, setFromNotificationsToCaseDetails, setIsTemporary } = useCaseContext();
     const { task } = useTaskContext();
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     useEffect(() => {
+        setIsTemporary(false);
         toMatterDetails();
     }, []);
 

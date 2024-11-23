@@ -5,7 +5,8 @@ import { jwtDecode } from 'jwt-decode';
 
 const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDelete, handleRename, handleDownload, selectedFile }) => {
 
-    const user = jwtDecode(localStorage.getItem('token'));
+    const token = localStorage.getItem('token');
+    const user = token ? jwtDecode(token) : {};
 
     return (
         <Menu

@@ -8,7 +8,7 @@ const FolderItem = ({ folder, setCurrentFolderId }) => {
 
     const { fetchContents, currentFolderId, setFolderStack, folderStack, setSelectedFolder, setSelectedFile } = useDocumentContext();
     const caseItem = localStorage.getItem('caseItem');
-    const caseId = JSON.parse(caseItem)._id;
+    const caseId = caseItem ? JSON.parse(caseItem)._id : {};
 
     const handleFolderDoubleClick = () => {
         setSelectedFile(null);

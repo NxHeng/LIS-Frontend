@@ -33,10 +33,12 @@ import ItemDetail from './ItemDetail';
 import { useDocumentContext } from '../../../context/DocumentContext';
 import FilePreviewDialog from './FilePreviewDialog';
 import { jwtDecode } from 'jwt-decode';
+import { useCaseContext } from '../../../context/CaseContext';
 
 const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
 
     const { open, setOpen, selectedFile, setSelectedFile, filePreview, createFolder, uploadFile, folderStack, setFolderStack, deleteFile, deleteFolder, renameFile, renameFolder, setSelectedFolder, selectedFolder, selectedFolderForMove, setSelectedFolderForMove, downloadFile, moveFile, moveFolder, folderStackForMove, setFolderStackForMove } = useDocumentContext();
+    const { isTemporary } = useCaseContext();
 
     // Combine folders and files into a single list
     const [anchorPosition, setAnchorPosition] = useState(null);
@@ -45,8 +47,9 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
     const [newName, setNewName] = useState('');
 
     const caseItem = localStorage.getItem('caseItem');
-    const caseId = JSON.parse(caseItem)._id;
-    const user = jwtDecode(localStorage.getItem('token'));
+    const caseId = caseItem ? JSON.parse(caseItem)._id : {};
+    const token = localStorage.getItem('token');
+    const user = token ? jwtDecode(token) : {};
 
     const [selectedDate, setSelectedDate] = useState(null); // Date filter state
     const [filterByType, setFilterByType] = useState('all'); // Filter by type state
@@ -296,7 +299,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
                 />
             </Container>
             {/* Buttons */}
-            {user.role !== 'client' && (
+            {user.role !== 'client' && !isTemporary && (
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 1, mt: 1 }}>
                     <NewItem caseId={caseId} createFolder={createFolder} uploadFile={uploadFile} />
                     <SortFilter
@@ -418,6 +421,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
                     handleRename={handleRename}
                     handleDelete={handleDelete}
                     handleDownload={handleDownload}
+                    isTemporary={isTemporary}
                 />
             </Box>
 

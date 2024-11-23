@@ -4,11 +4,13 @@ import FolderView from './FolderView';
 
 import { useDocumentContext } from '../../../context/DocumentContext';
 
-const Documents = () => {
+const Documents = ({ caseItem }) => {
 
     const { currentFolderId, setCurrentFolderId, folderData, fetchContents, fetchEverything, searchList } = useDocumentContext();
-    const caseItem = localStorage.getItem('caseItem');
-    const caseId = JSON.parse(caseItem)._id;
+    const localCaseItem = localStorage.getItem('caseItem');
+    const caseId = localCaseItem 
+        ? JSON.parse(localCaseItem)?._id 
+        : caseItem?._id;
 
     useEffect(() => {
         // console.log(currentFolderId, caseId);
