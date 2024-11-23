@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Typography, Box, Button, Grid, Stack, Paper } from '@mui/material';
+import { Container, Typography, Box, Button, Grid, Stack, Card, CardContent } from '@mui/material';
 
 import MatterDetails from '../components/Cases/MatterDetails';
 import EditMatterDetails from '../components/Cases/EditMatterDetails';
@@ -9,6 +9,8 @@ import Tasks from '../components/Cases/Tasks/Tasks';
 import TaskDetail from '../components/Cases/Tasks/TaskDetail';
 import AddTaskBar from '../components/Cases/Tasks/AddTaskBar';
 import Documents from '../components/Cases/Documents/Documents';
+import { Add } from '@mui/icons-material';
+import CaseLog from '../components/Cases/CaseLog/CaseLog';
 
 import { useCaseContext } from '../context/CaseContext';
 import { useTaskContext } from '../context/TaskContext';
@@ -95,9 +97,12 @@ const Details = () => {
                             <Grid item xs={3} sx={{ backgroundColor: "#f8f9fa", height: "100vh%" }}>
                                 <TaskDetail />
                             </Grid>
+                        ) : detailView === 'matterDetails' || detailView === 'caseDetails' ? (
+                            <Grid item xs={3} sx={{ pr: 3 }}>
+                                <CaseLog logs={caseItem.logs} caseId={caseItem._id} />
+                            </Grid>
                         ) : null
                     }
-
                 </Grid>
             </Box>
             {

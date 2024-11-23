@@ -229,6 +229,38 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
+    const addLog = async (caseId, logMessage, userId) => {
+        try {
+            const response = await fetch(`${API_URL}/case/addLog/${caseId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ logMessage, createdBy: userId }),
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const deleteLog = async (caseId, logId) => {
+        try {
+            const response = await fetch(`${API_URL}/case/deleteLog/${caseId}/${logId}`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                console.log(`Log with ID ${logId} deleted successfully.`);
+            } else {
+                console.error(`Failed to delete log with ID ${logId}:`, response.status);
+            }
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error deleting log:', error);
+        }
+    };
 
 
     return (
@@ -269,7 +301,9 @@ export const CaseContextProvider = ({ children }) => {
             fetchCasesByClient,
             generateLink,
             isTemporary,
-            setIsTemporary
+            setIsTemporary,
+            addLog,
+            deleteLog
         }}>
             {children}
         </CaseContext.Provider>
