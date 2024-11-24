@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, Card, CardContent, Stack } from '@mui/material';
 import { useAuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Background from '../components/Background';
 
 const ChangePassword = () => {
     const navigate = useNavigate();

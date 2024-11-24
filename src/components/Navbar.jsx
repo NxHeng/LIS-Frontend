@@ -25,7 +25,7 @@ import { useSocketContext } from '../context/SocketContext';
 import { useAnnouncementContext } from '../context/AnnouncementContext';
 
 const pages = ['Home', 'Cases', 'Tasks', 'Notifications', 'Announcement'];
-const settings = ['Profile', 'Account', 'Manage Users'];
+const settings = ['Profile', 'Manage Users'];
 
 const Navbar = () => {
     const { logout, loading } = useAuthContext();
