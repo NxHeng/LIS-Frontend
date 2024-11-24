@@ -16,7 +16,7 @@ const Login = () => {
             const result = await login(email, password);
             if (result.success) {
                 console.log('Login successful!');
-                navigate(result.role === 'client' ? '/client/mycases' : '/home'); 
+                navigate(result.role === 'client' ? '/client/mycases' : '/home');
             } else {
                 setMessage(result.message);
             }
@@ -58,7 +58,7 @@ const Login = () => {
                             Welcome Back!
                         </Typography>
                         <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
-                            <Stack direction="column" spacing={3}>
+                            <Stack direction="column" spacing={2}>
                                 <TextField
                                     fullWidth
                                     label="Email"
@@ -68,22 +68,41 @@ const Login = () => {
                                     margin="normal"
                                     variant="outlined"
                                 />
-                                <TextField
-                                    fullWidth
-                                    label="Password"
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    margin="normal"
-                                    variant="outlined"
-                                />
+                                <Box>
+                                    <TextField
+                                        fullWidth
+                                        label="Password"
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        margin="normal"
+                                        variant="outlined"
+                                    />
+                                    <Typography variant="body2" align="start" sx={{ml:.2}}>
+                                        <Box
+                                            component={Link}
+                                            to='/forgot-password'
+                                            sx={{
+                                                textDecoration: 'none',
+                                                color: 'primary.main',
+                                                fontWeight: 'bold',
+                                                '&:hover': {
+                                                    textDecoration: 'underline',
+                                                    color: 'primary.dark',
+                                                },
+                                            }}
+                                        >
+                                            Forgot password?
+                                        </Box>
+                                    </Typography>
+                                </Box>
                                 <Button
                                     type="submit"
                                     variant="contained"
                                     color="primary"
                                     fullWidth
                                     sx={{
-                                        padding: '10px',
+                                        p: '10px',
                                         fontSize: '16px',
                                         textTransform: 'none',
                                         borderRadius: 3,
@@ -118,16 +137,6 @@ const Login = () => {
                         </Box>
                     </CardContent>
                 </Card>
-
-                {/* <Snackbar
-                    open={openSnackbar}
-                    autoHideDuration={6000}
-                    onClose={handleCloseSnackbar}
-                >
-                    <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-                        {snackbarMessage}
-                    </Alert>
-                </Snackbar> */}
             </Container>
         </>
     );

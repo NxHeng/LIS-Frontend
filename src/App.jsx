@@ -20,6 +20,8 @@ import ManageUsers from "./pages/ManageUsers";
 import ErrorPage from "./pages/ErrorPage";
 import TempDetail from "./pages/TempDetail";
 import ExpiredPage from "./pages/ExpiredPage";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 import MyCases from "./pages/MyCases";
 import MyDetails from "./pages/MyDetails";
@@ -49,6 +51,8 @@ function App() {
             <Route path="/temporary/:caseId/:token" element={<TempDetail />} />
             {/* Expired Page Route */}
             <Route path="/temporary/expired" element={<ExpiredPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
           </Route>
 
           {/* Protected Routes */}
