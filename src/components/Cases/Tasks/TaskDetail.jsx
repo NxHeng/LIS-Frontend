@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Typography, Container, Stack, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Typography, Container, Stack, Button, TextField, FormControl, InputLabel, Select, MenuItem, Box, Card, CardContent } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -8,6 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { parseISO, isValid } from 'date-fns';
 import { useTaskContext } from '../../../context/TaskContext';
 import { jwtDecode } from 'jwt-decode';
+import muiStyles from '../../../styles/muiStyles';
 
 const TaskDetail = () => {
 
@@ -88,19 +89,23 @@ const TaskDetail = () => {
 
     if (!task) {
         return (
-            <Container sx={{ pb: 5 }}>
-                <Typography variant='h5' sx={{ mt: 3 }}>Task Detail</Typography>
-                <Typography>No task selected</Typography>
-            </Container>
+            <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
+                <CardContent>
+                    <Stack direction='column' sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "auto", p: 2 }}>
+                        <Typography variant='h5'>Task Detail</Typography>
+                        <Typography>No task selected</Typography>
+                    </Stack>
+                </CardContent>
+            </Card>
         );
     }
 
     return (
-        <Container sx={{ pb: 5 }}>
-            <Typography variant='h5' sx={{ mt: 3 }}>Task Detail</Typography>
+        <Container sx={{ ...muiStyles.cardStyle, height: 'auto', py: 1 }}>
+            <Typography variant='h5' sx={{ py: 3, px: 1 }}>Task Detail</Typography>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 {/* <Stack spacing={2} component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}> */}
-                <Stack spacing={2} component="form" sx={{ mt: 3 }}>
+                <Stack spacing={2} component="form">
                     <TextField
                         fullWidth
                         label="Description"

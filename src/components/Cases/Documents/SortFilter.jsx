@@ -6,6 +6,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';  // Using d
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SortIcon from '@mui/icons-material/Sort';
+import muiStyles from "../../../styles/muiStyles";
 
 const SortFilter = ({ selectedDate, setSelectedDate, filterByType, setFilterByType, sortBy, setSortBy }) => {
     const [anchorElDate, setAnchorElDate] = useState(null);
@@ -24,13 +25,13 @@ const SortFilter = ({ selectedDate, setSelectedDate, filterByType, setFilterByTy
     return (
         <>
             <Stack direction="row" spacing={1}>
-                <Button variant="contained" startIcon={<DateRangeIcon />} onClick={handleDateClick} sx={{borderRadius: 5, width: '12vh'}}>
+                <Button variant="contained" startIcon={<DateRangeIcon />} onClick={handleDateClick} sx={{ ...muiStyles.detailsButtonStyle, width: '12vh' }}>
                     Date
                 </Button>
-                <Button variant="contained" startIcon={<FilterListIcon />} onClick={handleTypeClick} sx={{borderRadius: 5, width: '12vh'}}>
+                <Button variant="contained" startIcon={<FilterListIcon />} onClick={handleTypeClick} sx={{ ...muiStyles.detailsButtonStyle, width: '12vh' }}>
                     Type
                 </Button>
-                <Button variant="contained" startIcon={<SortIcon />} onClick={handleSortClick} sx={{borderRadius: 5, width: '12vh'}}>
+                <Button variant="contained" startIcon={<SortIcon />} onClick={handleSortClick} sx={{ ...muiStyles.detailsButtonStyle, width: '12vh' }}>
                     Sort
                 </Button>
             </Stack>
@@ -57,17 +58,17 @@ const SortFilter = ({ selectedDate, setSelectedDate, filterByType, setFilterByTy
                     <MenuItem onClick={() => { setFilterByType('all'); handleTypeClose(); }}>All</MenuItem>
                     <MenuItem onClick={() => { setFilterByType('folder'); handleTypeClose(); }}>Folder</MenuItem>
                     <MenuItem onClick={() => { setFilterByType('png'); handleTypeClose(); }}>PNG</MenuItem>
-                    <MenuItem onClick={() => { setFilterByType('jpeg'); handleTypeClose(); }}>PDF</MenuItem>
+                    <MenuItem onClick={() => { setFilterByType('jpeg'); handleTypeClose(); }}>JPEG</MenuItem>
                     <MenuItem onClick={() => { setFilterByType('pdf'); handleTypeClose(); }}>PDF</MenuItem>
-                    <MenuItem onClick={() => { setFilterByType('csv'); handleTypeClose(); }}>PDF</MenuItem>
-                    <MenuItem onClick={() => { setFilterByType('word'); handleTypeClose(); }}>PDF</MenuItem>
+                    <MenuItem onClick={() => { setFilterByType('csv'); handleTypeClose(); }}>CSV</MenuItem>
+                    <MenuItem onClick={() => { setFilterByType('word'); handleTypeClose(); }}>Word</MenuItem>
                 </MenuList>
             </Popover>
 
             {/* Sort Popover */}
             <Popover open={Boolean(anchorElSort)} anchorEl={anchorElSort} onClose={handleSortClose}>
                 <MenuList>
-                    <MenuItem onClick={() => { setSortBy({ field: null , order: 'asc' }); handleSortClose(); }}>Default</MenuItem>
+                    <MenuItem onClick={() => { setSortBy({ field: null, order: 'asc' }); handleSortClose(); }}>Default</MenuItem>
                     <MenuItem onClick={() => { setSortBy({ field: 'name', order: 'asc' }); handleSortClose(); }}>By Name (Asc)</MenuItem>
                     <MenuItem onClick={() => { setSortBy({ field: 'name', order: 'desc' }); handleSortClose(); }}>By Name (Desc)</MenuItem>
                     <MenuItem onClick={() => { setSortBy({ field: 'date', order: 'asc' }); handleSortClose(); }}>By Date (Asc)</MenuItem>

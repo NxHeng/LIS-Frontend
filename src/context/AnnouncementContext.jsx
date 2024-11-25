@@ -36,8 +36,8 @@ export const AnnouncementContextProvider = ({ children }) => {
                 body: JSON.stringify(announcement),
             });
             const data = await response.json();
-            setAnnouncements([...announcements, data]);
-            console.log(data);
+            console.log("CreateAnnouncement:",data);
+            // setAnnouncements((prev) => [...prev, data]);
         } catch (error) {
             console.error(error);
         }

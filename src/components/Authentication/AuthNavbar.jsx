@@ -78,7 +78,14 @@ const AuthNavbar = () => {
             <AppBar elevation={0} position="static" sx={{ backgroundColor: '#f8f9fa', color: 'black' }}>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                        <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+                            <Box
+                                component="img"
+                                src="/logo.png"
+                                alt="Logo"
+                                style={{ width: '40px', height: 'auto' }}
+                            />
+                        </Box>
                         <Typography
                             variant="h6"
                             noWrap
@@ -137,7 +144,14 @@ const AuthNavbar = () => {
                                 ))}
                             </Menu>
                         </Box>
-                        <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                        <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
+                            <Box
+                                component="img"
+                                src="/logo.png"
+                                alt="Logo"
+                                style={{ width: '40px', height: 'auto' }}
+                            />
+                        </Box>
                         <Typography
                             variant="h5"
                             noWrap

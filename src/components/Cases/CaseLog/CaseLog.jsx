@@ -4,6 +4,7 @@ import { Container, Typography, Box, Button, Grid, Stack, Card, CardContent } fr
 import { Add } from '@mui/icons-material';
 import LogCard from './LogCard';
 import LogDialog from './LogDialog';
+import muiStyles from '../../../styles/muiStyles';
 
 import { useCaseContext } from '../../../context/CaseContext';
 
@@ -29,7 +30,7 @@ const CaseLog = ({ logs, caseId }) => {
 
     const handleDeleteLog = (caseId, logId) => {
         deleteLog(caseId, logId); // Perform the API call
-        setLogList((prevLogs) => prevLogs.filter((log) => log._id !== logId)); 
+        setLogList((prevLogs) => prevLogs.filter((log) => log._id !== logId));
     };
 
     useEffect(() => {
@@ -38,18 +39,19 @@ const CaseLog = ({ logs, caseId }) => {
 
     return (
         <>
-
-            <Card sx={{
-                mt: 10,
-                p: 2,
-                borderRadius: 5,
-                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-            }}>
+            <Card sx={{...muiStyles.cardStyle, height: 'auto'}}>
                 <CardContent>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="h5">
-                            Case Logs
-                        </Typography>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            px: 1,
+                            pt: 1,
+                        }}>
+                            <Typography variant="h5">
+                                Case Logs
+                            </Typography>
+                        </Box>
                         <Button
                             sx={{
                                 borderRadius: '50%',
@@ -69,7 +71,7 @@ const CaseLog = ({ logs, caseId }) => {
                         </Button>
                     </Box>
                     <Box sx={{
-                        maxHeight: '42vh',
+                        maxHeight: '54vh',
                         overflowY: 'auto',
                     }}>
                         {logList.length > 0 ? (

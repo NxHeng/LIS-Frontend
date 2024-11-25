@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
-import { Container, Typography, List } from '@mui/material';
+import { Container, Typography, List, Card, CardContent, Box } from '@mui/material';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import muiStyles from '../../../styles/muiStyles';
 
 import TaskItem from './TaskItem';
 
@@ -72,19 +73,33 @@ const Tasks = () => {
 
     return (
         <Container>
-            <Typography variant='h4'>Tasks</Typography>
-            <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="tasks">
-                    {(provided) => (
-                        <List {...provided.droppableProps} ref={provided.innerRef}>
-                            {tasks.map((task, index) => (
-                                <TaskItem key={task._id} task={task} index={index} />
-                            ))}
-                            {provided.placeholder}
-                        </List>
-                    )}
-                </Droppable>
-            </DragDropContext>
+            <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "start" }}>
+                <Box sx={{
+                    px: 2,
+                    pt: .5,
+                    pb: .5,
+                }}>
+                    <Typography variant="h6">
+                        Tasks
+                    </Typography>
+                </Box>
+            </Card>
+            <Card sx={{ ...muiStyles.cardStyle, p: 0, mb: 10, backdropFilter: 'unset' }}>
+                <CardContent>
+                    <DragDropContext onDragEnd={handleOnDragEnd}>
+                        <Droppable droppableId="tasks">
+                            {(provided) => (
+                                <List {...provided.droppableProps} ref={provided.innerRef}>
+                                    {tasks.map((task, index) => (
+                                        <TaskItem key={task._id} task={task} index={index} />
+                                    ))}
+                                    {provided.placeholder}
+                                </List>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+                </CardContent>
+            </Card>
         </Container>
     );
 }

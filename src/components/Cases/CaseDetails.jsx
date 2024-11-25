@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Container, Button, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Stack } from '@mui/material';
+import { Container, Button, TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Stack, Card, CardContent, Box, Typography } from '@mui/material';
 import CollapsibleRow from './CollapsibleRow';
 import { jwtDecode } from 'jwt-decode';
+import muiStyles from '../../styles/muiStyles';
 
 import { useCaseContext } from '../../context/CaseContext';
 
@@ -17,17 +18,28 @@ const CaseDetails = ({ caseItem }) => {
     const priceDateFields = caseItem.fields.filter(field => field.type === 'price' || field.type === 'date');
 
     return (
-        <Container maxWidth={false} sx={{ width: '100%' }}>
+        <Container maxWidth="xl" sx={{ width: '100%' }}>
             {
                 caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' && !isTemporary ?
-                    <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-                        <Button onClick={toEditCaseDetails} variant="contained" sx={{ mr: 1, borderRadius: 5, width: "10vh", mb: 3 }} >
-                            Edit
-                        </Button>
-                        <Button variant="contained" sx={{ mr: 1, borderRadius: 5, width: "10vh", mb: 3 }} >
-                            Print
-                        </Button>
-                    </Stack>
+                    <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "space-between" }}>
+                        <Box sx={{
+                            px: 2,
+                            pt: .5,
+                            pb: .5,
+                        }}>
+                            <Typography variant="h6">
+                                Case Details
+                            </Typography>
+                        </Box>
+                        <Box>
+                            <Button onClick={toEditCaseDetails} variant="contained" sx={{ ...muiStyles.detailsButtonStyle, width: '10vh' }} >
+                                Edit
+                            </Button>
+                            <Button variant="contained" sx={{ ...muiStyles.detailsButtonStyle, width: '10vh' }} >
+                                Print
+                            </Button>
+                        </Box>
+                    </Card>
                     : null
             }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Button, TableContainer, TableBody, TableHead, TableCell, Table, TableRow, Paper, Snackbar, Alert } from '@mui/material';
+import { Container, Typography, Box, Button, TableContainer, TableBody, TableHead, TableCell, Table, TableRow, Paper, Snackbar, Alert, Card, CardContent } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
+import muiStyles from '../../styles/muiStyles';
 
 import { useCategoryContext } from '../../context/CategoryContext';
 import { useCaseContext } from '../../context/CaseContext';
@@ -56,20 +57,36 @@ const MatterDetails = ({ caseItem }) => {
                 </Alert>
             </Snackbar>
 
-            <Container>
+            <Container >
                 {
                     caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' && !isTemporary ?
-                        <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
-                            <Button onClick={handleEdit} variant="contained" sx={{ mr: 1, borderRadius: 5, width: "10vh" }} >
-                                Edit
-                            </Button>
-                            <Button onClick={handleClose} variant="contained" sx={{ mx: 1, borderRadius: 5 }} >
-                                Mark As Closed
-                            </Button>
-                            <Button onClick={handleGenerateLink} variant="contained" sx={{ mx: 1, borderRadius: 5 }} >
-                                Generate Link
-                            </Button>
-                        </Box> : null
+                        // <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
+                        <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "space-between" }}>
+                            <Box sx={{
+                                px: 2,
+                                pt: .5,
+                                pb: .5,
+                            }}>
+                                <Typography variant="h6">
+                                    Matter Details
+                                </Typography>
+                            </Box>
+                            <Box>
+                                <Button onClick={handleEdit} variant="contained" sx={{
+                                    ...muiStyles.detailsButtonStyle,
+                                    width: "10vh",
+                                }} >
+                                    Edit
+                                </Button>
+                                <Button onClick={handleClose} variant="contained" sx={muiStyles.detailsButtonStyle} >
+                                    Mark As Closed
+                                </Button>
+                                <Button onClick={handleGenerateLink} variant="contained" sx={muiStyles.detailsButtonStyle} >
+                                    Generate Link
+                                </Button>
+                            </Box>
+                        </Card>
+                        : null
                 }
 
                 <TableContainer component={Paper} sx={{ boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
@@ -114,7 +131,7 @@ const MatterDetails = ({ caseItem }) => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </Container>
+            </Container >
         </>
     );
 }

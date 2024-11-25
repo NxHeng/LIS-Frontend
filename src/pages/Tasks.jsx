@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Typography, Grid, Box, Stack, Button } from '@mui/material';
+import { Container, Typography, Grid, Box, Stack, Button, Card, CardContent } from '@mui/material';
+import QuizIcon from '@mui/icons-material/Quiz';
 
 import { useTaskContext } from '../context/TaskContext';
 import CentralTaskItem from '../components/Tasks/CentralTaskItem';
 import CentralTaskDetail from '../components/Tasks/CentralTaskDetail';
+import muiStyles from '../styles/muiStyles';
+import Background from '../components/Background';
 
 const Tasks = () => {
 
@@ -36,67 +39,103 @@ const Tasks = () => {
 
     return (
         <>
+            <Background />
             {/* Main Task List Section */}
-            <Container sx={{ p: 2 }}>
-                <Typography variant='h2'>Tasks</Typography>
+            <Container maxWidth='xl' sx={{ p: 2 }}>
                 <Box sx={{ flexGrow: 1, mt: 2 }}>
                     <Grid container spacing={2}>
                         {/* Side Navigation */}
-                        <Grid item xs={3}>
-                            <Stack>
-                                <Typography variant='h4' color='grey'>Status</Typography>
-    
-                                <Button onClick={() => handleStatusFilter("Pending")} variant={statusFilter === "Pending" ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }}>
-                                    Pending
-                                </Button>
-    
-                                <Button onClick={() => handleStatusFilter("Overdue")} variant={statusFilter === "Overdue" ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }}>
-                                    Overdue
-                                </Button>
-    
-                                <Button onClick={() => handleStatusFilter("On Hold")} variant={statusFilter === "On Hold" ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }}>
-                                    On Hold
-                                </Button>
-    
-                                <Button onClick={() => handleStatusFilter("Completed")} variant={statusFilter === "Completed" ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }}>
-                                    Completed
-                                </Button>
-    
-                                <Button onClick={() => handleStatusFilter("Awaiting Initiation")} variant={statusFilter === "Awaiting Initiation" ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }}>
-                                    Awaiting Initiation
-                                </Button>
-                            </Stack>
+                        <Grid item xs={2}>
+                            <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
+                                <CardContent>
+                                    <Stack spacing={1}>
+                                        <Box sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            px: 2,
+                                            pt: 1,
+                                            pb: .5,
+                                        }}>
+                                            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                                                Tasks
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={muiStyles.sideNavTitleStyle}>
+                                            <QuizIcon fontSize="medium" sx={{ mr: 1 }} />
+                                            <Typography variant="subtitle1">
+                                                Status
+                                            </Typography>
+                                        </Box>
+
+                                        <Button onClick={() => handleStatusFilter("Pending")} variant={statusFilter === "Pending" ? "contained" : "text"} sx={muiStyles.buttonStyle}>
+                                            Pending
+                                        </Button>
+
+                                        <Button onClick={() => handleStatusFilter("Overdue")} variant={statusFilter === "Overdue" ? "contained" : "text"} sx={muiStyles.buttonStyle}>
+                                            Overdue
+                                        </Button>
+
+                                        <Button onClick={() => handleStatusFilter("On Hold")} variant={statusFilter === "On Hold" ? "contained" : "text"} sx={muiStyles.buttonStyle}>
+                                            On Hold
+                                        </Button>
+
+                                        <Button onClick={() => handleStatusFilter("Completed")} variant={statusFilter === "Completed" ? "contained" : "text"} sx={muiStyles.buttonStyle}>
+                                            Completed
+                                        </Button>
+
+                                        <Button onClick={() => handleStatusFilter("Awaiting Initiation")} variant={statusFilter === "Awaiting Initiation" ? "contained" : "text"} sx={muiStyles.buttonStyle}>
+                                            Awaiting Initiation
+                                        </Button>
+                                    </Stack>
+                                </CardContent>
+                            </Card>
                         </Grid>
-    
+
                         {/* Task List */}
-                        <Grid item xs={9}>
-                            <Container maxWidth="md">
-                                <Box sx={{ mt: 2 }}>
-                                    <Typography variant='h4'>Task List</Typography>
-                                    <Box sx={{ mt: 2 }}>
-                                        <Grid container spacing={2}>
-                                            {filteredTasks?.length > 0 ? (
-                                                filteredTasks.map((task, index) => (
-                                                    <Grid item xs={9} key={task._id}>
-                                                        <CentralTaskItem task={task} index={index} />
-                                                    </Grid>
-                                                ))
-                                            ) : (
-                                                <Grid item xs={12}>
+                        <Grid item xs={7}>
+                            <Container>
+                                <Stack spacing={2}>
+                                    <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2 }}>
+                                        <Box sx={{
+                                            px: 2,
+                                            pt: .5,
+                                            pb: .5,
+                                        }}>
+                                            <Typography variant="h6">
+                                                Task List
+                                            </Typography>
+                                        </Box>
+                                    </Card>
+                                    <Grid>
+                                        <Card sx={{ ...muiStyles.cardStyle, p: 1, mb: 10, backdropFilter: 'unset' }}>
+                                            <CardContent>
+                                                {filteredTasks?.length > 0 ? (
+                                                    filteredTasks.map((task, index) => (
+                                                        <CentralTaskItem key={task._id} task={task} index={index} />
+                                                    ))
+                                                ) : (
                                                     <Typography variant='h5' color='grey'>No Tasks Available</Typography>
-                                                </Grid>
-                                            )}
-                                        </Grid>
-                                    </Box>
-                                </Box>
+                                                )}
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                </Stack>
                             </Container>
                         </Grid>
+
+                        {/* Task Detail Section */}
+                        <Grid item xs={3}>
+                            <Box sx={{}}>
+                                <CentralTaskDetail />
+                            </Box>
+                        </Grid>
+
                     </Grid>
                 </Box>
             </Container>
-    
+
             {/* Task Detail Section outside Container */}
-            <Box
+            {/* <Box
                 sx={{
                     width: '25%',
                     backgroundColor: "#f8f9fa",
@@ -109,11 +148,11 @@ const Tasks = () => {
                 }}
             >
                 <CentralTaskDetail />
-            </Box>
+            </Box> */}
         </>
     );
-    
-    
+
+
 };
 
 export default Tasks;

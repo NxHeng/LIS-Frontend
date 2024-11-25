@@ -16,10 +16,14 @@ import {
     Container,
     TextField,
     InputAdornment,
+    Card,
+    CardContent,
+    Stack
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Autocomplete from '@mui/material/Autocomplete';
 import SearchIcon from '@mui/icons-material/Search';
+import muiStyles from '../../../styles/muiStyles';
 
 import FileItem from './FileItem';
 import FolderItem from './FolderItem';
@@ -37,14 +41,15 @@ import { useCaseContext } from '../../../context/CaseContext';
 
 const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
 
-    const { open, setOpen, selectedFile, setSelectedFile, filePreview, createFolder, uploadFile, folderStack, setFolderStack, deleteFile, deleteFolder, renameFile, renameFolder, setSelectedFolder, selectedFolder, selectedFolderForMove, setSelectedFolderForMove, downloadFile, moveFile, moveFolder, folderStackForMove, setFolderStackForMove } = useDocumentContext();
+    const { open, setOpen, selectedFile, setSelectedFile, filePreview, createFolder, uploadFile, folderStack, setFolderStack, deleteFile, deleteFolder, renameFile, renameFolder, setSelectedFolder, selectedFolder, selectedFolderForMove, setSelectedFolderForMove, downloadFile, moveFile, moveFolder, folderStackForMove, setFolderStackForMove, handleAnchorClose, anchorPosition, setAnchorPosition, handleRename, handleDelete, handleDownload, moveDialogOpen, setMoveDialogOpen, renameDialogOpen, setRenameDialogOpen, newName, setNewName } = useDocumentContext();
+
     const { isTemporary } = useCaseContext();
 
     // Combine folders and files into a single list
-    const [anchorPosition, setAnchorPosition] = useState(null);
-    const [moveDialogOpen, setMoveDialogOpen] = useState(false);
-    const [renameDialogOpen, setRenameDialogOpen] = useState(false); // State for the rename dialog
-    const [newName, setNewName] = useState('');
+    // const [anchorPosition, setAnchorPosition] = useState(null);
+    // const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+    // const [renameDialogOpen, setRenameDialogOpen] = useState(false); // State for the rename dialog
+    // const [newName, setNewName] = useState('');
 
     const caseItem = localStorage.getItem('caseItem');
     const caseId = caseItem ? JSON.parse(caseItem)._id : {};
@@ -170,26 +175,26 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
         }
     };
 
-    const handleAnchorClose = () => {
-        setAnchorPosition(null);
-        // setSelectedFile(null);
-    };
+    // const handleAnchorClose = () => {
+    //     setAnchorPosition(null);
+    //     // setSelectedFile(null);
+    // };
 
-    const handleDelete = () => {
-        if (selectedFile || selectedFolder) {
-            if (selectedFile?.fileName) {
-                // Perform folder delete operation
-                deleteFile({ fileId: selectedFile._id, caseId });
-                console.log('Deleting file:', selectedFile.fileName);
-            } else {
-                // Perform file delete operation
-                deleteFolder({ folderId: selectedFolder._id, caseId });
-                console.log('Deleting folder:', selectedFolder.folderName);
-            }
-        }
-        handleAnchorClose(); // Close the context menu after performing the delete action
-        setSelectedFile(null);
-    };
+    // const handleDelete = () => {
+    //     if (selectedFile || selectedFolder) {
+    //         if (selectedFile?.fileName) {
+    //             // Perform folder delete operation
+    //             deleteFile({ fileId: selectedFile._id, caseId });
+    //             console.log('Deleting file:', selectedFile.fileName);
+    //         } else {
+    //             // Perform file delete operation
+    //             deleteFolder({ folderId: selectedFolder._id, caseId });
+    //             console.log('Deleting folder:', selectedFolder.folderName);
+    //         }
+    //     }
+    //     handleAnchorClose(); // Close the context menu after performing the delete action
+    //     setSelectedFile(null);
+    // };
 
     const handleRenameDialogClose = () => {
         setRenameDialogOpen(false);
@@ -216,28 +221,28 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
         handleRenameDialogClose(); // Close dialog after renaming
     };
 
-    // Open the rename dialog when Rename option is selected
-    const handleRename = () => {
-        console.log(selectedFile, selectedFolder);
-        if (selectedFile) {
-            setNewName(selectedFile.fileName); // Set initial value to current name
-            setRenameDialogOpen(true);
-        } else {
-            setNewName(selectedFolder.folderName); // Set initial value to current name
-            setRenameDialogOpen(true);
-        }
-        handleAnchorClose();
-    };
+    // // Open the rename dialog when Rename option is selected
+    // const handleRename = () => {
+    //     console.log(selectedFile, selectedFolder);
+    //     if (selectedFile) {
+    //         setNewName(selectedFile.fileName); // Set initial value to current name
+    //         setRenameDialogOpen(true);
+    //     } else {
+    //         setNewName(selectedFolder.folderName); // Set initial value to current name
+    //         setRenameDialogOpen(true);
+    //     }
+    //     handleAnchorClose();
+    // };
 
-    const handleDownload = () => {
-        if (selectedFile) {
-            // Perform download operation
-            console.log(selectedFile);
-            downloadFile(selectedFile._id, selectedFile.fileName); // Pass fileId and fileName as separate arguments
-            console.log('Downloading file:', selectedFile.fileName);
-        }
-        handleAnchorClose(); // Close the context menu after performing the download action
-    };
+    // const handleDownload = () => {
+    //     if (selectedFile) {
+    //         // Perform download operation
+    //         console.log(selectedFile);
+    //         downloadFile(selectedFile._id, selectedFile.fileName); // Pass fileId and fileName as separate arguments
+    //         console.log('Downloading file:', selectedFile.fileName);
+    //     }
+    //     handleAnchorClose(); // Close the context menu after performing the download action
+    // };
 
 
     const handleMove = () => {
@@ -272,142 +277,162 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
 
     return (
         <>
-            {/* Search Bar */}
-            <Container maxWidth="lg">
-                <Autocomplete
-                    freeSolo
-                    id="search-bar"
-                    disableClearable
-                    options={combinedSearchList.map((item) => item.folderName || item.fileName)}
-                    value={searchQuery}
-                    onInputChange={handleSearchChange}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label="Search"
-                            InputProps={{
-                                ...params.InputProps,
-                                type: 'search',
-                                endAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
+            <Stack direction='column' spacing={2}>
+                {/* Search Bar */}
+                <Card sx={{ ...muiStyles.cardStyle, p: 2, display: "flex", justifyContent: "start" }}>
+                    <Box sx={{
+                        pl: 2,
+                        pt: .4,
+                    }}>
+                        <Typography variant="h6">
+                            Documents
+                        </Typography>
+                    </Box>
+                    <Container maxWidth="lg">
+                        <Autocomplete
+                            freeSolo
+                            id="search-bar"
+                            disableClearable
+                            options={combinedSearchList.map((item) => item.folderName || item.fileName)}
+                            value={searchQuery}
+                            onInputChange={handleSearchChange}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Search"
+                                    size="small"
+                                    sx={{
+                                        '.MuiInputBase-root': {
+                                            height: '2.5rem', // Adjust the height
+                                        },
+                                    }}
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        type: 'search',
+                                        endAdornment: (
+                                            <InputAdornment position="start">
+                                                <SearchIcon />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            )}
                         />
-                    )}
-                />
-            </Container>
-            {/* Buttons */}
-            {user.role !== 'client' && !isTemporary && (
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', padding: 1, mt: 1 }}>
-                    <NewItem caseId={caseId} createFolder={createFolder} uploadFile={uploadFile} />
-                    <SortFilter
-                        selectedDate={selectedDate}
-                        setSelectedDate={setSelectedDate}
-                        filterByType={filterByType}
-                        setFilterByType={setFilterByType}
-                        sortBy={sortBy}
-                        setSortBy={setSortBy}
-                    />
-                </Box>
-            )}
+                    </Container>
+                </Card>
+                {/* Buttons */}
+                {user.role !== 'client' && !isTemporary && (
+                    <Card sx={{ ...muiStyles.cardStyle, p: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <NewItem caseId={caseId} createFolder={createFolder} uploadFile={uploadFile} />
+                            <SortFilter
+                                selectedDate={selectedDate}
+                                setSelectedDate={setSelectedDate}
+                                filterByType={filterByType}
+                                setFilterByType={setFilterByType}
+                                sortBy={sortBy}
+                                setSortBy={setSortBy}
+                            />
+                        </Box>
+                    </Card>
+                )}
 
-            {/* Main Content */}
-            <TableContainer component={Paper} sx={{
-                maxHeight: '65vh',
-                overflow: 'auto',
-                mt: 1,
-                borderRadius: 3,
-                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-            }}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>
-                                <ListItem>
-                                    <ListItemIcon sx={{ pr: 0 }}>
-                                        {/* <FolderIcon sx={{ visibility: 'hidden' }} fontSize="medium" /> */}
-                                        {folderStack.length > 0 && (
-                                            <IconButton
-                                                sx={{
-                                                    backgroundColor: 'white',
-                                                    color: 'primary.main',
-                                                    borderRadius: '50%',
-                                                    width: '40px',
-                                                    height: '40px',
-                                                    border: '2px solid',
-                                                    borderColor: 'primary.main',
-                                                    '&:hover': {
-                                                        backgroundColor: 'primary.dark',
-                                                        borderColor: 'primary.dark',
-                                                        color: 'white',
-                                                    },
-                                                }}
-                                                onClick={handleBackClick}
-                                            >
-                                                <ArrowBackIcon />
-                                            </IconButton>
-                                        )}
-                                    </ListItemIcon>
-                                    <Typography variant='button'>Name</Typography>
-                                </ListItem>
-                            </TableCell>
-                            <TableCell align='right'>
-                                <Typography variant='button'>
-                                    Date
-                                </Typography>
-                            </TableCell>
-                            <TableCell align='right'>
-                                <Typography variant='button'>
-                                    Type
-                                </Typography>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {sortedList.length === 0 ? (
+                {/* Main Content */}
+                <TableContainer component={Paper} sx={{
+                    maxHeight: '65vh',
+                    overflow: 'auto',
+                    mt: 1,
+                    borderRadius: 3,
+                    boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                }}>
+                    <Table>
+                        <TableHead>
                             <TableRow>
-                                <TableCell colSpan={3} align="center">
-                                    <Typography variant="body1" color="textSecondary">
-                                        No items to display
+                                <TableCell>
+                                    <ListItem>
+                                        <ListItemIcon sx={{ pr: 0 }}>
+                                            {/* <FolderIcon sx={{ visibility: 'hidden' }} fontSize="medium" /> */}
+                                            {folderStack.length > 0 && (
+                                                <IconButton
+                                                    sx={{
+                                                        backgroundColor: 'white',
+                                                        color: 'primary.main',
+                                                        borderRadius: '50%',
+                                                        width: '40px',
+                                                        height: '40px',
+                                                        border: '2px solid',
+                                                        borderColor: 'primary.main',
+                                                        '&:hover': {
+                                                            backgroundColor: 'primary.dark',
+                                                            borderColor: 'primary.dark',
+                                                            color: 'white',
+                                                        },
+                                                    }}
+                                                    onClick={handleBackClick}
+                                                >
+                                                    <ArrowBackIcon />
+                                                </IconButton>
+                                            )}
+                                        </ListItemIcon>
+                                        <Typography variant='button'>Name</Typography>
+                                    </ListItem>
+                                </TableCell>
+                                <TableCell align='right'>
+                                    <Typography variant='button'>
+                                        Date
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align='right'>
+                                    <Typography variant='button'>
+                                        Type
                                     </Typography>
                                 </TableCell>
                             </TableRow>
-                        ) : (
-                            sortedList.map((item) => (
-                                <Tooltip key={item._id} title={item.folderName || item.fileName} arrow>
-                                    <TableRow
-                                        sx={{ '&:hover': { backgroundColor: '#f0f0f0', cursor: 'pointer' } }}
-                                        onContextMenu={(event) => handleRightClick(event, item)}
-                                    >
-                                        <TableCell>
-                                            {item.folderName ? (
-                                                <FolderItem key={item._id} folder={item} setCurrentFolderId={setCurrentFolderId} />
-                                            ) : (
-                                                <FileItem key={item._id} file={item} />
-                                            )}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Typography variant="body1" color="textSecondary">
-                                                {new Date(item.createdAt).toLocaleDateString()}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Typography variant="body1" color="textSecondary">
-                                                {item.folderName ? 'Folder' : getFileType(item.fileType)}
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                </Tooltip>
-                            ))
-                        )}
+                        </TableHead>
+                        <TableBody>
+                            {sortedList.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={3} align="center">
+                                        <Typography variant="body1" color="textSecondary">
+                                            No items to display
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                sortedList.map((item) => (
+                                    <Tooltip key={item._id} title={item.folderName || item.fileName} arrow>
+                                        <TableRow
+                                            sx={{ '&:hover': { backgroundColor: '#f0f0f0', cursor: 'pointer' } }}
+                                            onContextMenu={(event) => handleRightClick(event, item)}
+                                        >
+                                            <TableCell>
+                                                {item.folderName ? (
+                                                    <FolderItem key={item._id} folder={item} setCurrentFolderId={setCurrentFolderId} />
+                                                ) : (
+                                                    <FileItem key={item._id} file={item} />
+                                                )}
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <Typography variant="body1" color="textSecondary">
+                                                    {new Date(item.createdAt).toLocaleDateString()}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <Typography variant="body1" color="textSecondary">
+                                                    {item.folderName ? 'Folder' : getFileType(item.fileType)}
+                                                </Typography>
+                                            </TableCell>
+                                        </TableRow>
+                                    </Tooltip>
+                                ))
+                            )}
 
-                    </TableBody>
-                </Table>
-            </TableContainer >
+                        </TableBody>
+                    </Table>
+                </TableContainer >
+            </Stack>
 
-            <Box
+            {/* <Box
                 sx={{
                     width: '24%',
                     height: 'calc(100vh - 64px)', // Adjust this height according to the top app bar height
@@ -423,7 +448,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
                     handleDownload={handleDownload}
                     isTemporary={isTemporary}
                 />
-            </Box>
+            </Box> */}
 
             {/* Right Click Anchor Pop up */}
             <ContextMenu
@@ -434,6 +459,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
                 handleRename={handleRename}
                 handleDownload={handleDownload}
                 selectedFile={selectedFile}
+                caseId={caseId}
             />
 
             {/* Rename Pop up */}

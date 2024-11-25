@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Typography, Container, Stack, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Typography, Container, Stack, Button, TextField, FormControl, InputLabel, Select, MenuItem, Box, Card, CardContent } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import _, { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -9,6 +9,7 @@ import { parseISO, isValid } from 'date-fns';
 import { useTaskContext } from '../../context/TaskContext';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import muiStyles from '../../styles/muiStyles';
 
 import { useCaseContext } from '../../context/CaseContext';
 
@@ -129,18 +130,24 @@ const CentralTaskDetail = () => {
 
     if (!task) {
         return (
-            <Container sx={{ pb: 5 }}>
-                <Typography variant='h5' sx={{ mt: 3 }}>Task Detail</Typography>
-                <Typography>No task selected</Typography>
-            </Container>
+            <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
+                <CardContent>
+                    <Stack direction='column' sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "auto", p: 2 }}>
+                        <Typography variant='h5'>Task Detail</Typography>
+                        <Typography>No task selected</Typography>
+                    </Stack>
+                </CardContent>
+            </Card>
         );
     }
 
     return (
-        <Container sx={{ pb: 5 }}>
+        <Container sx={{ ...muiStyles.cardStyle, height: 'auto', py: 1 }}>
             <Typography variant='h5' sx={{ mt: 3, mb: 2 }}>Task Detail</Typography>
-            <Typography variant='h6' color='grey'>Case Title</Typography>
-            <Typography onClick={handleTitleClick} sx={{ cursor: "pointer" }} variant='h6'>{task.matterName}</Typography>
+            <Typography variant='' color='grey'>Case Title</Typography>
+            <Typography onClick={handleTitleClick} sx={{ cursor: "pointer" }} variant='body1'>
+                {task.matterName}
+            </Typography>
 
             <LocalizationProvider dateAdapter={AdapterDateFns}>
                 {/* <Stack spacing={2} component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}> */}

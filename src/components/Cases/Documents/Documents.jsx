@@ -29,7 +29,6 @@ const Documents = ({ caseItem }) => {
 
     return (
         <Container>
-            <Typography variant="h4" gutterBottom>Documents</Typography>
             <FolderView
                 searchList={searchList}
                 folderData={folderData}

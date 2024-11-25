@@ -3,6 +3,7 @@ import { Button, Menu, MenuItem, Dialog, DialogActions, DialogTitle, DialogConte
 import AddIcon from '@mui/icons-material/Add';
 import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import muiStyles from '../../../styles/muiStyles';
 
 const NewItem = ({ caseId, createFolder, uploadFile }) => {
     const [anchorEl, setAnchorEl] = useState(null); // Controls the menu
@@ -79,7 +80,7 @@ const NewItem = ({ caseId, createFolder, uploadFile }) => {
                 variant="contained"
                 startIcon={<AddIcon />}
                 onClick={handleClick}
-                sx={{ backgroundColor: 'primary', color: 'white', borderRadius: 5, width: '20vh' }}
+                sx={{ ...muiStyles.detailsButtonStyle, width: '20vh' }}
             >
                 New
             </Button>

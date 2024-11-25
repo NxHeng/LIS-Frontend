@@ -3,7 +3,7 @@ import React from 'react';
 import { Menu, MenuItem, Typography } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 
-const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDelete, handleRename, handleDownload, selectedFile }) => {
+const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDelete, handleRename, handleDownload, selectedFile, caseId }) => {
 
     const token = localStorage.getItem('token');
     const user = token ? jwtDecode(token) : {};
@@ -16,7 +16,7 @@ const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDele
         menuItems.push(<MenuItem key="rename" onClick={handleRename}>Rename</MenuItem>);
     }
     if (user.role === 'admin' || user.role === 'solicitor') {
-        menuItems.push(<MenuItem key="delete" onClick={handleDelete}>Delete</MenuItem>);
+        menuItems.push(<MenuItem key="delete" onClick={() => handleDelete(caseId)}>Delete</MenuItem>);
     }
     if (selectedFile) {
         menuItems.push(<MenuItem key="download" onClick={handleDownload}>Download</MenuItem>);

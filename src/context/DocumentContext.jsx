@@ -33,10 +33,10 @@ export const DocumentContextProvider = ({ children }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState(null);
 
-    // const userItem = JSON.parse(localStorage.getItem('user'));
-    // const userId = userItem._id;
-
-
+    const [anchorPosition, setAnchorPosition] = useState(null);
+    const [moveDialogOpen, setMoveDialogOpen] = useState(false);
+    const [renameDialogOpen, setRenameDialogOpen] = useState(false); // State for the rename dialog
+    const [newName, setNewName] = useState('');
 
     const fetchContents = async (caseId) => {
         try {
@@ -307,6 +307,52 @@ export const DocumentContextProvider = ({ children }) => {
         }
     };
 
+    // Open the rename dialog when Rename option is selected
+    const handleRename = () => {
+        console.log(selectedFile, selectedFolder);
+        if (selectedFile) {
+            setNewName(selectedFile.fileName); // Set initial value to current name
+            setRenameDialogOpen(true);
+        } else {
+            setNewName(selectedFolder.folderName); // Set initial value to current name
+            setRenameDialogOpen(true);
+        }
+        handleAnchorClose();
+    };
+
+    const handleDownload = () => {
+        if (selectedFile) {
+            // Perform download operation
+            console.log(selectedFile);
+            downloadFile(selectedFile._id, selectedFile.fileName); // Pass fileId and fileName as separate arguments
+            console.log('Downloading file:', selectedFile.fileName);
+        }
+        handleAnchorClose(); // Close the context menu after performing the download action
+    };
+
+    const handleAnchorClose = () => {
+        setAnchorPosition(null);
+        // setSelectedFile(null);
+    };
+
+    const handleDelete = (caseId) => {
+        if (selectedFile || selectedFolder) {
+            if (selectedFile?.fileName) {
+                // Perform folder delete operation
+                deleteFile({ fileId: selectedFile._id, caseId });
+                console.log('Deleting file:', selectedFile.fileName);
+                setSelectedFile(null);
+            } else {
+                // Perform file delete operation
+                deleteFolder({ folderId: selectedFolder._id, caseId });
+                console.log('Deleting folder:', selectedFolder.folderName);
+                setSelectedFolder(null);
+            }
+        }
+        handleAnchorClose(); // Close the context menu after performing the delete action
+        setSelectedFile(null);
+    };
+
 
     return (
         <DocumentContext.Provider value={{
@@ -344,6 +390,19 @@ export const DocumentContextProvider = ({ children }) => {
             moveFile,
             moveFolder,
             fetchFolders,
+            moveDialogOpen,
+            setMoveDialogOpen,
+            anchorPosition,
+            setAnchorPosition,
+            renameDialogOpen,
+            setRenameDialogOpen,
+            newName,
+            setNewName,
+            handleRename,
+            handleDownload,
+            handleAnchorClose,
+            handleDelete,
+
         }}>
             {children}
         </DocumentContext.Provider>

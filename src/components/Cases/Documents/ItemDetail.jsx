@@ -6,20 +6,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
 import { jwtDecode } from 'jwt-decode';
+import muiStyles from '../../../styles/muiStyles';
 
-const FileFolderDetails = ({ item, handleRename, handleDelete, handleDownload, isTemporary }) => {
+const FileFolderDetails = ({ item, handleRename, handleDelete, handleDownload, isTemporary, caseId }) => {
     const isFolder = !!item?.folderName;
     const defaultText = "No file or folder selected";
     const token = localStorage.getItem('token');
     const user = token ? jwtDecode(token) : {};
 
     return (
-        <Card sx={{
-            maxWidth: 600, mt: 5,
-            borderRadius: 3,
-            mr: 2,
-            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-        }}>
+        <Card sx={muiStyles.cardStyle}>
             <CardHeader
                 avatar={
                     <Avatar sx={{ bgcolor: isFolder ? 'primary.main' : 'green' }}>
@@ -39,7 +35,7 @@ const FileFolderDetails = ({ item, handleRename, handleDelete, handleDownload, i
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title="Delete">
-                                        <IconButton color="error" onClick={() => handleDelete()}>
+                                        <IconButton color="error" onClick={() => handleDelete(caseId)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </Tooltip>

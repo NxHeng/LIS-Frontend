@@ -6,12 +6,11 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import io from 'socket.io-client';
@@ -24,7 +23,15 @@ import { useCreateContext } from '../context/CreateContext';
 import { useSocketContext } from '../context/SocketContext';
 import { useAnnouncementContext } from '../context/AnnouncementContext';
 
-const pages = ['Home', 'Cases', 'Tasks', 'Notifications', 'Announcement'];
+import { Home, Assignment, TaskAlt, Notifications, Announcement } from '@mui/icons-material'; // Import specific icons
+
+const pages = [
+    { name: 'Home', icon: <Home /> },
+    { name: 'Cases', icon: <Assignment /> },
+    { name: 'Tasks', icon: <TaskAlt /> },
+    { name: 'Notifications', icon: <Notifications /> },
+    { name: 'Announcement', icon: <Announcement /> }
+];
 const settings = ['Profile', 'Manage Users'];
 
 const Navbar = () => {
@@ -54,7 +61,7 @@ const Navbar = () => {
     useEffect(() => {
         socket?.emit("register", user._id.toString());
         console.log(user._id, socket);
-        
+
         // Listen for new notifications
         socket?.on('newNotification', (notification) => {
             console.log("New notification received", notification);
@@ -169,7 +176,14 @@ const Navbar = () => {
             <AppBar elevation={0} position="static" sx={{ backgroundColor: '#f8f9fa', color: 'black' }}>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                        <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
+                            <Box
+                                component="img"
+                                src="/logo.png"
+                                alt="Logo"
+                                style={{ width: '40px', height: 'auto' }}
+                            />
+                        </Box>
                         <Typography
                             variant="h6"
                             noWrap
@@ -216,19 +230,30 @@ const Navbar = () => {
                                 }}
                             >
                                 {pages.map((page) => (
-                                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                        <Typography
-                                            component={Link}
-                                            to={`/${page.toLowerCase()}`}
-                                            sx={{ textDecoration: 'none', color: 'inherit' }}
-                                        >
-                                            {page}
-                                        </Typography>
+                                    <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                            {/* Display icon and label */}
+                                            {page.icon}
+                                            <Typography
+                                                component={Link}
+                                                to={`/${page.name.toLowerCase()}`}
+                                                sx={{ textDecoration: 'none', color: 'inherit', ml: 1 }} // `ml: 1` for margin between icon and text
+                                            >
+                                                {page.name}
+                                            </Typography>
+                                        </Box>
                                     </MenuItem>
                                 ))}
                             </Menu>
                         </Box>
-                        <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                        <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
+                            <Box
+                                component="img"
+                                src="/logo.png"
+                                alt="Logo"
+                                style={{ width: '40px', height: 'auto' }}
+                            />
+                        </Box>
                         <Typography
                             variant="h5"
                             noWrap
@@ -260,24 +285,25 @@ const Navbar = () => {
                                 >
                                     My Cases
                                 </Button>
-                            </Box>
+                            </Box>  
                         ) : (
-                            <Box sx={{ ml: 35, mr: 3, flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'space-between' }}>
+                            <Box sx={{ ml: 42, mr: 3, flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'space-between' }}>
                                 <Box>
                                     {pages.map((page) => (
-                                        <Button
-                                            key={page}
-                                            component={Link}
-                                            to={`/${page.toLowerCase()}`}
-                                            onClick={handleCloseNavMenu}
-                                            sx={{
-                                                my: 2,
-                                                color: location.pathname === `/${page.toLowerCase()}` ? 'primary.main' : 'inherit',
-                                                textDecoration: 'none',
-                                            }}
-                                        >
-                                            {page}
-                                        </Button>
+                                        <Tooltip key={page.name} title={page.name} arrow>
+                                            <Button
+                                                component={Link}
+                                                to={`/${page.name.toLowerCase()}`}
+                                                onClick={handleCloseNavMenu}
+                                                sx={{
+                                                    my: 2,
+                                                    color: location.pathname === `/${page.name.toLowerCase()}` ? 'primary.main' : 'inherit',
+                                                    textDecoration: 'none',
+                                                }}
+                                            >
+                                                {page.icon} 
+                                            </Button>
+                                        </Tooltip>
                                     ))}
                                 </Box>
                                 <Box>

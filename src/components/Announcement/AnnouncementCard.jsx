@@ -4,24 +4,19 @@ import { format } from 'date-fns';
 
 const AnnouncementCard = ({ announcement, onClick }) => {
 
-    // const formatDate = (dateTime) => {
-    //     const date = dateTime.substring(0, 10);
-    //     const time = dateTime.substring(11, 16);
-
-    //     const [year, month, day] = date.split('-');
-    //     const reversedDate = `${day}/${month}/${year}`;
-
-    //     return `${reversedDate} ${time}`;
-    // }
-
     const formatDate = (date) => {
-        return format(new Date(date), "yyyy-MM-dd");
+        try {
+            return format(new Date(date), "yyyy-MM-dd");
+        } catch (error) {
+            console.error("Invalid date:", date, error);
+            return "Invalid Date"; // Fallback in case of error
+        }
     };
 
     return (
         <Card onClick={onClick} elevation={5} sx={{
             marginBottom: 2,
-            borderRadius: 5,
+            borderRadius: 3,
             boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
             cursor: 'pointer',  // Changes cursor to pointer on hover
             transition: 'transform 0.3s ease',  // Smooth transition for zoom effect
