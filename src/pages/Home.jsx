@@ -74,7 +74,7 @@ const Home = () => {
                     display: 'flex',
                     justifyContent: 'space-between'
                 }}>
-                    <Typography variant='h4' sx={{ fontWeight: 'bold' }}>
+                    <Typography variant='h4' sx={{ px: 2, fontWeight: 'bold' }}>
                         Dashboard
                     </Typography>
                     <Box sx={{

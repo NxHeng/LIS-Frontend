@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
-import { Container, Box, Typography, Button, TextField, InputAdornment, IconButton, CircularProgress, Stack, FormControl, Select, MenuItem } from '@mui/material';
+import { Container, Box, Typography, Button, TextField, InputAdornment, IconButton, CircularProgress, Stack, FormControl, Select, MenuItem, Card, Tab, Tabs } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import muiStyles from '../../../styles/muiStyles';
 
 import { useCategoryContext } from '../../../context/CategoryContext';
 import { useCreateContext } from '../../../context/CreateContext';
@@ -157,54 +156,127 @@ const CategoryUpdate = () => {
     }
 
     return (
-        <Container maxWidth="sm">
-            <Box>
-                <Typography variant="h4" gutterBottom>
-                    Update Category
-                </Typography>
-
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={tabValue} onChange={handleChangeTab} aria-label="basic tabs example">
-                        <Tab label="Case Details" {...a11yProps(0)} />
-                        <Tab label="Tasks" {...a11yProps(1)} />
-                    </Tabs>
-                </Box>
-
-                {/* Case Details */}
-                <CustomTabPanel value={tabValue} index={0}>
-                    {/* <form onSubmit={handleSubmit}> */}
-                    <form>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="categoryName"
-                            label="Category Name"
-                            name="categoryName"
-                            autoFocus
-                            onChange={handleCategoryNameChange}
-                            value={categoryName}
-                        />
-                        <Typography variant="h6" sx={{ mt: 2 }}>
-                            Details Needed
+        <Container maxWidth="md">
+            <Stack spacing={2}>
+                <Card sx={{ ...muiStyles.cardStyle, p: 2 }}>
+                    <Box sx={{
+                        px: 2,
+                        pt: .5,
+                        pb: .5,
+                    }}>
+                        <Typography variant="h6">
+                            Update Category
                         </Typography>
-                        {detailFields.map((field, index) => (
-                            <Stack sx={{ mt: 1 }} key={field.id} spacing={2} direction="row">
+                    </Box>
+                </Card>
+                <Card sx={{ ...muiStyles.cardStyle, p: 4 }}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Tabs value={tabValue} onChange={handleChangeTab} aria-label="basic tabs example">
+                            <Tab sx={{ textTransform: 'capitalize' }} label="Case Details" {...a11yProps(0)} />
+                            <Tab sx={{ textTransform: 'capitalize' }} label="Tasks" {...a11yProps(1)} />
+                        </Tabs>
+                    </Box>
+
+                    {/* Case Details */}
+                    <CustomTabPanel value={tabValue} index={0}>
+                        {/* <form onSubmit={handleSubmit}> */}
+                        <Box component='form'>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="categoryName"
+                                label="Category Name"
+                                name="categoryName"
+                                autoFocus
+                                onChange={handleCategoryNameChange}
+                                value={categoryName}
+                            />
+                            <Typography variant="h6" sx={{ mt: 2 }}>
+                                Details Needed
+                            </Typography>
+                            {detailFields.map((field, index) => (
+                                <Stack sx={{ mt: 1 }} key={field.id} spacing={2} direction="row">
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        value={field.value}
+                                        onChange={(e) => handleDetailChange(field.id, e)}
+                                        label={`Detail ${index + 1}`}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="delete"
+                                                        onClick={() => handleRemoveDetailField(field.id)}
+                                                    >
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                    <FormControl fullWidth>
+                                        <Select
+                                            variant="outlined"
+                                            required
+                                            fullWidth
+                                            value={field.type}
+                                            onChange={(e) => handleDetailTypeChange(field.id, e.target.value)}
+                                        >
+                                            <MenuItem value="text">Text</MenuItem>
+                                            <MenuItem value="date">Date</MenuItem>
+                                            <MenuItem value="price">Price</MenuItem>
+                                            <MenuItem value="number">Number</MenuItem>
+                                            <MenuItem value="stakeholder">Stakeholder</MenuItem>
+                                            {/* Add more types here */}
+                                        </Select>
+                                    </FormControl>
+                                </Stack>
+                            ))}
+                            <Button
+                                onClick={handleAddDetailField}
+                                variant="text"
+                                sx={{ ...muiStyles.detailsButtonStyle, my: 2, width: '100%' }}
+                            >
+                                Add Detail
+                            </Button>
+                            <Box sx={{ display: 'flex', gap: 1, width: 1 }}>
+                                <Button onClick={handleSaveDetail} color='success' variant="contained" sx={{ ...muiStyles.detailsButtonStyle, flexGrow: 1 }}>
+                                    Save Details
+                                </Button>
+                                <Button onClick={handleDeleteCategory} color='error' variant="contained" sx={{ ...muiStyles.detailsButtonStyle, flexGrow: 1 }}>
+                                    Delete
+                                </Button>
+                            </Box>
+                        </Box>
+                    </CustomTabPanel>
+
+                    {/* Tasks */}
+                    <CustomTabPanel value={tabValue} index={1}>
+                        <Box component='form' onSubmit={handleSaveTask}>
+                            <Typography variant="h6" sx={{ mt: 2 }}>
+                                Tasks Needed
+                            </Typography>
+                            {taskFields.map((field, index) => (
                                 <TextField
+                                    key={field.id}
                                     variant="outlined"
                                     margin="normal"
                                     required
                                     fullWidth
                                     value={field.value}
-                                    onChange={(e) => handleDetailChange(field.id, e)}
-                                    label={`Detail ${index + 1}`}
+                                    onChange={(e) => handleTaskChange(field.id, e)}
+                                    label={`Task ${index + 1}`}
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
                                                     aria-label="delete"
-                                                    onClick={() => handleRemoveDetailField(field.id)}
+                                                    onClick={() => handleRemoveTaskField(field.id)}
                                                 >
                                                     <DeleteIcon />
                                                 </IconButton>
@@ -212,92 +284,27 @@ const CategoryUpdate = () => {
                                         ),
                                     }}
                                 />
-                                <FormControl fullWidth>
-                                    <Select
-                                        variant="outlined"
-                                        required
-                                        fullWidth
-                                        value={field.type}
-                                        onChange={(e) => handleDetailTypeChange(field.id, e.target.value)}
-                                    >
-                                        <MenuItem value="text">Text</MenuItem>
-                                        <MenuItem value="date">Date</MenuItem>
-                                        <MenuItem value="price">Price</MenuItem>
-                                        <MenuItem value="number">Number</MenuItem>
-                                        <MenuItem value="stakeholder">Stakeholder</MenuItem>
-                                        {/* Add more types here */}
-                                    </Select>
-                                </FormControl>
-                            </Stack>
-                        ))}
-                        <Button
-                            onClick={handleAddDetailField}
-                            variant="outlined"
-                            sx={{ mt: 3, mb: 2, width: '100%' }}
-                        >
-                            Add Detail
-                        </Button>
-                        <Box sx={{ display: 'flex', gap: 1, width: 1 }}>
-                            <Button onClick={handleSaveDetail} color='success' variant="contained" sx={{ flexGrow: 1 }}>
-                                Save Details
+                            ))}
+                            <Button
+                                onClick={handleAddTaskField}
+                                variant="text"
+                                sx={{ ...muiStyles.detailsButtonStyle, my: 2, width: '100%' }}
+                            >
+                                Add Task
                             </Button>
-                            <Button onClick={handleDeleteCategory} color='error' variant="contained" sx={{ flexGrow: 1 }}>
-                                Delete
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ ...muiStyles.detailsButtonStyle, mt: 1, mb: 2 }}
+                            >
+                                Save Tasks
                             </Button>
                         </Box>
-                    </form>
-                </CustomTabPanel>
-
-                {/* Tasks */}
-                <CustomTabPanel value={tabValue} index={1}>
-                    <form onSubmit={handleSaveTask}>
-                        <Typography variant="h6" sx={{ mt: 2 }}>
-                            Tasks Needed
-                        </Typography>
-                        {taskFields.map((field, index) => (
-                            <TextField
-                                key={field.id}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                value={field.value}
-                                onChange={(e) => handleTaskChange(field.id, e)}
-                                label={`Task ${index + 1}`}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="delete"
-                                                onClick={() => handleRemoveTaskField(field.id)}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        ))}
-                        <Button
-                            onClick={handleAddTaskField}
-                            variant="outlined"
-                            sx={{ mt: 3, mb: 2, width: '100%' }}
-                        >
-                            Add Task
-                        </Button>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 1, mb: 5 }}
-                        >
-                            Save Tasks
-                        </Button>
-                    </form>
-                </CustomTabPanel>
-
-            </Box>
-        </Container>
+                    </CustomTabPanel>
+                </Card>
+            </Stack>
+        </Container >
     );
 };
 
@@ -306,7 +313,7 @@ const CustomTabPanel = (props) => {
     const { children, value, index, ...other } = props;
 
     return (
-        <div
+        <Box
             role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
@@ -318,7 +325,7 @@ const CustomTabPanel = (props) => {
                     {children}
                 </Box>
             )}
-        </div>
+        </Box>
     );
 };
 

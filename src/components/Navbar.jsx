@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import io from 'socket.io-client';
+import muiStyles from '../styles/muiStyles';
 import { jwtDecode } from 'jwt-decode';
 
 import { Link, useLocation } from 'react-router-dom';
@@ -317,6 +318,7 @@ const Navbar = () => {
                                             my: 2,
                                             color: location.pathname === `/create` ? 'primary.main' : 'white',
                                             textDecoration: 'none',
+                                            ...muiStyles.buttonStyle,
                                         }}
                                     >
                                         Create

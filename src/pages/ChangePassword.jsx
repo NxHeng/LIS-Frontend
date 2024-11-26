@@ -3,6 +3,7 @@ import { TextField, Button, Container, Typography, Box, Card, CardContent, Stack
 import { useAuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Background from '../components/Background';
+import muiStyles from '../styles/muiStyles';
 
 const ChangePassword = () => {
     const navigate = useNavigate();
@@ -48,22 +49,7 @@ const ChangePassword = () => {
 
     return (
         <>
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundImage: 'url(/geometric-wallpaper-1.jpg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    filter: 'blur(10px)',
-                    zIndex: -1,
-                    backdropFilter: 'blur(8px)'
-                }}
-            />
-
+            <Background />
             <Container component="main" maxWidth="md" sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -73,7 +59,7 @@ const ChangePassword = () => {
             }}>
                 <Card sx={{ width: '60%', padding: 3, borderRadius: 5, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
                     <CardContent>
-                        <Typography variant="h5" sx={{ textAlign: 'center', marginBottom: 2 }}>
+                        <Typography variant="h5" sx={{ textAlign: 'center', mb: 2 }}>
                             Change Password
                         </Typography>
                         <Box component="form" onSubmit={handleSubmit}>
@@ -119,6 +105,7 @@ const ChangePassword = () => {
                                     fullWidth
                                     variant="contained"
                                     color="primary"
+                                    sx={{ ...muiStyles.detailsButtonStyle, }}
                                 >
                                     Change Password
                                 </Button>

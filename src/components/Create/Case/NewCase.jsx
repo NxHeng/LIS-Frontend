@@ -1,7 +1,9 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Container, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, InputAdornment, IconButton, Stack } from '@mui/material';
+import { Container, Box, Typography, FormControl, InputLabel, Select, MenuItem, Button, TextField, InputAdornment, IconButton, Stack, Card, CardContent } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import muiStyles from '../../../styles/muiStyles';
+
 
 import { useCreateContext } from '../../../context/CreateContext';
 import { useCategoryContext } from '../../../context/CategoryContext';
@@ -103,143 +105,158 @@ const NewCase = () => {
     };
 
     return (
-        <Container maxWidth="sm" sx={{ mt: 4 }}>
-            {userList.map((user) => (
-                <Typography key={user._id}>
-                    {user.name}
-                </Typography>
-            ))}
+        <Container maxWidth="md">
+            <Stack spacing={2}>
+                <Card sx={{ ...muiStyles.cardStyle, p: 2 }}>
+                    <Box sx={{
+                        px: 2,
+                        pt: .5,
+                        pb: .5,
+                    }}>
+                        <Typography variant="h6">
+                            New Matter Details
+                        </Typography>
+                    </Box>
+                </Card>
+                <Card sx={{ ...muiStyles.cardStyle, p: 4 }}>
+                    {userList.map((user) => (
+                        <Typography key={user._id}>
+                            {user.name}
+                        </Typography>
+                    ))}
 
-            <Box component="form" onSubmit={handleSubmit}>
-                <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="matterName"
-                    label="Matter Name"
-                    name="matterName"
-                    value={formData.matterName}
-                    onChange={handleChange}
-                    autoFocus
-                    sx={{ mb: 2 }}
-                />
-                <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="fileReference"
-                    label="File Reference"
-                    name="fileReference"
-                    value={formData.fileReference}
-                    onChange={handleChange}
-                    sx={{ mb: 2 }}
-                />
-
-                <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
-                    <InputLabel id="solicitor-label">Solicitor In Charge</InputLabel>
-                    <Select
-                        labelId="solicitor-label"
-                        id="solicitor-select"
-                        value={formData.solicitorInCharge || ''}
-                        label="Solicitor In Charge"
-                        name="solicitorInCharge"
-                        onChange={handleChange}
-                    >
-                        {/* change to === after roles are applied */}
-                        {userList.filter(user => user.role !== 'Solicitor').map(user => (
-                            <MenuItem key={user._id} value={user._id}>
-                                {user.username}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-
-                <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
-                    <InputLabel id="clerk-label">Clerk In Charge</InputLabel>
-                    <Select
-                        labelId="clerk-label"
-                        id="clerk-select"
-                        value={formData.clerkInCharge}
-                        label="Clerk In Charge"
-                        name="clerkInCharge"
-                        onChange={handleChange}
-                    >
-                        {userList.filter(user => user.role !== 'Clerk').map(user => (
-                            <MenuItem key={user._id} value={user._id}>
-                                {user.username}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-
-                <Typography>
-                    Clients
-                </Typography>
-                {formData.clients.map((client, index) => (
-                    <Stack direction='row' spacing={2} key={client.id} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                        {/* Client Name Input */}
+                    <Box component="form" onSubmit={handleSubmit}>
                         <TextField
                             variant="outlined"
                             required
                             fullWidth
-                            value={client.name || ''}
-                            onChange={(e) => handleClientChange(client.id, e, 'name')}
-                            label={`Client Name ${index + 1}`}
-                            sx={{ flex: 1 }}
+                            id="matterName"
+                            label="Matter Name"
+                            name="matterName"
+                            value={formData.matterName}
+                            onChange={handleChange}
+                            autoFocus
+                            sx={{ mb: 2 }}
                         />
-
-                        {/* Client IC Input */}
                         <TextField
                             variant="outlined"
                             required
                             fullWidth
-                            value={client.icNumber || ''}
-                            onChange={(e) => handleClientChange(client.id, e, 'icNumber')}
-                            label={`Client IC ${index + 1}`}
-                            sx={{ flex: 1 }}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="delete"
-                                            onClick={() => handleRemoveClient(client.id)}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
+                            id="fileReference"
+                            label="File Reference"
+                            name="fileReference"
+                            value={formData.fileReference}
+                            onChange={handleChange}
+                            sx={{ mb: 2 }}
                         />
-                    </Stack>
-                ))}
-                <Button
-                    onClick={handleAddClient}
-                    variant="outlined"
-                    sx={{ mb: 2, width: '100%' }}
-                >
-                    Add Client +
-                </Button>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="category-label">Category</InputLabel>
-                    <Select
-                        labelId="category-label"
-                        id="category-select"
-                        value={categoryLoaded && category ? category._id : ''}
-                        label="Category"
-                        onChange={handleCategoryChange}
-                        sx={{ mb: 2 }}
-                    >
-                        {categories.map((category) => (
-                            <MenuItem key={category._id} value={category._id}>
-                                {category.categoryName}
-                            </MenuItem>
+
+                        <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
+                            <InputLabel id="solicitor-label">Solicitor In Charge</InputLabel>
+                            <Select
+                                labelId="solicitor-label"
+                                id="solicitor-select"
+                                value={formData.solicitorInCharge || ''}
+                                label="Solicitor In Charge"
+                                name="solicitorInCharge"
+                                onChange={handleChange}
+                            >
+                                {/* change to === after roles are applied */}
+                                {userList.filter(user => user.role !== 'Solicitor').map(user => (
+                                    <MenuItem key={user._id} value={user._id}>
+                                        {user.username}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal" sx={{ mb: 2 }}>
+                            <InputLabel id="clerk-label">Clerk In Charge</InputLabel>
+                            <Select
+                                labelId="clerk-label"
+                                id="clerk-select"
+                                value={formData.clerkInCharge}
+                                label="Clerk In Charge"
+                                name="clerkInCharge"
+                                onChange={handleChange}
+                            >
+                                {userList.filter(user => user.role !== 'Clerk').map(user => (
+                                    <MenuItem key={user._id} value={user._id}>
+                                        {user.username}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <Typography sx={muiStyles.sideNavTitleStyle}>
+                            Clients
+                        </Typography>
+                        {formData.clients.map((client, index) => (
+                            <Stack direction='row' spacing={2} key={client.id} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                                {/* Client Name Input */}
+                                <TextField
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    value={client.name || ''}
+                                    onChange={(e) => handleClientChange(client.id, e, 'name')}
+                                    label={`Client Name ${index + 1}`}
+                                    sx={{ flex: 1 }}
+                                />
+
+                                {/* Client IC Input */}
+                                <TextField
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    value={client.icNumber || ''}
+                                    onChange={(e) => handleClientChange(client.id, e, 'icNumber')}
+                                    label={`Client IC ${index + 1}`}
+                                    sx={{ flex: 1 }}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="delete"
+                                                    onClick={() => handleRemoveClient(client.id)}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            </Stack>
                         ))}
-                    </Select>
-                </FormControl>
-                <Button type="submit" variant="contained" color="primary" fullWidth>
-                    Continue
-                </Button>
-            </Box>
+                        <Button
+                            onClick={handleAddClient}
+                            variant="text"
+                            sx={{ ...muiStyles.detailsButtonStyle, width: '100%', mb: 2 }}
+                        >
+                            Add Client +
+                        </Button>
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="category-label">Category</InputLabel>
+                            <Select
+                                labelId="category-label"
+                                id="category-select"
+                                value={categoryLoaded && category ? category._id : ''}
+                                label="Category"
+                                onChange={handleCategoryChange}
+                                sx={{ mb: 2 }}
+                            >
+                                {categories.map((category) => (
+                                    <MenuItem key={category._id} value={category._id}>
+                                        {category.categoryName}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <Button type="submit" variant="contained" color="primary" fullWidth sx={muiStyles.detailsButtonStyle}>
+                            Continue
+                        </Button>
+                    </Box>
+                </Card>
+            </Stack>
         </Container>
     );
 };

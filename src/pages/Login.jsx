@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, Snackbar, Alert, Card, CardContent, Stack } from '@mui/material';
+import Background from '../components/Background';
 import { useAuthContext } from '../context/AuthContext';
 
 const Login = () => {
@@ -27,21 +28,7 @@ const Login = () => {
 
     return (
         <>
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundImage: 'url(/geometric-wallpaper-1.jpg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    filter: 'blur(10px)',
-                    zIndex: -1,
-                    backdropFilter: 'blur(8px)'
-                }}
-            />
+            <Background/>
             <Container component="main"
                 maxWidth="xs"
                 sx={{

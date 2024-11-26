@@ -20,6 +20,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import { useAuthContext } from '../context/AuthContext';
 import Background from '../components/Background';
+import muiStyles from '../styles/muiStyles';
 
 const Profile = () => {
 
@@ -48,23 +49,9 @@ const Profile = () => {
     // };
 
     return (
-        
+
         <>
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundImage: 'url(/geometric-wallpaper-1.jpg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    filter: 'blur(10px)',
-                    zIndex: -1,
-                    backdropFilter: 'blur(8px)'
-                }}
-            />
+            <Background />
             <Container maxWidth="md" sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -149,7 +136,7 @@ const Profile = () => {
                         <Stack
                             direction="row"
                             spacing={2}
-                            justifyContent="center"
+                            justifyContent="end"
                             sx={{ mt: 2 }}
                         >
                             {/* <Button
@@ -161,18 +148,20 @@ const Profile = () => {
                                 Edit Profile
                             </Button> */}
                             <Button
-                                variant="outlined"
+                                variant="text"
                                 color="primary"
                                 startIcon={<LockResetIcon />}
                                 onClick={handleChangePassword}
+                                sx={muiStyles.buttonStyle}
                             >
                                 Change Password
                             </Button>
                             <Button
-                                variant="outlined"
+                                variant="text"
                                 color="primary"
                                 startIcon={<ExitToAppIcon />}
                                 onClick={handleLogout}
+                                sx={muiStyles.buttonStyle}
                             >
                                 Logout
                             </Button>

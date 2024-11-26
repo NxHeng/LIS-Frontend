@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Container, Box, Typography, Button, CircularProgress, Card, CardContent, Stack } from '@mui/material';
+import muiStyles from '../../../styles/muiStyles';
 
 import CategoryCard from './CategoryCard';
 
@@ -24,24 +25,28 @@ const CategoryList = () => {
     }
 
     return (
-        <Container maxWidth="sm" sx={{ marginTop: 4 }}>
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}
-            >
-                <Typography variant="h4" gutterBottom>
-                    Category List
-                </Typography>
-                <Button onClick={toNewCategory} variant="contained" color="primary">
-                    New Category
-                </Button>
-            </Box>
-            {categories.map((category) => (
-                <CategoryCard key={category._id} category={category} />
-            ))}
+        <Container maxWidth="md">
+            <Stack spacing={2}>
+                <Card sx={{ ...muiStyles.cardStyle, p: 2, display: 'flex', justifyContent: 'space-between' }}>
+                    <Box sx={{
+                        px: 2,
+                        pt: .5,
+                        pb: .5,
+                    }}>
+                        <Typography variant="h6">
+                            Categories
+                        </Typography>
+                    </Box>
+                    <Button onClick={toNewCategory} variant="contained" sx={muiStyles.detailsButtonStyle}>
+                        New Category
+                    </Button>
+                </Card>
+                <Card sx={{ ...muiStyles.cardStyle, p: 4 }}>
+                    {categories.map((category) => (
+                        <CategoryCard key={category._id} category={category} />
+                    ))}
+                </Card>
+            </Stack>
         </Container>
     );
 };

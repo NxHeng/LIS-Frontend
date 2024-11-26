@@ -179,6 +179,7 @@ const AuthNavbar = () => {
                                         my: 2,
                                         color: location.pathname === `/${page.toLowerCase()}` ? 'primary.main' : 'inherit',
                                         textDecoration: 'none',
+                                        textTransform: 'capitalize',
                                     }}
                                 >
                                     {page === 'Register-Client' ? 'Register' : page}
