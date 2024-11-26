@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Card, CardContent, Box, Stack, Button, Autocomplete, InputAdornment, TextField, CircularProgress } from '@mui/material';
+import { Container, Typography, Card, CardContent, Box, Stack, Button, Autocomplete, InputAdornment, TextField, CircularProgress, Pagination } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClientCaseCard from '../components/Cases/ClientCaseCard';
 import Background from '../components/Background';
+import muiStyles from '../styles/muiStyles';
 
 import { useCaseContext } from '../context/CaseContext';
 import { useCategoryContext } from '../context/CategoryContext';
@@ -16,6 +17,9 @@ const MyCases = () => {
         fetchCasesByClient
     } = useCaseContext();
     const { categories, fetchCategories } = useCategoryContext();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [searchFilteredCases, setSearchFilteredCases] = useState([]);
     const userIc = JSON.parse(localStorage.getItem('user')).ic;
@@ -46,6 +50,15 @@ const MyCases = () => {
         setSearchFilteredCases(filtered);
     };
 
+    const filteredCasesForCurrentPage = searchFilteredCases.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
     if (!caseItemsLoaded) {
         return <CircularProgress sx={{ ml: '120vh', mt: '5vh' }} />
     } else {
@@ -54,53 +67,40 @@ const MyCases = () => {
 
     return (
         <>
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundImage: 'url(/geometric-wallpaper-1.jpg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    filter: 'blur(10px)',
-                    zIndex: -1,
-                    backdropFilter: 'blur(8px)'
-                }}
-            />
-            <Container maxWidth="sm" sx={{ p: 2, mt: 5 }}>
-                {/* <Typography variant='h3'>My Cases</Typography> */}
-                <Card sx={{ width: '100%', padding: 3, borderRadius: 5, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
-                    <CardContent>
+            <Background />
+            <Container maxWidth="md" sx={{ p: 4 }}>
 
-
-                        <Container maxWidth="sm">
-                            <Autocomplete
-                                freeSolo
-                                id="case-search-bar"
-                                disableClearable
-                                options={caseItems.map((option) => option.matterName)}
-                                value={searchQuery}
-                                onInputChange={handleSearchChange}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Search Cases"
-                                        InputProps={{
-                                            ...params.InputProps,
-                                            type: 'search',
-                                            endAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SearchIcon />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                )}
-                            />
-                        </Container>
-                        {/* <Container sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                <Stack direction="column" spacing={2}>
+                    <Card sx={{ ...muiStyles.cardStyle, p: 2 }}>
+                        <CardContent>
+                            <Container maxWidth="lg">
+                                <Autocomplete
+                                    freeSolo
+                                    id="case-search-bar"
+                                    disableClearable
+                                    options={caseItems.map((option) => option.matterName)}
+                                    value={searchQuery}
+                                    onInputChange={handleSearchChange}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Search Cases"
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                type: 'search',
+                                                endAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <SearchIcon />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </Container>
+                        </CardContent>
+                    </Card>
+                    {/* <Container sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                             <Button variant='contained' sx={{ mx: 1 }}>
                                 Date
                             </Button>
@@ -108,14 +108,32 @@ const MyCases = () => {
                                 Sort
                             </Button>
                         </Container> */}
-                        <Container sx={{ mt: 2 }}>
-                            {searchFilteredCases.map((caseItem, index) => (
-                                <ClientCaseCard key={index} caseItem={caseItem} />
-                            ))}
-                        </Container>
-                    </CardContent>
-                </Card>
-            </Container>
+                    <Card sx={muiStyles.cardStyle}>
+                        <CardContent>
+                            <Container sx={{ mt: 2 }}>
+                                {filteredCasesForCurrentPage.map((caseItem, index) => (
+                                    <ClientCaseCard key={index} caseItem={caseItem} />
+                                ))}
+                            </Container>
+                        </CardContent>
+                    </Card>
+                    <Card sx={{
+                        ...muiStyles.cardStyle, p: 0
+                    }}>
+                        <CardContent>
+                            {/* Pagination */}
+                            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
+                                <Pagination
+                                    count={Math.ceil(searchFilteredCases.length / itemsPerPage)}
+                                    page={currentPage}
+                                    onChange={handlePageChange}
+                                    color="primary"
+                                />
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Stack>
+            </Container >
 
         </>
 

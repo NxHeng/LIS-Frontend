@@ -19,18 +19,19 @@ const CaseDetails = ({ caseItem }) => {
 
     return (
         <Container maxWidth="xl" sx={{ width: '100%' }}>
-            {
-                caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' && !isTemporary ?
-                    <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "space-between" }}>
-                        <Box sx={{
-                            px: 2,
-                            pt: .5,
-                            pb: .5,
-                        }}>
-                            <Typography variant="h6">
-                                Case Details
-                            </Typography>
-                        </Box>
+            <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "space-between" }}>
+                <Box sx={{
+                    px: 2,
+                    pt: .5,
+                    pb: .5,
+                }}>
+                    <Typography variant="h6">
+                        Case Details
+                    </Typography>
+                </Box>
+                {
+                    caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' && !isTemporary ?
+
                         <Box>
                             <Button onClick={toEditCaseDetails} variant="contained" sx={{ ...muiStyles.detailsButtonStyle, width: '10vh' }} >
                                 Edit
@@ -39,10 +40,11 @@ const CaseDetails = ({ caseItem }) => {
                                 Print
                             </Button>
                         </Box>
-                    </Card>
-                    : null
-            }
 
+                        : null
+                }
+            </Card>
+            
             {/* Table for Text and Number Fields */}
             {textNumberStakeholderFields.length > 0 ? (
                 <TableContainer component={Paper} sx={{ mb: 3, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>

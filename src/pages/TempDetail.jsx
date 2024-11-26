@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Box, Button, Grid, Stack, Divider, Card, CardContent, CircularProgress } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
+import Background from '../components/Background';
+import muiStyles from '../styles/muiStyles';
 
 import MatterDetails from '../components/Cases/MatterDetails';
 import CaseDetails from '../components/Cases/CaseDetails';
 import Documents from '../components/Cases/Documents/Documents';
+import ItemDetail from '../components/Cases/Documents/ItemDetail';
 
 import { useCaseContext } from '../context/CaseContext';
+import { useDocumentContext } from '../context/DocumentContext';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const TempDetail = () => {
 
-    const { detailView, toMatterDetails, toCaseDetails, toDocuments, setIsTemporary } = useCaseContext();
+    const { detailView, toMatterDetails, toCaseDetails, toDocuments, setIsTemporary, isTemporary } = useCaseContext();
+    const { selectedFile, handleDelete, handleRename, handleDownload, selectedFolder } = useDocumentContext();
     const { token } = useParams();
     const navigate = useNavigate();
     const [caseItem, setCaseItem] = useState(null);
@@ -29,6 +34,7 @@ const TempDetail = () => {
                 const { caseData, temporary } = await response.json();
 
                 console.log('Case data:', caseData);
+                localStorage.setItem('caseItem', JSON.stringify(caseData));
                 setCaseItem(caseData);
                 setIsValid(true);
                 setIsTemporary(temporary);
@@ -77,7 +83,7 @@ const TempDetail = () => {
 
         return (
             <Box sx={{
-                maxHeight: '42vh', // Set max height for the scrollable area
+                maxHeight: '56vh', // Set max height for the scrollable area
                 overflowY: 'auto', // Enable vertical scrolling
                 paddingBottom: 2, // Space at the bottom of the scroll area
             }}>
@@ -119,54 +125,64 @@ const TempDetail = () => {
     };
 
     return (
-        <Box sx={{ p: 2 }}>
-
-            <Box sx={{ ml: 27, mt: 2, minHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+        <>
+            <Background />
+            <Container maxWidth='xl' sx={{ p: 4 }}>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     {/* Side Navigation */}
                     <Grid item xs={2}>
-                        <Stack>
-                            <Typography variant='h2'>Cases</Typography>
-                            <Button onClick={toMatterDetails} variant={detailView === 'matterDetails' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
-                                Matter Detail
-                            </Button>
+                        <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
+                            <CardContent>
+                                <Stack spacing={2}>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        px: 2,
+                                        pt: 1,
+                                        pb: .5,
+                                    }}>
+                                        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                                            Cases
+                                        </Typography>
+                                    </Box>
 
-                            <Button onClick={toCaseDetails} variant={detailView === 'caseDetails' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
-                                Case Detail
-                            </Button>
+                                    <Button onClick={toMatterDetails} variant={detailView === 'matterDetails' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                        Matter Detail
+                                    </Button>
 
-                            <Button onClick={toDocuments} variant={detailView === 'documents' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
-                                Documents
-                            </Button>
+                                    <Button onClick={toCaseDetails} variant={detailView === 'caseDetails' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                        Case Detail
+                                    </Button>
 
-                        </Stack>
+                                    <Button onClick={toDocuments} variant={detailView === 'documents' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                        Documents
+                                    </Button>
+                                </Stack>
+                            </CardContent>
+                        </Card>
                     </Grid>
 
                     {/* Main Content */}
                     <Grid item xs={7}>
-                        <Container maxWidth="md" sx={{ mt: 10 }}>
-                            <Box>
-                                {
-                                    detailView === 'matterDetails' ? (
-                                        <MatterDetails caseItem={caseItem} />
-                                    ) : detailView === 'caseDetails' ? (
-                                        <CaseDetails caseItem={caseItem} />
-                                    ) : detailView === 'documents' ? (
-                                        <Documents caseItem={caseItem} />
-                                    ) : null
-                                }
-                            </Box>
-                        </Container>
+
+                        {
+                            detailView === 'matterDetails' ? (
+                                <MatterDetails caseItem={caseItem} />
+                            ) : detailView === 'caseDetails' ? (
+                                <CaseDetails caseItem={caseItem} />
+                            ) : detailView === 'documents' ? (
+                                <Documents caseItem={caseItem} />
+                            ) : null
+                        }
                     </Grid>
 
                     {/* Case Status Card */}
-                    {detailView !== 'documents' && (
+                    {detailView !== 'documents' ? (
                         <Grid item xs={3}>
                             <Card sx={{
-                                mt: 10,
+                                ...muiStyles.cardStyle,
                                 p: 2,
-                                borderRadius: 5,
-                                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                                height: 'auto',
                             }}>
                                 <CardContent>
                                     <Typography variant="h5" gutterBottom>
@@ -176,10 +192,25 @@ const TempDetail = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
-                    )}
+                    ) : detailView === 'documents' ? (
+                        // Item Detail
+                        <Grid item xs={3}>
+                            <Box>
+                                <ItemDetail
+                                    item={selectedFile ? selectedFile : selectedFolder}
+                                    handleRename={handleRename}
+                                    handleDelete={handleDelete}
+                                    handleDownload={handleDownload}
+                                    isTemporary={isTemporary}
+                                    caseId={caseItem._id}
+                                />
+                            </Box>
+                        </Grid>
+                    ) : null
+                    }
                 </Grid>
-            </Box>
-        </Box>
+            </Container>
+        </>
     );
 };
 

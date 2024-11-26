@@ -65,7 +65,7 @@ const Login = () => {
                                         margin="normal"
                                         variant="outlined"
                                     />
-                                    <Typography variant="body2" align="start" sx={{ml:.2}}>
+                                    <Typography variant="body2" sx={{ml:.2}}>
                                         <Box
                                             component={Link}
                                             to='/forgot-password'

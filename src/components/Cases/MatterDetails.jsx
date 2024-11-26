@@ -58,19 +58,20 @@ const MatterDetails = ({ caseItem }) => {
             </Snackbar>
 
             <Container >
-                {
-                    caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' && !isTemporary ?
-                        // <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
-                        <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "space-between" }}>
-                            <Box sx={{
-                                px: 2,
-                                pt: .5,
-                                pb: .5,
-                            }}>
-                                <Typography variant="h6">
-                                    Matter Details
-                                </Typography>
-                            </Box>
+                <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "space-between" }}>
+                    <Box sx={{
+                        px: 2,
+                        pt: .5,
+                        pb: .5,
+                    }}>
+                        <Typography variant="h6">
+                            Matter Details
+                        </Typography>
+                    </Box>
+                    {
+                        caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' && !isTemporary ?
+                            // <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
+
                             <Box>
                                 <Button onClick={handleEdit} variant="contained" sx={{
                                     ...muiStyles.detailsButtonStyle,
@@ -85,10 +86,10 @@ const MatterDetails = ({ caseItem }) => {
                                     Generate Link
                                 </Button>
                             </Box>
-                        </Card>
-                        : null
-                }
 
+                            : null
+                    }
+                </Card>
                 <TableContainer component={Paper} sx={{ boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
                     <Table>
                         <TableHead>

@@ -14,6 +14,10 @@ const FileFolderDetails = ({ item, handleRename, handleDelete, handleDownload, i
     const token = localStorage.getItem('token');
     const user = token ? jwtDecode(token) : {};
 
+    useEffect(() => {
+        console.log('FileFolderDetails:', item);
+    }, []);
+
     return (
         <Card sx={muiStyles.cardStyle}>
             <CardHeader

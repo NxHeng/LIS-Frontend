@@ -17,7 +17,7 @@ const ClientCaseCard = ({ caseItem }) => {
         <Link to={`/client/mycases/details/${caseItem._id}`} onClick={handleClick} style={{ textDecoration: 'none' }}>
             <Card elevation={5} sx={{
                 marginBottom: 2,
-                borderRadius: 5,
+                borderRadius: 3,
                 boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
                 cursor: 'pointer',  // Changes cursor to pointer on hover
                 transition: 'transform 0.3s ease',  // Smooth transition for zoom effect

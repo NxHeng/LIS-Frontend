@@ -1,15 +1,20 @@
 import React, { useEffect } from 'react';
 import { Container, Typography, Box, Button, Grid, Stack, Divider, Card, CardContent, CircularProgress } from '@mui/material';
+import Background from '../components/Background';
+import muiStyles from '../styles/muiStyles';
 
 import MatterDetails from '../components/Cases/MatterDetails';
 import CaseDetails from '../components/Cases/CaseDetails';
 import Documents from '../components/Cases/Documents/Documents';
+import ItemDetail from '../components/Cases/Documents/ItemDetail';
 
 import { useCaseContext } from '../context/CaseContext';
+import { useDocumentContext } from '../context/DocumentContext';
 
 const MyDetails = () => {
 
-    const { detailView, toMatterDetails, toCaseDetails, toDocuments } = useCaseContext();
+    const { detailView, toMatterDetails, toCaseDetails, toDocuments, isTemporary } = useCaseContext();
+    const { selectedFile, handleDelete, handleRename, handleDownload, selectedFolder } = useDocumentContext();
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     useEffect(() => {
@@ -47,7 +52,7 @@ const MyDetails = () => {
 
         return (
             <Box sx={{
-                maxHeight: '42vh', // Set max height for the scrollable area
+                maxHeight: '56vh', // Set max height for the scrollable area
                 overflowY: 'auto', // Enable vertical scrolling
                 paddingBottom: 2, // Space at the bottom of the scroll area
             }}>
@@ -89,32 +94,47 @@ const MyDetails = () => {
     };
 
     return (
-        <Box sx={{ p: 2 }}>
-
-            <Box sx={{ ml: 27, mt: 2, minHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
-                <Grid container spacing={2} sx={{ flexGrow: 1 }}>
+        <>
+            <Background />
+            <Container maxWidth='xl' sx={{ p: 4 }}>
+                <Grid container sx={{ flexGrow: 1 }}>
                     {/* Side Navigation */}
                     <Grid item xs={2}>
-                        <Stack>
-                            <Typography variant='h2'>Cases</Typography>
-                            <Button onClick={toMatterDetails} variant={detailView === 'matterDetails' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
-                                Matter Detail
-                            </Button>
+                        <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
+                            <CardContent>
+                                <Stack spacing={2}>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        px: 2,
+                                        pt: 1,
+                                        pb: .5,
+                                    }}>
+                                        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                                            Cases
+                                        </Typography>
+                                    </Box>
+                                    <Button onClick={toMatterDetails} variant={detailView === 'matterDetails' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                        Matter Detail
+                                    </Button>
 
-                            <Button onClick={toCaseDetails} variant={detailView === 'caseDetails' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
-                                Case Detail
-                            </Button>
+                                    <Button onClick={toCaseDetails} variant={detailView === 'caseDetails' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                        Case Detail
+                                    </Button>
 
-                            <Button onClick={toDocuments} variant={detailView === 'documents' ? "contained" : "outlined"} sx={{ my: 1, borderRadius: 3 }} >
-                                Documents
-                            </Button>
+                                    <Button onClick={toDocuments} variant={detailView === 'documents' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                        Documents
+                                    </Button>
 
-                        </Stack>
+                                </Stack>
+                            </CardContent>
+                        </Card>
+
                     </Grid>
 
                     {/* Main Content */}
                     <Grid item xs={7}>
-                        <Container maxWidth="md" sx={{ mt: 10 }}>
+                        <Container maxWidth="md">
                             <Box>
                                 {
                                     detailView === 'matterDetails' ? (
@@ -130,24 +150,41 @@ const MyDetails = () => {
                     </Grid>
 
                     {/* Case Status Card */}
-                    <Grid item xs={3}>
-                        <Card sx={{
-                            mt: 10,
-                            p: 2,
-                            borderRadius: 5,
-                            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-                        }}>
-                            <CardContent>
-                                <Typography variant="h5" gutterBottom>
-                                    Case Status
-                                </Typography>
-                                {renderTimeline()}
-                            </CardContent>
-                        </Card>
-                    </Grid>
+                    {detailView !== 'documents' ? (
+                        <Grid item xs={3}>
+                            <Card sx={{
+                                ...muiStyles.cardStyle,
+                                p: 2,
+                                height: 'auto',
+                            }}>
+                                <CardContent>
+                                    <Typography variant="h5" gutterBottom>
+                                        Case Status
+                                    </Typography>
+                                    {renderTimeline()}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ) : detailView === 'documents' ? (
+                        // Item Detail
+                        <Grid item xs={3}>
+                            <Box>
+                                <ItemDetail
+                                    item={selectedFile ? selectedFile : selectedFolder}
+                                    handleRename={handleRename}
+                                    handleDelete={handleDelete}
+                                    handleDownload={handleDownload}
+                                    isTemporary={isTemporary}
+                                    caseId={caseItem._id}
+                                />
+                            </Box>
+                        </Grid>
+                    ) : null
+                    }
                 </Grid>
-            </Box>
-        </Box>
+            </Container>
+
+        </>
     );
 };
 
