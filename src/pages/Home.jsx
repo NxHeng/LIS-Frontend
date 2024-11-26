@@ -64,25 +64,24 @@ const Home = () => {
     return (
         <>
             <Background />
-            <Container sx={{ p: 3 }}>
+            <Container maxWidth='lg' sx={{ p: 4 }}>
                 <Paper sx={{
                     ...muiStyle.paperStyle,
-                    mb: 3,
+                    mb: 0,
                     px: 3,
-                    pt: 4,
+                    pt: 2,
                     pb: 3,
                     display: 'flex',
                     justifyContent: 'space-between'
                 }}>
-                    <Typography variant='h4' sx={{ px: 2, fontWeight: 'bold' }}>
+                    <Typography variant='h4' sx={{ px: 2, pt: 1.3, fontWeight: 'bold' }}>
                         Dashboard
                     </Typography>
                     <Box sx={{
                         alignItems: 'center',
                         textAlign: 'right',
                         justifyContent: 'flex-end',
-                        mr: 2,
-                        mt: .3
+                        mr: 2
                     }}>
                         <Typography variant="subtitle1">
                             {formatDate(dateTime)}
@@ -92,13 +91,25 @@ const Home = () => {
                         </Typography>
                     </Box>
                 </Paper>
+                <Paper sx={{
+                    ...muiStyle.paperStyle,
+                    mt: 1.5, mb: 0,
+                    pb: 2, pt: .5, px: 2,
+                    display: 'inline-flex', // Use inline-flex for dynamic width
+                    justifyContent: 'center', // Center content if needed
+                }}>
+                    <Typography variant='h6' sx={{ px: 2, pt: 1, fontWeight: 'bold' }}>
+                        Overview
+                    </Typography>
+                </Paper>
 
-                <Grid container spacing={3}>
+
+                <Grid container spacing={3} sx={{ pt: 1.5 }}>
                     <Grid item xs={6}>
                         <Paper elevation={4} sx={muiStyle.paperStyle} >
                             <Box p={3}>
                                 <Typography variant="h6">Active Cases</Typography>
-                                <Box sx={{ width: 300, height: 300, margin: '0 auto', p: 2 }}>
+                                <Box sx={{ width: 300, height: 300, margin: '0 auto' }}>
                                     <Pie data={pieData} options={pieOptions} />
                                 </Box>
                             </Box>
@@ -140,9 +151,21 @@ const Home = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-
                 </Grid>
-            </Container >
+                <Paper sx={{
+                    ...muiStyle.paperStyle,
+                    mt: 1.5, mb: 0,
+                    pb: 2, pt: .5, px: 2,
+                    display: 'inline-flex', // Use inline-flex for dynamic width
+                    justifyContent: 'center', // Center content if needed
+                }}>
+                    <Typography variant='h6' sx={{ px: 2, pt: 1, fontWeight: 'bold' }}>
+                        Analysis
+                    </Typography>
+                </Paper>
+
+
+            </Container>
         </>
 
     );

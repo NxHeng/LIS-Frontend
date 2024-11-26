@@ -39,7 +39,7 @@ const CaseLog = ({ logs, caseId }) => {
 
     return (
         <>
-            <Card sx={{...muiStyles.cardStyle, height: 'auto'}}>
+            <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
                 <CardContent>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Box sx={{
@@ -73,6 +73,7 @@ const CaseLog = ({ logs, caseId }) => {
                     <Box sx={{
                         maxHeight: '54vh',
                         overflowY: 'auto',
+                        py: 1,
                     }}>
                         {logList.length > 0 ? (
                             logList.map((log, index) => (

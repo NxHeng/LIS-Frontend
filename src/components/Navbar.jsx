@@ -273,20 +273,22 @@ const Navbar = () => {
                         </Typography>
                         {user.role === 'client' ? (
                             <Box sx={{ ml: '30%', flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                                <Button
-                                    key="My Cases"
-                                    component={Link}
-                                    to="/client/mycases"
-                                    onClick={handleCloseNavMenu}
-                                    sx={{
-                                        my: 2,
-                                        color: location.pathname === "/client/mycases" ? 'primary.main' : 'inherit',
-                                        textDecoration: 'none',
-                                    }}
-                                >
-                                    My Cases
-                                </Button>
-                            </Box>  
+                                <Tooltip title='My Cases' arrow>
+                                    <Button
+                                        key="My Cases"
+                                        component={Link}
+                                        to="/client/mycases"
+                                        onClick={handleCloseNavMenu}
+                                        sx={{
+                                            my: 2,
+                                            color: location.pathname === "/client/mycases" ? 'primary.main' : 'inherit',
+                                            textDecoration: 'none',
+                                        }}
+                                    >
+                                        <Assignment />
+                                    </Button>
+                                </Tooltip>
+                            </Box>
                         ) : (
                             <Box sx={{ ml: 42, mr: 3, flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'space-between' }}>
                                 <Box>
@@ -302,7 +304,7 @@ const Navbar = () => {
                                                     textDecoration: 'none',
                                                 }}
                                             >
-                                                {page.icon} 
+                                                {page.icon}
                                             </Button>
                                         </Tooltip>
                                     ))}

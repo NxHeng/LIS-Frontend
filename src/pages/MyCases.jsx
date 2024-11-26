@@ -71,34 +71,41 @@ const MyCases = () => {
             <Container maxWidth="md" sx={{ p: 4 }}>
 
                 <Stack direction="column" spacing={2}>
-                    <Card sx={{ ...muiStyles.cardStyle, p: 2 }}>
-                        <CardContent>
-                            <Container maxWidth="lg">
-                                <Autocomplete
-                                    freeSolo
-                                    id="case-search-bar"
-                                    disableClearable
-                                    options={caseItems.map((option) => option.matterName)}
-                                    value={searchQuery}
-                                    onInputChange={handleSearchChange}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="Search Cases"
-                                            InputProps={{
-                                                ...params.InputProps,
-                                                type: 'search',
-                                                endAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <SearchIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </Container>
-                        </CardContent>
+                    <Card sx={{ ...muiStyles.cardStyle, p: 2, display: 'flex', justifyContent: 'start' }}>
+                        <Box sx={{
+                            pl: 4,
+                            pt: 1.2,
+                        }}>
+                            <Typography variant="h6" noWrap sx={{ fontWeight: 'bold' }}>
+                                My Cases
+                            </Typography>
+                        </Box>
+                        <Container maxWidth="lg">
+                            <Autocomplete
+                                freeSolo
+                                id="case-search-bar"
+                                disableClearable
+                                options={caseItems.map((option) => option.matterName)}
+                                value={searchQuery}
+                                onInputChange={handleSearchChange}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Search Cases"
+                                        InputProps={{
+                                            ...params.InputProps,
+                                            type: 'search',
+                                            endAdornment: (
+                                                <InputAdornment position="start">
+                                                    <SearchIcon />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                )}
+                            />
+                        </Container>
+
                     </Card>
                     {/* <Container sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
                             <Button variant='contained' sx={{ mx: 1 }}>

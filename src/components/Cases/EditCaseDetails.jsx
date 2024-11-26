@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography, Button, TextField, Stack, InputAdornment, Grid } from '@mui/material';
+import { Container, Box, Typography, Button, TextField, Stack, InputAdornment, Grid, Card, CardContent } from '@mui/material';
+import muiStyles from '../../styles/muiStyles';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -58,95 +59,108 @@ const EditCaseDetails = ({ caseItem }) => {
 
     return (
         <Container>
-            <Typography variant='h4' sx={{ mb: 2 }}>Edit Case Details</Typography>
-            <Stack direction="column" spacing={2} component="form" sx={{ mt: 2 }}>
-                {caseData.fields.map((field) => (
-                    <Grid container spacing={2} alignItems="flex-start" key={field._id}>
-                        {/* Main field */}
-                        <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
-                            {field.type === 'date' ? (
-                                <LocalizationProvider dateAdapter={AdapterDateFns} >
-                                    <DatePicker
-                                        label={field.name}
-                                        value={field.value ? new Date(field.value) : null}
-                                        fullWidth
-                                        onChange={(date) => handleDateChange(field._id, date)}
-                                    />
-                                </LocalizationProvider>
-                            ) : (
-                                <TextField
-                                    label={field.name}
-                                    value={field.value}
-                                    onChange={(e) => handleFieldChange(field._id, 'value', e.target.value)}
-                                    fullWidth
-                                    type={
-                                        field.type === 'text' || field.type === 'stakeholder'
-                                            ? 'text'
-                                            : 'number'
-                                    }
-                                    InputProps={
-                                        field.type === 'price'
-                                            ? {
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        RM
-                                                    </InputAdornment>
-                                                ),
-                                                inputProps: { min: 0, step: "0.01" }
-                                            } : {}
-                                    }
-                                />
-                            )}
-                        </Grid>
-                        {/* Additional Fields */}
-                        {field.type === 'stakeholder' ? (
-                            <>
-                                <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
-                                    <TextField
-                                        label="Tel"
-                                        value={field.tel}
-                                        onChange={(e) => handleFieldChange(field._id, 'tel', e.target.value)}
-                                        fullWidth
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
-                                    <TextField
-                                        label="Email"
-                                        value={field.email}
-                                        onChange={(e) => handleFieldChange(field._id, 'email', e.target.value)}
-                                        fullWidth
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
-                                    <TextField
-                                        label="Fax"
-                                        value={field.fax}
-                                        onChange={(e) => handleFieldChange(field._id, 'fax', e.target.value)}
-                                        fullWidth
-                                    />
-                                </Grid>
-                            </>
-                        ) : (
-                            <Grid item xs={12} sm={6} md={9} sx={{ mb: 2 }}>
-                                <TextField
-                                    label="Remarks"
-                                    value={field.remarks}
-                                    onChange={(e) => handleFieldChange(field._id, 'remarks', e.target.value)}
-                                    fullWidth
-                                />
-                            </Grid>
-                        )}
-                    </Grid>
-                ))}
+            <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "space-between" }}>
+                <Box sx={{
+                    px: 2,
+                    pt: .5,
+                    pb: .5,
+                }}>
+                    <Typography variant="h6">
+                        Edit Case Details
+                    </Typography>
+
+                </Box>
                 <Stack direction="row" spacing={2}>
-                    <Button onClick={handleSave} variant="contained" color="primary" fullWidth>
-                        Save Changes
-                    </Button>
-                    <Button onClick={handleCancel} variant="outlined" fullWidth>
+                    <Button onClick={handleCancel} variant="text" sx={muiStyles.detailsButtonStyle}>
                         Cancel
                     </Button>
+                    <Button onClick={handleSave} variant="contained" sx={{ ...muiStyles.detailsButtonStyle }}>
+                        Save Changes
+                    </Button>
                 </Stack>
-            </Stack>
+            </Card>
+            <Card sx={{ ...muiStyles.cardStyle, p: 4, pr: 6 }}>
+                <Stack direction="column" spacing={2} component="form">
+                    {caseData.fields.map((field) => (
+                        <Grid container spacing={1} alignItems="flex-start" key={field._id}>
+                            {/* Main field */}
+                            <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
+                                {field.type === 'date' ? (
+                                    <LocalizationProvider dateAdapter={AdapterDateFns} >
+                                        <DatePicker
+                                            label={field.name}
+                                            value={field.value ? new Date(field.value) : null}
+                                            fullWidth
+                                            onChange={(date) => handleDateChange(field._id, date)}
+                                        />
+                                    </LocalizationProvider>
+                                ) : (
+                                    <TextField
+                                        label={field.name}
+                                        value={field.value}
+                                        onChange={(e) => handleFieldChange(field._id, 'value', e.target.value)}
+                                        fullWidth
+                                        type={
+                                            field.type === 'text' || field.type === 'stakeholder'
+                                                ? 'text'
+                                                : 'number'
+                                        }
+                                        InputProps={
+                                            field.type === 'price'
+                                                ? {
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            RM
+                                                        </InputAdornment>
+                                                    ),
+                                                    inputProps: { min: 0, step: "0.01" }
+                                                } : {}
+                                        }
+                                    />
+                                )}
+                            </Grid>
+                            {/* Additional Fields */}
+                            {field.type === 'stakeholder' ? (
+                                <>
+                                    <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
+                                        <TextField
+                                            label="Tel"
+                                            value={field.tel}
+                                            onChange={(e) => handleFieldChange(field._id, 'tel', e.target.value)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
+                                        <TextField
+                                            label="Email"
+                                            value={field.email}
+                                            onChange={(e) => handleFieldChange(field._id, 'email', e.target.value)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
+                                        <TextField
+                                            label="Fax"
+                                            value={field.fax}
+                                            onChange={(e) => handleFieldChange(field._id, 'fax', e.target.value)}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                </>
+                            ) : (
+                                <Grid item xs={12} sm={6} md={9} sx={{ mb: 2 }}>
+                                    <TextField
+                                        label="Remarks"
+                                        value={field.remarks}
+                                        onChange={(e) => handleFieldChange(field._id, 'remarks', e.target.value)}
+                                        fullWidth
+                                    />
+                                </Grid>
+                            )}
+                        </Grid>
+                    ))}
+                </Stack>
+            </Card>
         </Container>
     );
 };
