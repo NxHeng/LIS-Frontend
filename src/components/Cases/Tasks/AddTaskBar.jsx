@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, AppBar, Toolbar, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import muiStyles from '../../../styles/muiStyles';
 
 import { useTaskContext } from '../../../context/TaskContext';
 import { useCaseContext } from '../../../context/CaseContext';
@@ -37,7 +38,7 @@ const StickyBottomBar = () => {
 
     const caseId = JSON.parse(localStorage.getItem('caseItem'))._id;
 
-    const [taskName, setTaskName] = useState(''); 
+    const [taskName, setTaskName] = useState('');
     const { addTaskToDatabase } = useTaskContext();
     const { fetchCase } = useCaseContext();
 
@@ -59,9 +60,9 @@ const StickyBottomBar = () => {
                         value={taskName}
                         onChange={(e) => setTaskName(e.target.value)}
                     />
-                    <StyledButton onClick={handleAddTask} variant="contained">
+                    <Button onClick={handleAddTask} variant="contained" sx={{ ...muiStyles.buttonStyle, marginRight: "30vh", }}>
                         Add Task +
-                    </StyledButton>
+                    </Button>
                 </Box>
             </Toolbar>
         </StyledAppBar>

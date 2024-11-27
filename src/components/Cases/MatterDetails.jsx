@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Button, TableContainer, TableBody, TableHead, TableCell, Table, TableRow, Paper, Snackbar, Alert, Card, CardContent } from '@mui/material';
+import { Container, Typography, Box, Button, TableContainer, TableBody, TableHead, TableCell, Table, TableRow, Paper, Snackbar, Alert, Card, CardContent, Dialog, DialogContent, DialogTitle, DialogActions } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
-import muiStyles from '../../styles/muiStyles';
+import muiStyles, { TransitionZoom, TransitionGrow, TransitionCollapse, TransitionFade } from '../../styles/muiStyles';
 
 import { useCategoryContext } from '../../context/CategoryContext';
 import { useCaseContext } from '../../context/CaseContext';
@@ -11,6 +11,8 @@ const MatterDetails = ({ caseItem }) => {
 
     const { updateCaseAsClosedInDatabase, toEditMatterDetails, generateLink, isTemporary } = useCaseContext();
     const { fetchCategory, category } = useCategoryContext();
+    const [qrCode, setQrCode] = useState(null);
+    const [qrCodeVisible, setQrCodeVisible] = useState(false); // Toggle QR code visibility
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
@@ -35,12 +37,25 @@ const MatterDetails = ({ caseItem }) => {
         setSnackbarOpen(false);
     };
 
-    const handleGenerateLink = () => {
-        const tempLink = generateLink(caseItem._id)
-        if (tempLink) {
+    const handleGenerateLink = async () => {
+        const { url, qrCode } = await generateLink(caseItem._id)
+        console.log("URL ", url);
+        console.log("QR Code ", qrCode);
+        if (url) {
             setSnackbarMessage("Link copied to clipboard!");
             setSnackbarOpen(true);
         }
+        if (qrCode) {
+            console.log("QR Code: ", qrCode);
+            console.log("QR Code visible: ", qrCodeVisible);
+            setQrCode(qrCode);
+            setQrCodeVisible(true);
+        }
+    }
+
+    const handleCloseQRDialog = () => {
+        setQrCode(null);
+        setQrCodeVisible(false);
     }
 
     return (
@@ -56,6 +71,31 @@ const MatterDetails = ({ caseItem }) => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+
+            {/* Show QR Code in Dialog */}
+            {
+                qrCodeVisible && qrCode &&
+                <Dialog
+                    open={qrCodeVisible}
+                    onClose={handleCloseQRDialog}
+                    TransitionComponent={TransitionZoom}
+                    PaperProps={{
+                        ...muiStyles.DialogSyle  // Style applied to Paper inside the dialog
+                    }}
+                >
+                    <DialogTitle sx={{ display: 'flex', justifyContent: 'center' }}>QR Code</DialogTitle>
+                    <DialogContent>
+                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <Box component='img' sx={muiStyles.cardStyle} src={qrCode} alt="QR Code" />
+                        </Box>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseQRDialog} sx={muiStyles.detailsButtonStyle} color='error' variant='outlined'>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            }
 
             <Container >
                 <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "space-between" }}>

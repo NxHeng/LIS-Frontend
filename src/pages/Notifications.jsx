@@ -203,7 +203,7 @@ const Notifications = () => {
                     <Grid container spacing={2}>
                         {/* Side Navigation */}
                         <Grid item xs={3}>
-                            <Card sx={muiStyles.cardStyle}>
+                            <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
                                 <CardContent>
                                     <Stack spacing={2}>
                                         <Box sx={{

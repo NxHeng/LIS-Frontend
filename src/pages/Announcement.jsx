@@ -199,14 +199,14 @@ const Announcement = () => {
                                     <Box sx={{ display: "flex", justifyContent: "normal" }}>
                                         <Button
                                             variant="contained"
-                                            sx={{ px: 5, borderRadius: 2, mr: 2 }}
+                                            sx={{ ...muiStyles.detailsButtonStyle, px: 4, mr: 2 }}
                                             onClick={() => setPanel('edit')} // Switch to edit panel
                                         >
                                             Edit
                                         </Button>
                                         <Button
                                             variant="contained"
-                                            sx={{ px: 5, borderRadius: 2 }}
+                                            sx={{ ...muiStyles.detailsButtonStyle, px: 4 }}
                                             onClick={handleDelete}
                                             color='error'
                                         >
@@ -241,7 +241,7 @@ const Announcement = () => {
                                 <Typography variant="h5">Edit Announcement</Typography>
                                 <Button
                                     variant="contained"
-                                    sx={{ px: 5, borderRadius: 2 }}
+                                    sx={{ ...muiStyles.detailsButtonStyle, px: 4, mr: 2 }}
                                     onClick={handleSave}
                                 >
                                     Save

@@ -216,14 +216,16 @@ export const CaseContextProvider = ({ children }) => {
             }
             // Parse the response body as JSON
             const data = await response.json();
-            const tempLink = `${window.location.origin}/temporary/${caseId}/${data.token}`;
-            console.log('Temporary link generated:', tempLink);
+            // const tempLink = `${window.location.origin}/temporary/${caseId}/${data.token}`;
+            console.log('Temporary link generated:', data.url);
 
             // Copy the link to clipboard
-            await navigator.clipboard.writeText(tempLink);
+            await navigator.clipboard.writeText(data.url);
             console.log('Temporary link copied to clipboard.');
 
-            return tempLink;
+            console.log('QR Code in context:', data.qrCode);
+
+            return { url: data.url, qrCode: data.qrCode };
         } catch (error) {
             console.error('Error generating link:', error);
         }
