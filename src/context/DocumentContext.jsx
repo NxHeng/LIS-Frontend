@@ -33,10 +33,13 @@ export const DocumentContextProvider = ({ children }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [filePreview, setFilePreview] = useState(null);
 
+    const [openContextMenu, setOpenContextMenu] = useState(false);
+    const [contextMenuEvent, setContextMenuEvent] = useState(null);
     const [anchorPosition, setAnchorPosition] = useState(null);
     const [moveDialogOpen, setMoveDialogOpen] = useState(false);
     const [renameDialogOpen, setRenameDialogOpen] = useState(false); // State for the rename dialog
     const [newName, setNewName] = useState('');
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const fetchContents = async (caseId) => {
         try {
@@ -332,7 +335,10 @@ export const DocumentContextProvider = ({ children }) => {
 
     const handleAnchorClose = () => {
         setAnchorPosition(null);
-        // setSelectedFile(null);
+        setSelectedFile(null);
+        setSelectedFolder(null);
+        setOpenContextMenu(false);
+        setContextMenuEvent(null);
     };
 
     const handleDelete = (caseId) => {
@@ -351,6 +357,16 @@ export const DocumentContextProvider = ({ children }) => {
         }
         handleAnchorClose(); // Close the context menu after performing the delete action
         setSelectedFile(null);
+        setSelectedFolder(null);
+        closeDeleteDialog();
+    };
+
+    const openDeleteDialog = () => {
+        setDeleteDialogOpen(true);
+    };
+
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false);
     };
 
 
@@ -402,7 +418,14 @@ export const DocumentContextProvider = ({ children }) => {
             handleDownload,
             handleAnchorClose,
             handleDelete,
-
+            openContextMenu,
+            setOpenContextMenu,
+            contextMenuEvent,
+            setContextMenuEvent,
+            openDeleteDialog,
+            closeDeleteDialog,
+            deleteDialogOpen,
+            setDeleteDialogOpen
         }}>
             {children}
         </DocumentContext.Provider>

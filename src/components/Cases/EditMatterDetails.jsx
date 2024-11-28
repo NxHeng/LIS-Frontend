@@ -86,7 +86,7 @@ const EditMatterDetails = ({ caseItem }) => {
 
                 </Box>
                 <Box>
-                    <Button onClick={toMatterDetails} variant="text" sx={{ ...muiStyles.detailsButtonStyle }}>
+                    <Button onClick={toMatterDetails} variant="outlined" color='error' sx={{ ...muiStyles.detailsButtonStyle }}>
                         Cancel
                     </Button>
                     <Button onClick={handleSave} variant="contained" sx={muiStyles.detailsButtonStyle}>

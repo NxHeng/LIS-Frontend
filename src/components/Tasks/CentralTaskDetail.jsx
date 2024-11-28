@@ -24,7 +24,9 @@ const CentralTaskDetail = () => {
     //         return null;
     //     }
     // }, []);
+
     const { task, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask, updateFilteredTasks } = useTaskContext();
+
     const user = jwtDecode(localStorage.getItem('token'));
 
     const [formData, setFormData] = useState({
@@ -42,9 +44,9 @@ const CentralTaskDetail = () => {
 
     useEffect(() => {
         if (task) {
-            console.log("Task: ", task);
-            console.log('Task initiationDate:', task.initiationDate);
-            console.log('Parsed initiationDate:', isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null);
+            // console.log("Task: ", task);
+            // console.log('Task initiationDate:', task.initiationDate);
+            // console.log('Parsed initiationDate:', isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null);
 
             setFormData({
                 description: task.description || '',
@@ -65,7 +67,7 @@ const CentralTaskDetail = () => {
         updateTaskInDatabase(task.caseId, task._id, formData);
         updateFilteredTasks(task._id, formData);
         // setTask(formData);
-        console.log("debounce formData: ", formData);
+        // console.log("debounce formData: ", formData);
     }, 1000);
 
     useEffect(() => {
@@ -101,7 +103,7 @@ const CentralTaskDetail = () => {
     };
 
     const handleDateChange = (name, date) => {
-        console.log('Date:', date);
+        // console.log('Date:', date);
         setFormData(prevData => ({
             ...prevData,
             [name]: date ? date.toISOString() : null // Convert back to ISO string
@@ -120,13 +122,30 @@ const CentralTaskDetail = () => {
         setTask(null);
     };
 
-    const { setFromTasks, fromTasks } = useCaseContext();
+    const { setFromTasks, fromTasks, fetchCase } = useCaseContext();
+    const [caseItem, setCaseItem] = useState(null);
     const navigate = useNavigate();
 
-    const handleTitleClick = () => {
-        setFromTasks(true);
-        navigate(`/cases/details/${task.caseId}`);
+    const handleTitleClick = async () => {
+
+        try {
+            const data = await fetchCase(task.caseId);
+            setCaseItem(data);
+            setFromTasks(true);
+        } catch (error) {
+            console.error('Failed to fetch case:', error);
+        }
+        // console.log(task);
+        // navigate(`/cases/details/${task.caseId}`);
     };
+
+    useEffect(() => {
+        if (fromTasks && caseItem) {
+            console.log('!!!Case item:', caseItem);
+            localStorage.setItem('caseItem', JSON.stringify(caseItem));
+            navigate(`/cases/details/${task.caseId}`);
+        }
+    }, [fromTasks, caseItem]);
 
     if (!task) {
         return (

@@ -33,15 +33,17 @@ import ContextMenu from './ContextMenu';
 import RenameDialog from './RenameDialog';
 import MoveDialog from './MoveDialog';
 import ItemDetail from './ItemDetail';
+import FilePreviewDialog from './FilePreviewDialog';
+
+
+import { jwtDecode } from 'jwt-decode';
 
 import { useDocumentContext } from '../../../context/DocumentContext';
-import FilePreviewDialog from './FilePreviewDialog';
-import { jwtDecode } from 'jwt-decode';
 import { useCaseContext } from '../../../context/CaseContext';
 
 const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
 
-    const { open, setOpen, selectedFile, setSelectedFile, filePreview, createFolder, uploadFile, folderStack, setFolderStack, deleteFile, deleteFolder, renameFile, renameFolder, setSelectedFolder, selectedFolder, selectedFolderForMove, setSelectedFolderForMove, downloadFile, moveFile, moveFolder, folderStackForMove, setFolderStackForMove, handleAnchorClose, anchorPosition, setAnchorPosition, handleRename, handleDelete, handleDownload, moveDialogOpen, setMoveDialogOpen, renameDialogOpen, setRenameDialogOpen, newName, setNewName } = useDocumentContext();
+    const { open, setOpen, selectedFile, setSelectedFile, filePreview, createFolder, uploadFile, folderStack, setFolderStack, deleteFile, deleteFolder, renameFile, renameFolder, setSelectedFolder, selectedFolder, selectedFolderForMove, setSelectedFolderForMove, downloadFile, moveFile, moveFolder, folderStackForMove, setFolderStackForMove, handleAnchorClose, anchorPosition, setAnchorPosition, handleRename, handleDelete, handleDownload, moveDialogOpen, setMoveDialogOpen, renameDialogOpen, setRenameDialogOpen, newName, setNewName, setContextMenuEvent, contextMenuEvent, setOpenContextMenu, openContextMenu, openDeleteDialog, closeDeleteDialog, deleteDialogOpen } = useDocumentContext();
 
     const { isTemporary } = useCaseContext();
 
@@ -60,7 +62,6 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
     const [filterByType, setFilterByType] = useState('all'); // Filter by type state
     const [sortBy, setSortBy] = useState({ field: null, order: 'asc' }); // Sort state
     const [searchQuery, setSearchQuery] = useState('');
-
 
     const combinedList = [...folderData.folders, ...folderData.files];
     const combinedSearchList = [...searchList.folders, ...searchList.files];
@@ -165,15 +166,28 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
         setCurrentFolderId(previousFolderId);
     };
 
+    // Handle right-click event
     const handleRightClick = (event, item) => {
         event.preventDefault();
-        setAnchorPosition({ mouseX: event.clientX - 2, mouseY: event.clientY - 4 });
         if (item.fileName) {
             setSelectedFile(item);
         } else {
             setSelectedFolder(item);
         }
+        setContextMenuEvent(event); // Save the event to state
+        setOpenContextMenu(true); // Open the context menu
     };
+
+    // UseEffect to update anchor position when state changes
+    useEffect(() => {
+        if (openContextMenu && (selectedFile || selectedFolder) && contextMenuEvent) {
+            setAnchorPosition({
+                mouseX: contextMenuEvent.clientX - 2,
+                mouseY: contextMenuEvent.clientY - 4,
+            });
+        }
+    }, [selectedFile, selectedFolder, openContextMenu, contextMenuEvent]);
+
 
     // const handleAnchorClose = () => {
     //     setAnchorPosition(null);
@@ -277,6 +291,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
 
     return (
         <>
+
             <Stack direction='column' spacing={2}>
                 {/* Search Bar */}
                 <Card sx={{ ...muiStyles.cardStyle, p: 2, display: "flex", justifyContent: "start" }}>
@@ -460,6 +475,9 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
                 handleDownload={handleDownload}
                 selectedFile={selectedFile}
                 caseId={caseId}
+                deleteDialogOpen={deleteDialogOpen}
+                openDeleteDialog={openDeleteDialog}
+                closeDeleteDialog={closeDeleteDialog}
             />
 
             {/* Rename Pop up */}

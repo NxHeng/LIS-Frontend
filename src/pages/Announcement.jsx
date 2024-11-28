@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Typography, Grid, Box, Stack, Button, Card, CardContent, TextField, Pagination, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AnnouncementCard from '../components/Announcement/AnnouncementCard.jsx';
+import DeleteDialog from '../components/DeleteDialog.jsx';
 import { useAnnouncementContext } from '../context/AnnouncementContext.jsx';
 import { jwtDecode } from "jwt-decode";
 import muiStyles from '../styles/muiStyles.jsx';
@@ -18,9 +19,9 @@ const Announcement = () => {
     });
     const [editForm, setEditForm] = useState({ title: '', description: '' });
     const [isDeleting, setIsDeleting] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false); // Controls dialog visibility
 
     const user = jwtDecode(localStorage.getItem('token'));
-
 
     // Handle input change
     const handleInputChange = (e) => {
@@ -78,10 +79,14 @@ const Announcement = () => {
         setPanel('detail'); // Switch back to the detail panel after saving
     };
 
+    // Trigger the dialog to open
+    const handleDeleteClick = () => {
+        setOpenDialog(true);
+    };
 
     const handleDelete = async () => {
-        const confirmDelete = window.confirm('Are you sure you want to delete this announcement?');
-        if (!confirmDelete) return;
+        // const confirmDelete = window.confirm('Are you sure you want to delete this announcement?');
+        // if (!confirmDelete) return;
 
         setIsDeleting(true);
 
@@ -92,6 +97,7 @@ const Announcement = () => {
             console.error('Error during deletion:', error);
         } finally {
             setIsDeleting(false);
+            setOpenDialog(false);
         }
     }
 
@@ -133,6 +139,13 @@ const Announcement = () => {
 
     return (
         <>
+            <DeleteDialog
+                deleteDialogOpen={openDialog}
+                closeDeleteDialog={() => setOpenDialog(false)} // Close the dialog when canceled
+                confirmDelete={handleDelete} // Confirm the deletion
+                isAnnouncement={true}
+            />
+
             <Background />
             <Grid container >
                 {/* Announcement List */}
@@ -159,8 +172,8 @@ const Announcement = () => {
                         <Card sx={muiStyles.cardStyle}>
                             <CardContent>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, ml: 3 }}>
-                                    <Typography sx={{ pl: '11vh' }} variant='h5'>Title</Typography>
-                                    <Typography sx={{ pr: '18vh' }} variant='h6'>Time</Typography>
+                                    <Typography sx={{ pl: '11vh' }} variant='h6'>Title</Typography>
+                                    <Typography sx={{ pr: '19vh' }} variant='h6'>Date</Typography>
                                 </Box>
 
 
@@ -207,7 +220,7 @@ const Announcement = () => {
                                         <Button
                                             variant="contained"
                                             sx={{ ...muiStyles.detailsButtonStyle, px: 4 }}
-                                            onClick={handleDelete}
+                                            onClick={handleDeleteClick}
                                             color='error'
                                         >
                                             Delete

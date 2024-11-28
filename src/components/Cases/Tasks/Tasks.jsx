@@ -66,7 +66,20 @@ const Tasks = () => {
     if (!tasksLoaded) {
         return (
             <Container>
-                <Typography variant='h4'>No Tasks</Typography>
+                <Card sx={{ ...muiStyles.cardStyle, p: 2, mb: 2, display: "flex", justifyContent: "start" }}>
+                    <Box sx={{
+                        px: 2,
+                        pt: .5,
+                        pb: .5,
+                    }}>
+                        <Typography variant="h6">
+                            Tasks
+                        </Typography>
+                    </Box>
+                </Card>
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                    <Typography variant='h5' color='grey'>No Tasks Available</Typography>
+                </Box>
             </Container>
         );
     }

@@ -71,7 +71,7 @@ const EditCaseDetails = ({ caseItem }) => {
 
                 </Box>
                 <Stack direction="row" spacing={2}>
-                    <Button onClick={handleCancel} variant="text" sx={muiStyles.detailsButtonStyle}>
+                    <Button onClick={handleCancel} variant="outlined" color='error' sx={muiStyles.detailsButtonStyle}>
                         Cancel
                     </Button>
                     <Button onClick={handleSave} variant="contained" sx={{ ...muiStyles.detailsButtonStyle }}>

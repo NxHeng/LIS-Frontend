@@ -21,7 +21,7 @@ import { useDocumentContext } from '../context/DocumentContext';
 const Details = () => {
 
     const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments, fromTasks, fromNotificationsToTasks, fromNotificationsToCaseDetails, setFromTasks, setFromNotificationsToTasks, setFromNotificationsToCaseDetails, setIsTemporary, isTemporary } = useCaseContext();
-    const { selectedFile, selectedFolder, handleRename, handleDelete, handleDownload } = useDocumentContext();
+    const { selectedFile, selectedFolder, handleRename, handleDelete, handleDownload, deleteDialogOpen, closeDeleteDialog, openDeleteDialog } = useDocumentContext();
     const { task } = useTaskContext();
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
@@ -125,6 +125,9 @@ const Details = () => {
                                         handleDownload={handleDownload}
                                         isTemporary={isTemporary}
                                         caseId={caseItem._id}
+                                        openDeleteDialog={openDeleteDialog}
+                                        closeDeleteDialog={closeDeleteDialog}
+                                        deleteDialogOpen={deleteDialogOpen}
                                     />
                                 </Box>
                             </Grid>

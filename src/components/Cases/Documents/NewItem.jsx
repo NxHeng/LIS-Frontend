@@ -113,8 +113,17 @@ const NewItem = ({ caseId, createFolder, uploadFile }) => {
             <Dialog
                 open={folderDialogOpen} // Dialog visibility depends on folderDialogOpen state
                 onClose={handleDialogClose}
+                PaperProps={{
+                    sx: {
+                        ...muiStyles.DialogStyleSX,  // Apply the existing styles from DialogStyle
+                        backgroundColor: 'rgba(255, 255, 255, 1)',
+                        height: 'auto',
+                        width: '30vw',
+                        p: 2
+                    }
+                }}
             >
-                <DialogTitle>Create New Folder</DialogTitle>
+                <DialogTitle sx={muiStyles.DialogTitleStyle}>Create New Folder</DialogTitle>
                 <DialogContent>
                     <TextField
                         variant='outlined'
@@ -128,10 +137,10 @@ const NewItem = ({ caseId, createFolder, uploadFile }) => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
+                    <Button onClick={handleDialogClose} sx={muiStyles.detailsButtonStyle} color="error" variant='outlined'>
                         Cancel
                     </Button>
-                    <Button onClick={handleCreateFolder} color="primary">
+                    <Button onClick={handleCreateFolder} sx={muiStyles.detailsButtonStyle} color="primary" variant='contained'>
                         Create
                     </Button>
                 </DialogActions>

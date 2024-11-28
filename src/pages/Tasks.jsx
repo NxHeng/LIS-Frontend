@@ -3,6 +3,7 @@ import { Container, Typography, Grid, Box, Stack, Button, Card, CardContent } fr
 import QuizIcon from '@mui/icons-material/Quiz';
 
 import { useTaskContext } from '../context/TaskContext';
+import { useCaseContext } from '../context/CaseContext';
 import CentralTaskItem from '../components/Tasks/CentralTaskItem';
 import CentralTaskDetail from '../components/Tasks/CentralTaskDetail';
 import muiStyles from '../styles/muiStyles';
@@ -11,10 +12,12 @@ import Background from '../components/Background';
 const Tasks = () => {
 
     const { statusFilter, filterStatus, getTasksByStaff, tasks, filteredTasks, setFilteredTasks } = useTaskContext();
+    const { setFromTasks } = useCaseContext();
     // const [filteredTasks, setFilteredTasks] = useState([]);
     const didRunEffect = useRef(false);
 
     useEffect(() => {
+        setFromTasks(false);
         getTasksByStaff(JSON.parse(localStorage.getItem('user'))._id);
     }, []);
 
@@ -114,7 +117,9 @@ const Tasks = () => {
                                                         <CentralTaskItem key={task._id} task={task} index={index} />
                                                     ))
                                                 ) : (
-                                                    <Typography variant='h5' color='grey'>No Tasks Available</Typography>
+                                                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                                        <Typography variant='h5' color='grey'>No Tasks Available</Typography>
+                                                    </Box>
                                                 )}
                                             </CardContent>
                                         </Card>

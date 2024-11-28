@@ -1,9 +1,11 @@
 // ContextMenu.js
-import React from 'react';
+import React, { useState } from 'react';
 import { Menu, MenuItem, Typography } from '@mui/material';
+import DeleteDialog from '../../DeleteDialog';
+
 import { jwtDecode } from 'jwt-decode';
 
-const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDelete, handleRename, handleDownload, selectedFile, caseId }) => {
+const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDelete, handleRename, handleDownload, selectedFile, caseId, openDeleteDialog, closeDeleteDialog, deleteDialogOpen }) => {
 
     const token = localStorage.getItem('token');
     const user = token ? jwtDecode(token) : {};
@@ -16,39 +18,46 @@ const ContextMenu = ({ anchorPosition, handleAnchorClose, handleMove, handleDele
         menuItems.push(<MenuItem key="rename" onClick={handleRename}>Rename</MenuItem>);
     }
     if (user.role === 'admin' || user.role === 'solicitor') {
-        menuItems.push(<MenuItem key="delete" onClick={() => handleDelete(caseId)}>Delete</MenuItem>);
+        menuItems.push(<MenuItem key="delete" onClick={openDeleteDialog}>Delete</MenuItem>);
     }
     if (selectedFile) {
         menuItems.push(<MenuItem key="download" onClick={handleDownload}>Download</MenuItem>);
     }
 
     return (
-        <Menu
-            open={Boolean(anchorPosition)}
-            onClose={handleAnchorClose}
-            anchorReference="anchorPosition"
-            anchorPosition={
-                anchorPosition !== null
-                    ? { top: anchorPosition.mouseY, left: anchorPosition.mouseX }
-                    : undefined
-            }
-        >
-            <Typography variant="h6" sx={{ px: 2, my: 1 }} color='textSecondary'>
-                Actions
-            </Typography>
-            {/* {user.role !== 'client' && <MenuItem onClick={handleMove}>Move</MenuItem>}
+        <>
+            <DeleteDialog
+                deleteDialogOpen={deleteDialogOpen}
+                closeDeleteDialog={closeDeleteDialog}
+                confirmDelete={() => handleDelete(caseId)}
+            />
+            <Menu
+                open={Boolean(anchorPosition)}
+                onClose={handleAnchorClose}
+                anchorReference="anchorPosition"
+                anchorPosition={
+                    anchorPosition !== null
+                        ? { top: anchorPosition.mouseY, left: anchorPosition.mouseX }
+                        : undefined
+                }
+            >
+                <Typography variant="h6" sx={{ px: 2, my: 1 }} color='textSecondary'>
+                    Actions
+                </Typography>
+                {/* {user.role !== 'client' && <MenuItem onClick={handleMove}>Move</MenuItem>}
             {user.role === 'admin' || user.role === 'solicitor' &&
                 <MenuItem onClick={handleDelete}>Delete</MenuItem>
             }
             {user.role !== 'client' && <MenuItem onClick={handleRename}>Rename</MenuItem>}
             {selectedFile ? <MenuItem onClick={handleDownload}>Download</MenuItem> : null} */}
 
-            {menuItems.length > 0 ? (
-                menuItems
-            ) : (
-                <MenuItem disabled>No actions available</MenuItem>
-            )}
-        </Menu>
+                {menuItems.length > 0 ? (
+                    menuItems
+                ) : (
+                    <MenuItem disabled>No actions available</MenuItem>
+                )}
+            </Menu>
+        </>
     );
 };
 

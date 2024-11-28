@@ -5,6 +5,7 @@ import { Add } from '@mui/icons-material';
 import LogCard from './LogCard';
 import LogDialog from './LogDialog';
 import muiStyles from '../../../styles/muiStyles';
+import DeleteDialog from '../../DeleteDialog';
 
 import { useCaseContext } from '../../../context/CaseContext';
 
@@ -12,6 +13,9 @@ const CaseLog = ({ logs, caseId }) => {
 
     const { addLog, deleteLog } = useCaseContext();
     const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [selectedLogId, setSelectedLogId] = useState(null); // Track log ID for deletion
+
     const [logList, setLogList] = useState(logs); // State to store logs
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user ? user._id : '';
@@ -31,14 +35,30 @@ const CaseLog = ({ logs, caseId }) => {
     const handleDeleteLog = (caseId, logId) => {
         deleteLog(caseId, logId); // Perform the API call
         setLogList((prevLogs) => prevLogs.filter((log) => log._id !== logId));
+        closeDeleteDialog();
     };
 
-    useEffect(() => {
-        console.log(logs);
-    }, [logList]);
+    const handleDeleteClick = (logId) => {
+        setSelectedLogId(logId); // Set the selected log ID
+        setDeleteDialogOpen(true);
+    };
+
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false);
+        setSelectedLogId(null); // Clear the selected log ID
+    };
 
     return (
         <>
+            <DeleteDialog
+                deleteDialogOpen={deleteDialogOpen}
+                closeDeleteDialog={closeDeleteDialog}
+                confirmDelete={handleDeleteLog} 
+                isLog={true}
+                caseId={caseId}
+                logId={selectedLogId} // Pass selected log ID
+            />
+            
             <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
                 <CardContent>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -80,8 +100,8 @@ const CaseLog = ({ logs, caseId }) => {
                                 <LogCard
                                     key={log._id || index}
                                     log={log}
-                                    onDeleteLog={handleDeleteLog}
-                                    caseId={caseId}
+                                    onDeleteLog={() => handleDeleteClick(log._id)} // Pass log ID for deletion
+                                // caseId={caseId}
                                 />
                             ))
                         ) : (
