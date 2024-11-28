@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fade, Zoom, Collapse, Grow, Slide } from '@mui/material';
+import { Fade, Zoom, Collapse, Grow, Slide, DialogTitle } from '@mui/material';
 
 const buttonStyle = {
     px: 2,
@@ -29,7 +29,7 @@ const muiStyles = {
         backdropFilter: 'blur(10px)',
     },
     paperStyle: {
-        borderRadius: 5,
+        borderRadius: 3,
         boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
         backgroundColor: 'rgba(255, 255, 255, 0.7)',
         cursor: 'pointer',
@@ -54,7 +54,20 @@ const muiStyles = {
             backdropFilter: 'blur(10px)',
             padding: 2,
         },
-    }
+    },
+    DialogStyleSX: {
+        borderRadius: 3,
+        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+        backgroundColor: 'rgba(255, 255, 255, 1)',
+        backdropFilter: 'blur(10px)',
+        padding: 1,
+    },
+    DialogTitleStyle: {
+        display: 'flex',
+        justifyContent: 'center',
+        padding: 2,
+        fontWeight: 'bold',
+    },
 };
 
 export const TransitionSlide = React.forwardRef((props, ref) => (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, List, ListItem, ListItemText, ListItemIcon, Typography } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
+import muiStyles, { TransitionZoom } from '../../../styles/muiStyles';
 
 import { useDocumentContext } from '../../../context/DocumentContext';
 
@@ -46,9 +47,22 @@ const MoveDialog = ({ caseId, moveDialogOpen, handleMoveDialogClose, selectedFol
     };
 
     return (
-        <Dialog open={moveDialogOpen} onClose={handleMoveDialogClose}>
-            <DialogTitle>Select a Folder</DialogTitle>
-            <DialogContent>
+        <Dialog
+            open={moveDialogOpen}
+            onClose={handleMoveDialogClose}
+            TransitionComponent={TransitionZoom}
+            PaperProps={{
+                sx: {
+                    ...muiStyles.DialogStyleSX,
+                    backgroundColor: 'rgba(255, 255, 255, 1)',
+                    height: 'auto',
+                    width: '30vw',
+                    p: 4
+                }
+            }}
+        >
+            <DialogTitle sx={muiStyles.DialogTitleStyle}>Select a Folder</DialogTitle>
+            <DialogContent sx={{ borderRadius: 3, border: 1, pb: 0.5 }}>
                 <List>
                     {filteredFolders.length > 0 ? (
                         filteredFolders.map((folder) => (
@@ -71,20 +85,25 @@ const MoveDialog = ({ caseId, moveDialogOpen, handleMoveDialogClose, selectedFol
                         ))
                     ) : (
                         //center the text
-                        <Typography variant="body1" align="left">
+                        <Typography variant="body1" align="left" sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
                             No folders available.
                         </Typography>
                     )}
                 </List>
+                {/* {folderStackForMove?.length > 0 && (
+                    <Button onClick={handleBackClick} sx={{ ...muiStyles.detailsButtonStyle, my: 2 }}>
+                        Back to Previous Folder
+                    </Button>
+                )} */}
+            </DialogContent>
+            <DialogActions sx={{ px: 0, py: 1, mt: 2 }}>
                 {folderStackForMove?.length > 0 && (
-                    <Button onClick={handleBackClick} sx={{ mb: 2 }}>
+                    <Button onClick={handleBackClick} variant='text' sx={{ ...muiStyles.detailsButtonStyle, my: 2 }}>
                         Back to Previous Folder
                     </Button>
                 )}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleMoveDialogClose} color="primary">Cancel</Button>
-                <Button onClick={handleMoveFile} color="primary">Move</Button>
+                <Button onClick={handleMoveDialogClose} variant='outlined' color="error" sx={muiStyles.detailsButtonStyle}>Cancel</Button>
+                <Button onClick={handleMoveFile} variant='contained' color="primary" sx={{ ...muiStyles.detailsButtonStyle, m: 0 }}>Move</Button>
             </DialogActions>
         </Dialog>
     );

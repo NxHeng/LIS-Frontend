@@ -2,11 +2,26 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import muiStyles, { TransitionZoom } from '../../../styles/muiStyles';
 
 const FilePreviewDialog = ({ open, selectedFile, filePreview, handleFileClose }) => {
     return (
-        <Dialog open={open} fullWidth maxWidth="md">
-            <DialogTitle>
+        <Dialog
+            maxWidth='lg'
+            open={open}
+            onClose={handleFileClose}
+            TransitionComponent={TransitionZoom}
+            PaperProps={{
+                sx: {
+                    ...muiStyles.DialogStyleSX,
+                    backgroundColor: 'rgba(255, 255, 255, 1)',
+                    height: 'auto',
+                    width: '100vw',
+                    p: 1
+                }
+            }}
+        >
+            <DialogTitle sx={muiStyles.DialogTitleStyle}>
                 {selectedFile?.fileName}
                 <IconButton
                     aria-label="close"
@@ -49,6 +64,8 @@ const FilePreviewDialog = ({ open, selectedFile, filePreview, handleFileClose })
                         />
                     )}
                     {/* Add conditions for other file types here */}
+
+
                 </Box>
             </DialogContent>
         </Dialog>

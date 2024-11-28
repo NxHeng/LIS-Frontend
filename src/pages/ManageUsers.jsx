@@ -2,7 +2,7 @@
 import React, { useState, useEffect, act } from 'react';
 import { Button, Box, Typography, Stack, Container, Tabs, Tab, Card } from '@mui/material';
 import UserTable from '../components/ManageUsers/UserTable';
-import UserApprovalDialog from '../components/ManageUsers/UserApprovalDialog';
+// import UserApprovalDialog from '../components/ManageUsers/UserApprovalDialog';
 import muiStyles from '../styles/muiStyles';
 import Background from '../components/Background';
 import { ManageAccounts, Person } from '@mui/icons-material';
@@ -251,14 +251,14 @@ const ManageUsers = () => {
                                 </Stack>
                             </CustomTabPanel>
 
-                            {selectedUser && (
+                            {/* {selectedUser && (
                                 <UserApprovalDialog
                                     open={dialogOpen}
                                     user={selectedUser}
                                     onClose={handleCloseDialog}
                                     onApprove={() => handleApprove(selectedUser.id)}
                                 />
-                            )}
+                            )} */}
                         </Box>
                     </Card>
                 </Stack>
