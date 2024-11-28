@@ -3,6 +3,7 @@ import { Container, Button, TableContainer, Table, TableBody, TableCell, TableHe
 import CollapsibleRow from './CollapsibleRow';
 import { jwtDecode } from 'jwt-decode';
 import muiStyles from '../../styles/muiStyles';
+import exportPDF from '../../utils/exportPDF';
 
 import { useCaseContext } from '../../context/CaseContext';
 
@@ -36,15 +37,23 @@ const CaseDetails = ({ caseItem }) => {
                             <Button onClick={toEditCaseDetails} variant="contained" sx={{ ...muiStyles.detailsButtonStyle, width: '10vh' }} >
                                 Edit
                             </Button>
-                            <Button variant="contained" sx={{ ...muiStyles.detailsButtonStyle, width: '10vh' }} >
+                            {/* <Button variant="contained" sx={{ ...muiStyles.detailsButtonStyle, width: '10vh' }} >
                                 Print
+                            </Button> */}
+                            <Button
+                                onClick={() => exportPDF(caseItem)}
+                                variant="contained"
+                                color="primary"
+                                sx={{ ...muiStyles.detailsButtonStyle, width: '19vh' }}
+                            >
+                                Export as PDF
                             </Button>
                         </Box>
 
                         : null
                 }
             </Card>
-            
+
             {/* Table for Text and Number Fields */}
             {textNumberStakeholderFields.length > 0 ? (
                 <TableContainer component={Paper} sx={{ mb: 3, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
