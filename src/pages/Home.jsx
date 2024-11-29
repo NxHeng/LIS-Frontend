@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Grid, Paper, Box, Stack } from '@mui/material';
+import { Container, Typography, Grid, Paper, Box, Stack, LinearProgress } from '@mui/material';
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import Background from '../components/Background';
+import TasksLinearProgress from '../components/Dashboard/TasksLinearProgress';
 import muiStyle from '../styles/muiStyles';
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -35,7 +36,7 @@ const Home = () => {
         datasets: [{
             data: statistics.casesByCategory.map(item => item.count),
             backgroundColor: [
-                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6633', '#FF33FF', '#33FF33', '#FF3333', '#33FFFF', '#FFFF33'
             ]
         }]
     };
@@ -93,23 +94,34 @@ const Home = () => {
                 </Paper>
                 <Paper sx={{
                     ...muiStyle.paperStyle,
-                    mt: 1.5, mb: 0,
-                    pb: 2, pt: .5, px: 2,
-                    display: 'inline-flex', // Use inline-flex for dynamic width
-                    justifyContent: 'center', // Center content if needed
+                    mt: 2, mb: 0, mr: 2,
+                    pb: 1.1, pt: 0, px: 2,
+                    display: 'inline-flex',
+                    justifyContent: 'center',
                 }}>
                     <Typography variant='h6' sx={{ px: 2, pt: 1, fontWeight: 'bold' }}>
                         Overview
                     </Typography>
                 </Paper>
+                <Paper sx={{
+                    ...muiStyle.paperStyle,
+                    mt: 2, mb: 0,
+                    pb: 1.1, pt: 0, px: 2,
+                    display: 'inline-flex',
+                    justifyContent: 'center',
+                }}>
+                    <Typography variant='h6' sx={{ px: 2, pt: 1, fontWeight: 'bold' }}>
+                        Analysis
+                    </Typography>
+                </Paper>
 
 
-                <Grid container spacing={3} sx={{ pt: 1.5 }}>
+                <Grid container spacing={3} sx={{ pt: 2 }}>
                     <Grid item xs={6}>
-                        <Paper elevation={4} sx={muiStyle.paperStyle} >
-                            <Box p={3}>
-                                <Typography variant="h6">Active Cases</Typography>
-                                <Box sx={{ width: 300, height: 300, margin: '0 auto' }}>
+                        <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Box p={2} px={3}>
+                                <Typography variant="body1">Active Cases</Typography>
+                                <Box sx={{ width: 290, height: 290, m: 'auto' }}>
                                     <Pie data={pieData} options={pieOptions} />
                                 </Box>
                             </Box>
@@ -117,52 +129,99 @@ const Home = () => {
                     </Grid>
                     <Grid item xs={12} sm={6} md={6}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6} md={6}>
-                                <Paper elevation={4} sx={muiStyle.paperStyle}>
-                                    <Box p={3}>
-                                        <Typography variant="h6">Total Cases</Typography>
-                                        <Typography variant="h4">{statistics.totalCases}</Typography>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Box py={2} px={3}>
+                                        <Typography variant="body1">My Total Cases</Typography>
+                                        <Typography variant="h5">{statistics.totalCases}</Typography>
                                     </Box>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
-                                <Paper elevation={4} sx={muiStyle.paperStyle}>
-                                    <Box p={3}>
-                                        <Typography variant="h6">Active Cases</Typography>
-                                        <Typography variant="h4">{statistics.activeCases}</Typography>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Box p={2} px={3}>
+                                        <Typography variant="body1">Active Cases</Typography>
+                                        <Typography variant="h5">{statistics.activeCases}</Typography>
                                     </Box>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
-                                <Paper elevation={4} sx={muiStyle.paperStyle}>
-                                    <Box p={3}>
-                                        <Typography variant="h6">Closed Cases</Typography>
-                                        <Typography variant="h4">{statistics.closedCases}</Typography>
+                            <Grid item xs={12} sm={6} md={4}>
+                                <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Box p={2} px={3}>
+                                        <Typography variant="body1">Closed Cases</Typography>
+                                        <Typography variant="h5">{statistics.closedCases}</Typography>
                                     </Box>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={6}>
-                                <Paper elevation={4} sx={muiStyle.paperStyle}>
-                                    <Box p={3}>
-                                        <Typography variant="h6">Total Tasks</Typography>
-                                        <Typography variant="h4">{statistics.totalTasks}</Typography>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Box p={2} px={3}>
+                                        <Typography variant="body1">New Tasks</Typography>
+                                        <Typography variant="h5">{statistics.newTasks}</Typography>
+                                    </Box>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Box p={2} px={3}>
+                                        <Typography variant="body1">Pending Tasks</Typography>
+                                        <Typography variant="h5">{statistics.pendingTasks}</Typography>
+                                    </Box>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Box p={2} px={3}>
+                                        <Typography variant="body1">Completed Tasks</Typography>
+                                        <Typography variant="h5">{statistics.completedTasks}</Typography>
+                                    </Box>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={3}>
+                                <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Box p={2} px={3}>
+                                        <Typography variant="body1">Due<br />Tasks</Typography>
+                                        <Typography variant="h5">{statistics.dueTasks}</Typography>
+                                    </Box>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={12}>
+                                <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Box pt={2} pb={4} px={4}>
+                                        {/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <Typography variant="body1">Tasks Completion</Typography>
+                                            <Typography variant="subtitle1">
+                                                {statistics.progress}%
+                                            </Typography>
+                                        </Box>
+                                        <LinearProgress
+                                            variant="determinate"
+                                            value={statistics.progress}
+                                            sx={{
+                                                mt: 1,
+                                                height: 12, // Change the height of the progress bar
+                                                borderRadius: 6,
+                                                backgroundColor: '#e0e0e0',
+                                                '& .MuiLinearProgress-bar': {
+                                                    backgroundColor: '#4caf50',
+                                                    borderRadius: 6,
+                                                },
+                                                msTransitionDelay: 2,
+                                                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                                            }}
+                                        /> */}
+                                        <TasksLinearProgress
+                                            completedPercentage={statistics.completedPercentage}
+                                            pendingPercentage={statistics.pendingPercentage}
+                                            newTasksPercentage={statistics.newTasksPercentage}
+                                        />
                                     </Box>
                                 </Paper>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-                <Paper sx={{
-                    ...muiStyle.paperStyle,
-                    mt: 1.5, mb: 0,
-                    pb: 2, pt: .5, px: 2,
-                    display: 'inline-flex', // Use inline-flex for dynamic width
-                    justifyContent: 'center', // Center content if needed
-                }}>
-                    <Typography variant='h6' sx={{ px: 2, pt: 1, fontWeight: 'bold' }}>
-                        Analysis
-                    </Typography>
-                </Paper>
+
 
 
             </Container>

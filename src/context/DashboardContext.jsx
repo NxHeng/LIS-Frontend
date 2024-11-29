@@ -8,10 +8,6 @@ export const DashboardContextProvider = ({ children }) => {
     const [statistics, setStatistics] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchStatistics();
-    }, []);
-
     const fetchStatistics = async () => {
         try {
             const response = await fetch(`${API_URL}/dashboard/getStatistics`, {
@@ -32,10 +28,14 @@ export const DashboardContextProvider = ({ children }) => {
             setLoading(false);
         }
     };
-    
+
 
     return (
-        <DashboardContext.Provider value={{ statistics, loading, fetchStatistics }}>
+        <DashboardContext.Provider value={{
+            statistics,
+            loading,
+            fetchStatistics
+        }}>
             {children}
         </DashboardContext.Provider>
     );
