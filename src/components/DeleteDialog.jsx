@@ -4,7 +4,7 @@ import muiStyles from '../styles/muiStyles';
 
 import { useDocumentContext } from '../context/DocumentContext';
 
-const DeleteDialog = ({ deleteDialogOpen, closeDeleteDialog, confirmDelete, isAnnouncement, isTask, isLog, caseId, logId, isCategory, category }) => {
+const DeleteDialog = ({ deleteDialogOpen, closeDeleteDialog, confirmDelete, isAnnouncement, isTask, isLog, caseId, logId, isCategory, category, isUser, selectedUser }) => {
 
     const { selectedFile, selectedFolder } = useDocumentContext();
 
@@ -39,6 +39,10 @@ const DeleteDialog = ({ deleteDialogOpen, closeDeleteDialog, confirmDelete, isAn
                         <DialogContentText>
                             Deleting this category will affect the cases associated with it. Are you sure you want to delete this category? This action cannot be undone.
                         </DialogContentText>
+                    ) : isUser ? (
+                        <DialogContentText>
+                            Are you sure you want to delete this user? This action cannot be undone.
+                        </DialogContentText>
                     ) : (
                         <DialogContentText>
                             Are you sure you want to delete "{selectedFile?.fileName || selectedFolder?.folderName}"? This action cannot be undone.
@@ -50,7 +54,7 @@ const DeleteDialog = ({ deleteDialogOpen, closeDeleteDialog, confirmDelete, isAn
                 <Button onClick={closeDeleteDialog} variant='outlined' sx={muiStyles.detailsButtonStyle} color="error">
                     Cancel
                 </Button>
-                <Button onClick={() => isLog ? confirmDelete(caseId, logId) : isCategory? confirmDelete(category) : confirmDelete()} variant='contained' sx={muiStyles.detailsButtonStyle} color="primary" autoFocus>
+                <Button onClick={() => isLog ? confirmDelete(caseId, logId) : isCategory ? confirmDelete(category) : isUser ? confirmDelete(selectedUser._id) : confirmDelete()} variant='contained' sx={muiStyles.detailsButtonStyle} color="primary" autoFocus>
                     Confirm
                 </Button>
             </DialogActions>
