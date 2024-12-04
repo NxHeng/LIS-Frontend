@@ -221,7 +221,8 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
     };
 
     const handleRenameItem = async () => {
-        if (selectedFile || selectedFolder && newName.trim()) {
+        console.log("Handle Rename Item: ", selectedFile, selectedFolder);
+        if ((selectedFile || selectedFolder) && newName.trim()) {
             if (selectedFile?.fileName) {
                 // Rename file
                 await renameFile({ fileId: selectedFile._id, fileName: newName, caseId });
@@ -233,6 +234,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
             }
         }
         handleRenameDialogClose(); // Close dialog after renaming
+        handleAnchorClose(); // Close the context menu after performing the rename action
     };
 
     // // Open the rename dialog when Rename option is selected
@@ -262,7 +264,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
     const handleMove = () => {
         setFolderStackForMove([]);
         setMoveDialogOpen(true);
-        handleAnchorClose(); // Close the context menu after performing the move action
+        // handleAnchorClose(); // Close the context menu after performing the move action
     };
 
     const handleMoveDialogClose = () => {
@@ -273,6 +275,7 @@ const FolderView = ({ folderData, setCurrentFolderId, searchList }) => {
     };
 
     const handleMoveFile = async () => {
+        console.log(selectedFile, selectedFolder, selectedFolderForMove);
         if (selectedFile && caseId) {
             // Make API call to move the file
             await moveFile(selectedFile._id, selectedFolderForMove?._id, caseId);

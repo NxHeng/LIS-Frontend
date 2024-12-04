@@ -320,7 +320,7 @@ export const DocumentContextProvider = ({ children }) => {
             setNewName(selectedFolder.folderName); // Set initial value to current name
             setRenameDialogOpen(true);
         }
-        handleAnchorClose();
+        // handleAnchorClose();
     };
 
     const handleDownload = () => {

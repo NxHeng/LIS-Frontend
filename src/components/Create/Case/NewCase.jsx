@@ -161,7 +161,7 @@ const NewCase = () => {
                                 onChange={handleChange}
                             >
                                 {/* change to === after roles are applied */}
-                                {userList.filter(user => user.role !== 'Solicitor').map(user => (
+                                {userList.filter(user => user.role !== 'client' && user.role !== 'pending' && user.role !== 'client-pending').map(user => (
                                     <MenuItem key={user._id} value={user._id}>
                                         {user.username}
                                     </MenuItem>
@@ -179,7 +179,7 @@ const NewCase = () => {
                                 name="clerkInCharge"
                                 onChange={handleChange}
                             >
-                                {userList.filter(user => user.role !== 'Clerk').map(user => (
+                                {userList.filter(user => user.role !== 'client' && user.role !== 'pending' && user.role !== 'client-pending').map(user => (
                                     <MenuItem key={user._id} value={user._id}>
                                         {user.username}
                                     </MenuItem>
