@@ -103,7 +103,7 @@ const Tasks = () => {
                         <Droppable droppableId="tasks">
                             {(provided) => (
                                 <List {...provided.droppableProps} ref={provided.innerRef}>
-                                    {tasks.map((task, index) => (
+                                    {Array.isArray(tasks) && tasks.map((task, index) => (
                                         <TaskItem key={task._id} task={task} index={index} />
                                     ))}
                                     {provided.placeholder}

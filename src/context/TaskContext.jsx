@@ -125,6 +125,7 @@ export const TaskContextProvider = ({ children }) => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
+            console.log(data);
             setTasks(data);
             setTasksLoaded(true);
         } catch (error) {
@@ -132,14 +133,37 @@ export const TaskContextProvider = ({ children }) => {
         }
     }
 
+    // const filterStatus = (status) => {
+    //     //filter tasks by status
+    //     setTask(null);
+    //     setStatusFilter(status);
+    //     const filteredTasks = tasks?.filter((task) => task.status === status);
+    //     // console.log(status, " ", filteredTasks);
+    //     return filteredTasks;
+    // }
+
     const filterStatus = (status) => {
-        //filter tasks by status
+        // Reset task and update status filter
         setTask(null);
         setStatusFilter(status);
-        const filteredTasks = tasks?.filter((task) => task.status === status);
-        // console.log(status, " ", filteredTasks);
-        return filteredTasks;
-    }
+
+        // Iterate over each matterName group and filter tasks by status
+        const filteredTasks = Object.entries(tasks).reduce((acc, [matterName, taskList]) => {
+            // Ensure taskList is an array before calling .filter
+            if (Array.isArray(taskList)) {
+                const filtered = taskList.filter((task) => task.status === status); // Filter tasks by status
+                if (filtered.length > 0) {
+                    acc[matterName] = filtered; // Add to result if there are filtered tasks
+                }
+            } else {
+                console.warn(`Expected taskList to be an array, but got ${typeof taskList} for matter ${matterName}`);
+            }
+            return acc;
+        }, {});
+
+        return filteredTasks; // Return the grouped tasks
+    };
+
 
 
     return (

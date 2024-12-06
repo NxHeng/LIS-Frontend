@@ -23,22 +23,41 @@ const Tasks = () => {
 
     useEffect(() => {
         console.log("didRunEffect: ", didRunEffect.current);
-        console.log(tasks);
-        if (tasks && tasks.length > 0 && !didRunEffect.current) {
+
+        if (tasks && Object.keys(tasks).length > 0 && !didRunEffect.current) {
             handleStatusFilter("Pending");
             didRunEffect.current = true; // Set to true after first run
         }
     }, [tasks]);
 
-
     const handleStatusFilter = (status) => {
-        //filter tasks by status
         console.log("Running filter");
-        const result = filterStatus(status);
-        // const result = tasks?.filter((task) => task.status === status);
-        setFilteredTasks(result);
-        console.log(status, " ", filteredTasks);
-    }
+        // Get filtered tasks by status (this is an object, not an array)
+        const filtered = filterStatus(status);
+        console.log("Filtered: ", filtered);
+        // Initialize an empty object to store grouped tasks
+        const groupedTasks = {};
+        // Iterate through the filtered object
+        Object.entries(filtered).forEach(([matterName, taskList]) => {
+            // If the task list exists and has items, add to groupedTasks
+            if (taskList && taskList.length > 0) {
+                groupedTasks[matterName] = taskList;
+            }
+        });
+        // Set the grouped tasks in the state
+        setFilteredTasks(groupedTasks);
+        console.log(status, " ", groupedTasks);
+    };
+
+
+    // const handleStatusFilter = (status) => {
+    //     //filter tasks by status
+    //     console.log("Running filter");
+    //     const result = filterStatus(status);
+    //     // const result = tasks?.filter((task) => task.status === status);
+    //     setFilteredTasks(result);
+    //     console.log(status, " ", filteredTasks);
+    // }
 
     return (
         <>
@@ -109,12 +128,34 @@ const Tasks = () => {
                                             </Typography>
                                         </Box>
                                     </Card>
-                                    <Grid>
+                                    {/* <Grid>
                                         <Card sx={{ ...muiStyles.cardStyle, p: 1, mb: 10, backdropFilter: 'unset' }}>
                                             <CardContent>
                                                 {filteredTasks?.length > 0 ? (
                                                     filteredTasks.map((task, index) => (
                                                         <CentralTaskItem key={task._id} task={task} index={index} />
+                                                    ))
+                                                ) : (
+                                                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                                        <Typography variant='h5' color='grey'>No Tasks Available</Typography>
+                                                    </Box>
+                                                )}
+                                            </CardContent>
+                                        </Card>
+                                    </Grid> */}
+                                    <Grid>
+                                        <Card sx={{ ...muiStyles.cardStyle, p: 1, mb: 10, backdropFilter: 'unset' }}>
+                                            <CardContent>
+                                                {filteredTasks && Object.keys(filteredTasks).length > 0 ? (
+                                                    Object.entries(filteredTasks).map(([matterName, tasks]) => (
+                                                        <Box key={matterName} sx={{ mb: 3 }}>
+                                                            <Typography variant="h6" sx={{ mb: 1, px: 2, fontWeight: 'bold' }}>
+                                                                {matterName}
+                                                            </Typography>
+                                                            {tasks.map((task, index) => (
+                                                                <CentralTaskItem key={task._id} task={task} index={index} />
+                                                            ))}
+                                                        </Box>
                                                     ))
                                                 ) : (
                                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
