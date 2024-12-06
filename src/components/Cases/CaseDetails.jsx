@@ -3,7 +3,7 @@ import { Container, Button, TableContainer, Table, TableBody, TableCell, TableHe
 import CollapsibleRow from './CollapsibleRow';
 import { jwtDecode } from 'jwt-decode';
 import muiStyles from '../../styles/muiStyles';
-import exportPDF from '../../utils/exportPDF';
+import { exportPDF } from '../../utils/exportPDF';
 
 import { useCaseContext } from '../../context/CaseContext';
 
