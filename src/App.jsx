@@ -22,6 +22,7 @@ import TempDetail from "./pages/TempDetail";
 import ExpiredPage from "./pages/ExpiredPage";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import NotificationSettings from "./pages/NotificationSettings";
 
 import MyCases from "./pages/MyCases";
 import MyDetails from "./pages/MyDetails";
@@ -79,6 +80,7 @@ function App() {
             {user?.role === 'admin' && (
               <>
                 <Route path="/manageusers" element={<ManageUsers />} />
+                <Route path="/notificationsettings" element={<NotificationSettings />} />
               </>
             )}
 

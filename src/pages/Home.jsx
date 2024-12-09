@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import { alpha } from '@mui/system';
 import Background from '../components/Background';
 import TasksLinearProgress from '../components/Dashboard/TasksLinearProgress';
-import muiStyle from '../styles/muiStyles';
+import muiStyles from '../styles/muiStyles';
 import { exportAnalysis } from '../utils/exportPDF';
 
 import { FilterAlt } from '@mui/icons-material';
@@ -141,7 +141,7 @@ const Home = () => {
             <Background />
             <Container maxWidth='lg' sx={{ p: 4 }}>
                 <Paper sx={{
-                    ...muiStyle.paperStyle,
+                    ...muiStyles.paperStyle,
                     mb: 0,
                     px: 3,
                     pt: 2,
@@ -169,7 +169,7 @@ const Home = () => {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Box sx={{ display: 'inline-flex' }}>
                         <Button variant={homeView === 'overview' ? 'contained' : 'outlined'} onClick={() => setHomeView('overview')} sx={{
-                            ...muiStyle.buttonStyle,
+                            ...muiStyles.buttonStyle,
                             mt: 2, mb: 0, mr: 2,
                             pb: 1.1, pt: 0, px: 2,
                             backgroundColor: homeView === 'overview' ? 'rgba(255, 255, 255, 0.7)' : 'transparent',
@@ -184,7 +184,7 @@ const Home = () => {
                             </Typography>
                         </Button>
                         <Button variant={homeView === 'analysis' ? 'contained' : 'outlined'} onClick={() => setHomeView('analysis')} sx={{
-                            ...muiStyle.buttonStyle,
+                            ...muiStyles.buttonStyle,
                             mt: 2, mb: 0, mr: 2,
                             pb: 1.1, pt: 0, px: 2,
                             backgroundColor: homeView === 'analysis' ? 'rgba(255, 255, 255, 0.7)' : 'transparent',
@@ -202,7 +202,7 @@ const Home = () => {
                     {homeView === 'analysis' && (
                         <Box sx={{ display: 'flex' }}>
                             <Paper sx={{
-                                ...muiStyle.paperStyle,
+                                ...muiStyles.paperStyle,
                                 mt: 2, display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -262,7 +262,7 @@ const Home = () => {
                                 variant="contained"
                                 color="primary"
                                 onClick={() => exportAnalysis(caseAnalysis)}
-                                sx={{ ...muiStyle.detailsButtonStyle, mt: 2 }}
+                                sx={{ ...muiStyles.detailsButtonStyle, mt: 2 }}
                             >
                                 Export as PDF
                             </Button>
@@ -274,7 +274,7 @@ const Home = () => {
                 {homeView === 'overview' && (
                     <Grid container spacing={3} sx={{ pt: 2 }}>
                         <Grid item xs={6}>
-                            <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box p={2} px={3}>
                                     <Typography variant="body1">Active Cases</Typography>
                                     <Box sx={{ width: 290, height: 290, m: 'auto' }}>
@@ -286,7 +286,7 @@ const Home = () => {
                         <Grid item xs={12} sm={6} md={6}>
                             <Grid container spacing={3}>
                                 <Grid item xs={12} sm={6} md={4}>
-                                    <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                         <Box py={2} px={3}>
                                             <Typography variant="body1">My Total Cases</Typography>
                                             <Typography variant="h5">{statistics?.totalCases}</Typography>
@@ -294,7 +294,7 @@ const Home = () => {
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={4}>
-                                    <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                         <Box p={2} px={3}>
                                             <Typography variant="body1">Active Cases</Typography>
                                             <Typography variant="h5">{statistics?.activeCases}</Typography>
@@ -302,7 +302,7 @@ const Home = () => {
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={4}>
-                                    <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                         <Box p={2} px={3}>
                                             <Typography variant="body1">Closed Cases</Typography>
                                             <Typography variant="h5">{statistics?.closedCases}</Typography>
@@ -310,7 +310,7 @@ const Home = () => {
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={3}>
-                                    <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                         <Box p={2} px={3}>
                                             <Typography variant="body1">New Tasks</Typography>
                                             <Typography variant="h5">{statistics?.newTasks}</Typography>
@@ -318,7 +318,7 @@ const Home = () => {
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={3}>
-                                    <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                         <Box p={2} px={3}>
                                             <Typography variant="body1">Pending Tasks</Typography>
                                             <Typography variant="h5">{statistics?.pendingTasks}</Typography>
@@ -326,7 +326,7 @@ const Home = () => {
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={3}>
-                                    <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                         <Box p={2} px={3}>
                                             <Typography variant="body1">Completed Tasks</Typography>
                                             <Typography variant="h5">{statistics?.completedTasks}</Typography>
@@ -334,7 +334,7 @@ const Home = () => {
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={3}>
-                                    <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                         <Box p={2} px={3}>
                                             <Typography variant="body1">Due<br />Tasks</Typography>
                                             <Typography variant="h5">{statistics?.dueTasks}</Typography>
@@ -342,7 +342,7 @@ const Home = () => {
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} sm={6} md={12}>
-                                    <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                                    <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                         <Box pt={2} pb={4} px={4}>
                                             {/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                             <Typography variant="body1">Tasks Completion</Typography>
@@ -384,7 +384,7 @@ const Home = () => {
 
                         {/* Active Cases */}
                         <Grid className='exclude' item xs={12} sm={6} md={3}>
-                            <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box py={2} px={3} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <Typography variant="h6">Current Active Cases</Typography>
                                     <Typography variant="h4" color='primary'>{caseAnalysis?.activeCases}</Typography>
@@ -394,7 +394,7 @@ const Home = () => {
 
                         {/* Cases Created This Month */}
                         <Grid className='exclude' item xs={12} sm={6} md={3}>
-                            <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box py={2} px={3} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <Typography variant="h6">Cases Initiated</Typography>
                                     <Typography variant="h4" color='primary'>{caseAnalysis?.casesThisMonth}</Typography>
@@ -404,7 +404,7 @@ const Home = () => {
 
                         {/* Cases Closed This Month */}
                         <Grid className='exclude' item xs={12} sm={6} md={3}>
-                            <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box py={2} px={3} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <Typography variant="h6">Cases Closed</Typography>
                                     <Typography variant="h4" color='primary'>{caseAnalysis?.casesClosedThisMonth}</Typography>
@@ -414,7 +414,7 @@ const Home = () => {
 
                         {/* Tasks Completed This Month */}
                         <Grid className='exclude' item xs={12} sm={6} md={3}>
-                            <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box py={2} px={3} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <Typography variant="h6">Tasks Completed</Typography>
                                     <Typography variant="h4" color='primary'>{caseAnalysis?.tasksCompletedThisMonth}</Typography>
@@ -424,13 +424,13 @@ const Home = () => {
 
                         {/* Cases by Staff */}
                         <Grid item xs={12} sm={12} md={6}>
-                            <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box py={2} px={3}>
                                     <Typography variant="body1" sx={{ pb: 1 }}>Cases by Staff</Typography>
                                     <TableContainer
                                         component={Paper}
                                         sx={{
-                                            ...muiStyle.paperStyle,
+                                            ...muiStyles.paperStyle,
                                             height: 284,  // Adjust height as needed
                                             overflowY: 'auto',  // Enable vertical scrolling
                                             '&:hover': {
@@ -461,7 +461,7 @@ const Home = () => {
 
                         {/* Cases by Category */}
                         <Grid item xs={12} sm={12} md={6}>
-                            <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box py={2} px={3}>
                                     <Typography variant="body1">Cases by Category</Typography>
                                     <Box sx={{ height: 290, m: 'auto' }}>
@@ -512,7 +512,7 @@ const Home = () => {
 
                         {/* Cases Over Time */}
                         <Grid item xs={6}>
-                            <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box py={2} px={3}>
                                     <Typography variant="body1">Cases Over Time</Typography>
                                     <Box sx={{ width: '100%', height: 290, m: 'auto' }}>
@@ -556,7 +556,7 @@ const Home = () => {
                         </Grid>
 
                         <Grid item xs={6}>
-                            <Paper elevation={4} sx={{ ...muiStyle.paperStyle, display: 'flex', flexDirection: 'column' }}>
+                            <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box py={2} px={3}>
                                     <Typography variant="body1">Cases Turnaround Time</Typography>
                                     <Box sx={{ width: '100%', height: 290, m: 'auto' }}>

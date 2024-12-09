@@ -33,7 +33,7 @@ const pages = [
     { name: 'Notifications', icon: <Notifications /> },
     { name: 'Announcement', icon: <Announcement /> }
 ];
-const settings = ['Profile', 'Manage Users'];
+const settings = ['Profile', 'Manage Users', 'Notification Settings'];
 
 const Navbar = () => {
     const { logout, loading } = useAuthContext();
@@ -352,7 +352,7 @@ const Navbar = () => {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    setting === 'Manage Users' && user.role !== 'admin' ? null : (
+                                    (setting === 'Manage Users' || setting === 'Notification Settings') && user.role !== 'admin' ? null : (
                                         <MenuItem key={setting} onClick={handleCloseUserMenu}>
                                             <Typography
                                                 textAlign="center"

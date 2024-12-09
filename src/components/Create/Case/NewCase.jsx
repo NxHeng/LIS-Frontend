@@ -45,11 +45,6 @@ const NewCase = () => {
         getUserList();
     }, []);
 
-    //
-    // useEffect(() => {
-    //     console.log('Selected category:', category);
-    // }, [categoryLoaded, category]);
-
     const handleCategoryChange = (event) => {
         const selectedCategory = categories.find(
             cat => cat._id === event.target.value

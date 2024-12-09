@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Grid, Box, Stack, Button, Card, CardContent, TextField, Pagination, CircularProgress } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { Attachment } from '@mui/icons-material';
 import AnnouncementCard from '../components/Announcement/AnnouncementCard.jsx';
 import DeleteDialog from '../components/DeleteDialog.jsx';
 import { useAnnouncementContext } from '../context/AnnouncementContext.jsx';
 import { jwtDecode } from "jwt-decode";
 import muiStyles from '../styles/muiStyles.jsx';
 import Background from '../components/Background.jsx';
+import AttachmentUpload from '../components/Announcement/AttachmentUpload.jsx';
+import { Link } from 'react-router-dom';
 
 const Announcement = () => {
 
-    const { announcements, selectedAnnouncement, setSelectedAnnouncement, createAnnouncement, fetchAnnouncements, setAnnouncementsLoaded, updateAnnouncement, deleteAnnouncement } = useAnnouncementContext();
+    const { announcements, selectedAnnouncement, setSelectedAnnouncement, createAnnouncement, fetchAnnouncements, setAnnouncementsLoaded, updateAnnouncement, deleteAnnouncement, fetchAttachment, deleteAttachment, currentAttachment, setCurrentAttachment } = useAnnouncementContext();
     // const user = JSON.parse(localStorage.getItem('user'));
     const [panel, setPanel] = useState(null);
     const [newAnnouncement, setNewAnnouncement] = useState({
@@ -18,6 +21,8 @@ const Announcement = () => {
         description: ''
     });
     const [editForm, setEditForm] = useState({ title: '', description: '' });
+    const [attachment, setAttachment] = useState(null);
+
     const [isDeleting, setIsDeleting] = useState(false);
     const [openDialog, setOpenDialog] = useState(false); // Controls dialog visibility
 
@@ -32,6 +37,10 @@ const Announcement = () => {
     const handleInputChangeEdit = (e) => {
         const { name, value } = e.target;
         setEditForm({ ...editForm, [name]: value });
+    };
+
+    const handleAttachmentChange = (file) => {
+        setAttachment(file);
     };
 
     // Pagination
@@ -60,10 +69,18 @@ const Announcement = () => {
     // Handle form submission
     const handleCreate = async () => {
         if (newAnnouncement.title && newAnnouncement.description) {
-            await createAnnouncement(newAnnouncement);
+            const formData = new FormData();
+            formData.append('title', newAnnouncement.title);
+            formData.append('description', newAnnouncement.description);
+            if (attachment) {
+                formData.append('attachment', attachment);
+            }
+
+            await createAnnouncement(formData);
             // Reset the form after successful submission
             setNewAnnouncement({ title: '', description: '' });
-
+            setAttachment(null);
+            setPanel(null);
         } else {
             console.log('Please fill in all fields');
         }
@@ -75,8 +92,27 @@ const Announcement = () => {
             ...selectedAnnouncement,
             ...editForm,
         };
-        await updateAnnouncement(updatedAnnouncement);
-        setPanel('detail'); // Switch back to the detail panel after saving
+        // If a new file is selected, append it to the form data
+        const formData = new FormData();
+        // Add updated title and description
+        formData.append('title', updatedAnnouncement.title);
+        formData.append('description', updatedAnnouncement.description);
+
+        // If a new file is added, append it
+        if (attachment) {
+            formData.append('file', attachment);
+        } else if (selectedAnnouncement.fileURI && !attachment) {
+            formData.append('file', null);
+        }
+        await updateAnnouncement(formData);
+        setPanel('detail');
+    };
+
+    const handleRemoveFile = async () => {
+        setAttachment(null);
+        setCurrentAttachment(null);
+        console.log('Attachment removed:', selectedAnnouncement.fileURI);
+        await deleteAttachment(selectedAnnouncement.fileURI);
     };
 
     // Trigger the dialog to open
@@ -85,9 +121,6 @@ const Announcement = () => {
     };
 
     const handleDelete = async () => {
-        // const confirmDelete = window.confirm('Are you sure you want to delete this announcement?');
-        // if (!confirmDelete) return;
-
         setIsDeleting(true);
 
         try {
@@ -130,12 +163,24 @@ const Announcement = () => {
 
     useEffect(() => {
         if (selectedAnnouncement) {
+            // Set the edit form data
             setEditForm({
                 title: selectedAnnouncement.title,
                 description: selectedAnnouncement.description,
             });
+
+            // Check if the announcement has an attachment before fetching
+            if (selectedAnnouncement.fileURI) {
+                const loadAttachment = async () => {
+                    const result = await fetchAttachment(selectedAnnouncement.fileURI);
+                    setCurrentAttachment(result);
+                };
+                loadAttachment();
+            } else {
+                setCurrentAttachment(null); // No attachment, clear the previous attachment
+            }
         }
-    }, [selectedAnnouncement]);
+    }, [selectedAnnouncement]); // Trigger when selectedAnnouncement changes
 
     return (
         <>
@@ -241,6 +286,21 @@ const Announcement = () => {
                                     <Typography variant='h6' color='grey'>Description</Typography>
                                     <Typography>{selectedAnnouncement.description}</Typography>
                                 </Box>
+                                {selectedAnnouncement.fileURI && (
+                                    <>
+                                        <Box>
+                                            <Typography variant='h6' color='grey'>Attachment</Typography>
+                                            <Box>
+                                                <Box sx={{ display: 'flex', justifyContent: 'start' }}>
+                                                    <Attachment sx={{ mr: 1 }} />
+                                                    <a href={currentAttachment} target="_blank" rel="noreferrer">
+                                                        {selectedAnnouncement.fileName}
+                                                    </a>
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    </>
+                                )}
                             </Stack>
                         </Card>
                     </Grid>
@@ -285,6 +345,33 @@ const Announcement = () => {
                                         rows={12}
                                     />
                                 </Box>
+
+                                {selectedAnnouncement.fileURI && (
+                                    <>
+                                        <Box>
+                                            <Typography variant='h6' color='grey'>Attachment</Typography>
+                                            <Box>
+                                                <Box sx={{ display: 'flex', justifyContent: 'start' }}>
+                                                    <Attachment sx={{ mr: 1 }} />
+                                                    <a href={currentAttachment} target="_blank" rel="noreferrer">
+                                                        {selectedAnnouncement.fileName}
+                                                    </a>
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    </>
+                                )}
+
+                                {/* <Box>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start' }}>
+                                        <AttachmentUpload
+                                            existingFile={selectedAnnouncement} // Pass existing file for display
+                                            onAttachmentChange={handleAttachmentChange} // Handle file selection
+                                            onRemoveFile={handleRemoveFile} // Handle file removal
+                                        />
+                                    </Box>
+                                </Box> */}
+
                             </Stack>
                         </Card>
                     </Grid>
@@ -327,6 +414,10 @@ const Announcement = () => {
                                         onChange={handleInputChange}
                                     />
                                 </Box>
+                                <AttachmentUpload
+                                    onAttachmentChange={(file) => handleAttachmentChange(file)}
+                                />
+
                             </Stack>
                         </Card>
                     </Grid>

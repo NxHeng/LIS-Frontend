@@ -56,24 +56,24 @@ const ManageUsers = () => {
     // Handle pagination
     const handlePageChange = (event, newPage, type) => {
         switch (type) {
-            case 'pendingStaff':
-                setPendingStaffPage(newPage);
-                break;
-            case 'pendingClient':
-                setPendingClientPage(newPage);
-                break;
+            // case 'pendingStaff':
+            //     setPendingStaffPage(newPage);
+            //     break;
+            // case 'pendingClient':
+            //     setPendingClientPage(newPage);
+            //     break;
             case 'activeStaff':
                 setActiveStaffPage(newPage);
                 break;
             case 'activeClient':
                 setActiveClientPage(newPage);
                 break;
-            case 'rejectedStaff':
-                setRejectedStaffPage(newPage);
-                break;
-            case 'rejectedClient':
-                setRejectedClientPage(newPage);
-                break;
+            // case 'rejectedStaff':
+            //     setRejectedStaffPage(newPage);
+            //     break;
+            // case 'rejectedClient':
+            //     setRejectedClientPage(newPage);
+            //     break;
             default:
                 break;
         }
@@ -99,21 +99,21 @@ const ManageUsers = () => {
     };
 
 
-    const handleApproveStaff = async (userId) => {
-        updateUserRole(userId, 'clerk');
-        const tempUser = pendingStaffs.find(user => user._id === userId);
-        tempUser.role = 'clerk';
-        setActiveStaffs([...activeStaffs, tempUser]);
-        setPendingStaffs(pendingStaffs.filter(user => user._id !== userId));
-    };
+    // const handleApproveStaff = async (userId) => {
+    //     updateUserRole(userId, 'clerk');
+    //     const tempUser = pendingStaffs.find(user => user._id === userId);
+    //     tempUser.role = 'clerk';
+    //     setActiveStaffs([...activeStaffs, tempUser]);
+    //     setPendingStaffs(pendingStaffs.filter(user => user._id !== userId));
+    // };
 
-    const handleApproveClient = async (userId) => {
-        updateUserRole(userId, 'client');
-        const tempUser = pendingClients.find(user => user._id === userId);
-        tempUser.role = 'client';
-        setActiveClients([...activeClients, tempUser]);
-        setPendingClients(pendingClients.filter(user => user._id !== userId));
-    };
+    // const handleApproveClient = async (userId) => {
+    //     updateUserRole(userId, 'client');
+    //     const tempUser = pendingClients.find(user => user._id === userId);
+    //     tempUser.role = 'client';
+    //     setActiveClients([...activeClients, tempUser]);
+    //     setPendingClients(pendingClients.filter(user => user._id !== userId));
+    // };
 
     const handleRoleChange = async (userId, newRole) => {
         updateUserRole(userId, newRole);
@@ -125,21 +125,21 @@ const ManageUsers = () => {
         }));
     };
 
-    const handleRejectStaff = async (userId) => {
-        updateUserRole(userId, 'rejected');
-        const tempUser = pendingStaffs.find(user => user._id === userId);
-        tempUser.role = 'rejected';
-        setRejectedStaffs([...rejectedStaffs, tempUser]);
-        setPendingStaffs(pendingStaffs.filter(user => user._id !== userId));
-    };
+    // const handleRejectStaff = async (userId) => {
+    //     updateUserRole(userId, 'rejected');
+    //     const tempUser = pendingStaffs.find(user => user._id === userId);
+    //     tempUser.role = 'rejected';
+    //     setRejectedStaffs([...rejectedStaffs, tempUser]);
+    //     setPendingStaffs(pendingStaffs.filter(user => user._id !== userId));
+    // };
 
-    const handleRejectClient = async (userId) => {
-        updateUserRole(userId, 'client-rejected');
-        const tempUser = pendingClients.find(user => user._id === userId);
-        tempUser.role = 'client-rejected';
-        setRejectedClients([...rejectedClients, tempUser]);
-        setPendingClients(pendingClients.filter(user => user._id !== userId));
-    };
+    // const handleRejectClient = async (userId) => {
+    //     updateUserRole(userId, 'client-rejected');
+    //     const tempUser = pendingClients.find(user => user._id === userId);
+    //     tempUser.role = 'client-rejected';
+    //     setRejectedClients([...rejectedClients, tempUser]);
+    //     setPendingClients(pendingClients.filter(user => user._id !== userId));
+    // };
 
 
     const handleDeleteActiveUser = async (userId) => {
@@ -161,14 +161,14 @@ const ManageUsers = () => {
         setDialogOpen(true);
     };
 
-    const handleCloseDialog = () => {
-        setDialogOpen(false);
-        setSelectedUser(null);
-    };
+    // const handleCloseDialog = () => {
+    //     setDialogOpen(false);
+    //     setSelectedUser(null);
+    // };
 
-    const handleTabChange = (event, newValue) => {
-        setTabValue(newValue);
-    };
+    // const handleTabChange = (event, newValue) => {
+    //     setTabValue(newValue);
+    // };
 
     const renderRoleTitle = (role) => {
         if (role === 'staffs') {
@@ -222,16 +222,16 @@ const ManageUsers = () => {
                     <Card sx={{ ...muiStyles.cardStyle, p: 4 }}>
 
                         <Box>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={tabValue} onChange={handleTabChange} aria-label="user management tabs">
                                     <Tab sx={{ textTransform: 'capitalize' }} label="Pending" {...a11yProps(0)} />
                                     <Tab sx={{ textTransform: 'capitalize' }} label="Active" {...a11yProps(1)} />
                                     <Tab sx={{ textTransform: 'capitalize' }} label="Rejected" {...a11yProps(2)} />
                                 </Tabs>
-                            </Box>
+                            </Box> */}
 
                             {/* Pending Users */}
-                            <CustomTabPanel value={tabValue} index={0}>
+                            {/* <CustomTabPanel value={tabValue} index={0}>
                                 <Box>
                                     {renderRoleTitle('staffs')}
                                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -269,10 +269,10 @@ const ManageUsers = () => {
                                         />
                                     </Box>
                                 </Box>
-                            </CustomTabPanel>
+                            </CustomTabPanel> */}
 
                             {/* Active Users */}
-                            <CustomTabPanel value={tabValue} index={1}>
+                            {/* <CustomTabPanel value={tabValue} index={1}> */}
                                 <Box>
                                     {renderRoleTitle('staffs')}
                                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -315,7 +315,7 @@ const ManageUsers = () => {
                                         />
                                     </Box>
                                 </Box>
-                            </CustomTabPanel>
+                            {/* </CustomTabPanel> */}
 
                             {/* <CustomTabPanel value={tabValue} index={2}>
                     <UserTable
@@ -326,7 +326,7 @@ const ManageUsers = () => {
                 </CustomTabPanel> */}
 
                             {/* Rejected Users */}
-                            <CustomTabPanel value={tabValue} index={2}>
+                            {/* <CustomTabPanel value={tabValue} index={2}>
                                 <Box>
                                     {renderRoleTitle('staffs')}
                                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -369,7 +369,7 @@ const ManageUsers = () => {
                                         />
                                     </Box>
                                 </Box>
-                            </CustomTabPanel>
+                            </CustomTabPanel> */}
 
                             {/* {selectedUser && (
                                 <UserApprovalDialog
@@ -387,27 +387,27 @@ const ManageUsers = () => {
     );
 };
 
-function CustomTabPanel(props) {
-    const { children, value, index, ...other } = props;
+// function CustomTabPanel(props) {
+//     const { children, value, index, ...other } = props;
 
-    return (
-        <Box
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-        </Box>
-    );
-}
+//     return (
+//         <Box
+//             role="tabpanel"
+//             hidden={value !== index}
+//             id={`simple-tabpanel-${index}`}
+//             aria-labelledby={`simple-tab-${index}`}
+//             {...other}
+//         >
+//             {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+//         </Box>
+//     );
+// }
 
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
+// function a11yProps(index) {
+//     return {
+//         id: `simple-tab-${index}`,
+//         'aria-controls': `simple-tabpanel-${index}`,
+//     };
+// }
 
 export default ManageUsers;

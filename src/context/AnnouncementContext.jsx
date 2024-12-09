@@ -10,6 +10,7 @@ export const AnnouncementContextProvider = ({ children }) => {
     const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
     const [announcementsLoaded, setAnnouncementsLoaded] = useState(false);
     const [announcementLoaded, setAnnouncementLoaded] = useState(false);
+    const [currentAttachment, setCurrentAttachment] = useState(null);
 
     // Fetch all announcements from the backend
     const fetchAnnouncements = async () => {
@@ -26,17 +27,14 @@ export const AnnouncementContextProvider = ({ children }) => {
     };
 
     //create new announcement to database
-    const createAnnouncement = async (announcement) => {
+    const createAnnouncement = async (formData) => {
         try {
             const response = await fetch(`${API_URL}/announcement/createAnnouncement`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(announcement),
+                body: formData,
             });
             const data = await response.json();
-            console.log("CreateAnnouncement:",data);
+            console.log("CreateAnnouncement:", data);
             // setAnnouncements((prev) => [...prev, data]);
         } catch (error) {
             console.error(error);
@@ -77,14 +75,11 @@ export const AnnouncementContextProvider = ({ children }) => {
     };
 
     // Update announcement in the database
-    const updateAnnouncement = async (announcement) => {
+    const updateAnnouncement = async (formData) => {
         try {
             const response = await fetch(`${API_URL}/announcement/updateAnnouncement/${announcement._id}`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(announcement),
+                body: formData
             });
 
             if (!response.ok) {
@@ -100,6 +95,41 @@ export const AnnouncementContextProvider = ({ children }) => {
             console.error('Error updating announcement:', error);
         }
     };
+
+    const fetchAttachment = async (fileURI) => {
+        try {
+            const response = await fetch(`${API_URL}/announcement/fetchAttachment/${fileURI}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch attachment');
+            }
+
+            const data = await response.blob();
+            return URL.createObjectURL(data);
+        } catch (error) {
+            console.error('Error fetching attachment:', error);
+            return null;
+        }
+    }
+
+    const deleteAttachment = async (fileURI) => {
+        try {
+            const response = await fetch(`${API_URL}/announcement/deleteAttachment/${fileURI}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete the attachment');
+            }
+
+            setCurrentAttachment(null);
+            updateAnnouncement
+            selectedAnnouncement.fileURI = null;
+            selectedAnnouncement.fileName = null;
+            console.log('Delete successful');
+        } catch (error) {
+            console.error('Error deleting attachment:', error);
+        }
+    }
 
 
     return (
@@ -119,6 +149,10 @@ export const AnnouncementContextProvider = ({ children }) => {
             deleteAnnouncement,
             updateAnnouncement,
             fetchAnnouncements,
+            fetchAttachment,
+            deleteAttachment,
+            currentAttachment,
+            setCurrentAttachment,
         }}>
             {children}
         </AnnouncementContext.Provider>
