@@ -129,28 +129,28 @@ const TaskDetail = () => {
                             value={formData.description}
                             onChange={handleChange}
                             margin="normal"
-                            {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                            {...caseItem?.status === 'active' || caseItem?.status === 'Active' ? { disabled: false } : { disabled: true }}
                         />
                         <DatePicker
                             label="Initiation Date"
                             value={formData.initiationDate ? new Date(formData.initiationDate) : null}
                             onChange={(date) => handleDateChange('initiationDate', date)}
                             slots={{ textField: TextField }}
-                            {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                            {...caseItem?.status === 'active' || caseItem?.status === 'Active' ? { disabled: false } : { disabled: true }}
                         />
                         <DatePicker
                             label="Due Date"
                             value={formData.dueDate ? new Date(formData.dueDate) : null}
                             onChange={(date) => handleDateChange('dueDate', date)}
                             slots={{ textField: TextField }}
-                            {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                            {...caseItem?.status === 'active' || caseItem?.status === 'Active' ? { disabled: false } : { disabled: true }}
                         />
                         <DatePicker
                             label="Reminder"
                             value={formData.reminder ? new Date(formData.reminder) : null}
                             onChange={(date) => handleDateChange('reminder', date)}
                             slots={{ textField: TextField }}
-                            {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                            {...caseItem?.status === 'active' || caseItem?.status === 'Active' ? { disabled: false } : { disabled: true }}
                         />
                         <TextField
                             fullWidth
@@ -159,10 +159,10 @@ const TaskDetail = () => {
                             value={formData.remark}
                             onChange={handleChange}
                             margin="normal"
-                            {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                            {...caseItem?.status === 'active' || caseItem?.status === 'Active' ? { disabled: false } : { disabled: true }}
                         />
                         {
-                            caseItem.status === 'active' || caseItem.status === 'Active' ?
+                            caseItem?.status === 'active' || caseItem?.status === 'Active' ?
                                 <Stack spacing={1} direction="column" sx={{ mt: 2 }}>
                                     {/* <Button
                             type="submit"
@@ -183,7 +183,7 @@ const TaskDetail = () => {
                                                 name="status"
                                                 onChange={handleChange}
                                                 sx={{ mb: 3 }}
-                                                {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                                                {...caseItem?.status === 'active' || caseItem?.status === 'Active' ? { disabled: false } : { disabled: true }}
                                             >
                                                 <MenuItem value="Pending">Pending</MenuItem>
                                                 <MenuItem value="Due">Due</MenuItem>
@@ -200,7 +200,7 @@ const TaskDetail = () => {
                                             endIcon={<DeleteIcon />}
                                             sx={muiStyles.detailsButtonStyle}
                                             onClick={handleDeleteClick}
-                                            {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                                            {...caseItem?.status === 'active' || caseItem?.status === 'Active' ? { disabled: false } : { disabled: true }}
                                         >
                                             Delete
                                         </Button>

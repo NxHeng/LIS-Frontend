@@ -15,7 +15,7 @@ const EditCaseDetails = ({ caseItem }) => {
 
     useEffect(() => {
         // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
-        fetchCategory(caseItem.category).then(() => {
+        fetchCategory(caseItem?.category).then(() => {
             setCaseData(caseItem);
         });
     }, []);

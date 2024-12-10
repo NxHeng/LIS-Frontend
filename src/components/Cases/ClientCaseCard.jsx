@@ -11,10 +11,10 @@ const ClientCaseCard = ({ caseItem }) => {
     };
     
     // Format the createdAt date
-    const formattedDate = format(new Date(caseItem.createdAt), 'dd MMM yyyy');
+    const formattedDate = format(new Date(caseItem?.createdAt), 'dd MMM yyyy');
 
     return (
-        <Link to={`/client/mycases/details/${caseItem._id}`} onClick={handleClick} style={{ textDecoration: 'none' }}>
+        <Link to={`/client/mycases/details/${caseItem?._id}`} onClick={handleClick} style={{ textDecoration: 'none' }}>
             <Card elevation={5} sx={{
                 marginBottom: 2,
                 borderRadius: 3,
@@ -29,7 +29,7 @@ const ClientCaseCard = ({ caseItem }) => {
                 <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mx: 2 }}>
                     <Box sx={{ flex: 1 }}>
                         <Typography component="span" variant="h6">
-                            {caseItem.matterName}
+                            {caseItem?.matterName}
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>

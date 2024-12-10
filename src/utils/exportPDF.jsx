@@ -55,7 +55,7 @@ const exportPDF = (caseItem) => {
     const topTableRows = [];
     const bottomTableRows = [];
 
-    caseItem.fields.forEach((field) => {
+    caseItem?.fields.forEach((field) => {
         const mainInfo = field.type === "date"
             ? new Date(field.value).toLocaleDateString()
             : field.type === "price"
@@ -142,7 +142,7 @@ const exportPDF = (caseItem) => {
     addFooter(doc);
 
     // Save PDF
-    doc.save(`Case - ${caseItem.matterName}.pdf`);
+    doc.save(`Case - ${caseItem?.matterName}.pdf`);
 };
 
 const exportAnalysis = async (caseAnalysis) => {

@@ -51,7 +51,7 @@ const TaskItem = ({ task, index, onStatusChange, newStatus }) => {
                         disableRipple
                         inputProps={{ 'aria-labelledby': id }}
                         onChange={handleCheckboxChange}
-                        {...caseItem.status === 'active' || caseItem.status === 'Active' ? { disabled: false } : { disabled: true }}
+                        {...caseItem?.status === 'active' || caseItem?.status === 'Active' ? { disabled: false } : { disabled: true }}
                     />
                     <ListItemText
                         edge="start"

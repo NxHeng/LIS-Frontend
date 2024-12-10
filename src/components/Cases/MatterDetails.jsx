@@ -21,7 +21,7 @@ const MatterDetails = ({ caseItem }) => {
     const navigate = useNavigate();
 
     const handleClose = () => {
-        updateCaseAsClosedInDatabase(caseItem._id);
+        updateCaseAsClosedInDatabase(caseItem?._id);
         navigate('/cases');
     }
 
@@ -38,7 +38,7 @@ const MatterDetails = ({ caseItem }) => {
     };
 
     const handleGenerateLink = async () => {
-        const { url, qrCode } = await generateLink(caseItem._id)
+        const { url, qrCode } = await generateLink(caseItem?._id)
         console.log("URL ", url);
         console.log("QR Code ", qrCode);
         if (url) {
@@ -109,7 +109,7 @@ const MatterDetails = ({ caseItem }) => {
                         </Typography>
                     </Box>
                     {
-                        caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' && !isTemporary ?
+                        caseItem?.status === 'active' || caseItem?.status === 'Active' && user.role !== 'client' && !isTemporary ?
                             // <Box sx={{ display: "flex", justifyContent: "flex-start", mb: 3 }}>
 
                             <Box>
@@ -141,29 +141,29 @@ const MatterDetails = ({ caseItem }) => {
                         <TableBody>
                             <TableRow >
                                 <TableCell align='left'>Matter Name</TableCell>
-                                <TableCell align='left'>{caseItem.matterName}</TableCell>
+                                <TableCell align='left'>{caseItem?.matterName}</TableCell>
                             </TableRow>
                             <TableRow >
                                 <TableCell align='left'>File Reference</TableCell>
-                                <TableCell align='left'>{caseItem.fileReference}</TableCell>
+                                <TableCell align='left'>{caseItem?.fileReference}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell align='left'>Category</TableCell>
-                                <TableCell align='left'>{caseItem.category.categoryName}</TableCell>
+                                <TableCell align='left'>{caseItem?.category?.categoryName}</TableCell>
                             </TableRow>
                             <TableRow >
                                 <TableCell align='left'>Status</TableCell>
-                                <TableCell align='left'>{caseItem.status}</TableCell>
+                                <TableCell align='left'>{caseItem?.status}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell align='left'>Solicitor In Charge</TableCell>
-                                <TableCell align='left'>{caseItem.solicitorInCharge.username}</TableCell>
+                                <TableCell align='left'>{caseItem?.solicitorInCharge?.username}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell align='left'>Clerk In Charge</TableCell>
-                                <TableCell align='left'>{caseItem.clerkInCharge.username}</TableCell>
+                                <TableCell align='left'>{caseItem?.clerkInCharge?.username}</TableCell>
                             </TableRow>
-                            {caseItem.clients.map((client, index) => (
+                            {caseItem?.clients?.map((client, index) => (
                                 <TableRow key={index}>
                                     <TableCell align='left'>Client {index + 1}</TableCell>
                                     <TableCell align='left'>{client.name} ({client.icNumber})</TableCell>

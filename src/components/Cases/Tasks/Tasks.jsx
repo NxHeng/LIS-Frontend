@@ -22,7 +22,7 @@ const Tasks = () => {
 
     useEffect(() => {
         if (caseItem?.tasks) {
-            fetchTasks(caseItem._id);
+            fetchTasks(caseItem?._id);
         } else {
             setTasksLoaded(false);
         }
@@ -48,7 +48,7 @@ const Tasks = () => {
         }));
 
         setTasks(updatedTasks);
-        updateTasksOrder(caseItem._id, updatedTasks);
+        updateTasksOrder(caseItem?._id, updatedTasks);
         console.log("this is reordered tasks: ", updatedTasks);
     };
 

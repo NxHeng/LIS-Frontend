@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from "react-router-dom";
 import { Container, Typography, Box, Button, Grid, Stack, Card, CardContent } from '@mui/material';
 
 import MatterDetails from '../components/Cases/MatterDetails';
@@ -20,10 +21,36 @@ import { useDocumentContext } from '../context/DocumentContext';
 
 const Details = () => {
 
-    const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments, fromTasks, fromNotificationsToTasks, fromNotificationsToCaseDetails, setFromTasks, setFromNotificationsToTasks, setFromNotificationsToCaseDetails, setIsTemporary, isTemporary } = useCaseContext();
+    const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments, fromTasks, fromNotificationsToTasks, fromNotificationsToCaseDetails, setFromTasks, setFromNotificationsToTasks, setFromNotificationsToCaseDetails, setIsTemporary, isTemporary, fetchCase } = useCaseContext();
     const { selectedFile, selectedFolder, handleRename, handleDelete, handleDownload, deleteDialogOpen, closeDeleteDialog, openDeleteDialog } = useDocumentContext();
     const { task } = useTaskContext();
-    const caseItem = JSON.parse(localStorage.getItem('caseItem'));
+
+    const { id } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [caseItem, setCaseItem] = useState(() => {
+        // Initialize state from localStorage
+        const savedCase = localStorage.getItem('caseItem');
+        return savedCase ? JSON.parse(savedCase) : null;
+    });
+
+    useEffect(() => {
+        const loadCaseData = async () => {
+            try {
+                setLoading(true);
+                const data = await fetchCase(id); // Wait for the data to be fetched
+                setCaseItem(data); // Update caseItem with the fetched data
+            } catch (error) {
+                console.error("Error fetching case data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+    
+        if (!caseItem || caseItem._id !== id) {
+            loadCaseData(); // Call the function to fetch data
+        }
+    }, [id]);
+
 
     useEffect(() => {
         setIsTemporary(false);
@@ -43,6 +70,10 @@ const Details = () => {
         setFromNotificationsToCaseDetails(false);
 
     }, [fromTasks, fromNotificationsToTasks, fromNotificationsToCaseDetails]);
+
+    if (!caseItem && loading) {
+        return <div>Loading...</div>
+    }
 
 
     return (
@@ -113,7 +144,7 @@ const Details = () => {
                             </Grid>
                         ) : detailView === 'matterDetails' || detailView === 'caseDetails' ? (
                             <Grid item xs={3} sx={{ pr: 3 }}>
-                                <CaseLog logs={caseItem.logs} caseId={caseItem._id} />
+                                <CaseLog logs={caseItem?.logs} caseId={caseItem?._id} />
                             </Grid>
                         ) : detailView === 'documents' ? (
                             <Grid item xs={3}>
@@ -124,7 +155,7 @@ const Details = () => {
                                         handleDelete={handleDelete}
                                         handleDownload={handleDownload}
                                         isTemporary={isTemporary}
-                                        caseId={caseItem._id}
+                                        caseId={caseItem?._id}
                                         openDeleteDialog={openDeleteDialog}
                                         closeDeleteDialog={closeDeleteDialog}
                                         deleteDialogOpen={deleteDialogOpen}
@@ -136,7 +167,7 @@ const Details = () => {
                 </Grid>
             </Container>
             {
-                detailView === 'tasks' && (caseItem.status === 'active' || caseItem.status === 'Active') ? (
+                detailView === 'tasks' && (caseItem?.status === 'active' || caseItem?.status === 'Active') ? (
                     <AddTaskBar />
                 ) : null
             }

@@ -43,8 +43,8 @@ const MyCases = () => {
         // Apply search query filter
         if (query) {
             filtered = filtered.filter(caseItem =>
-                caseItem.matterName.toLowerCase().includes(query.toLowerCase()) ||
-                caseItem.clients.some(client => client.toLowerCase().includes(query.toLowerCase()))
+                caseItem?.matterName.toLowerCase().includes(query.toLowerCase()) ||
+                caseItem?.clients.some(client => client.toLowerCase().includes(query.toLowerCase()))
             );
         }
         setSearchFilteredCases(filtered);

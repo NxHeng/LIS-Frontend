@@ -22,14 +22,14 @@ const MyDetails = () => {
     }, []);
 
     const renderTimeline = () => {
-        const tasks = caseItem.tasks || [];
+        const tasks = caseItem?.tasks || [];
         // Separate completed and pending tasks
         const completedTasks = tasks.filter(task => task.status === 'Completed').sort((a, b) => a.order - b.order); // Sort completed tasks
         const pendingTasks = tasks.filter(task => task.status !== 'Completed').sort((a, b) => a.order - b.order); // Sort pending tasks
 
         // Combine the sorted tasks, starting with completed tasks followed by pending tasks
         const sortedTasks = [...completedTasks, ...pendingTasks];
-        const status = caseItem.status === 'closed' ? 'Case Closed' : 'In Progress';
+        const status = caseItem?.status === 'closed' ? 'Case Closed' : 'In Progress';
 
         const Circle = ({ content, completed }) => (
             <Box
@@ -175,7 +175,7 @@ const MyDetails = () => {
                                     handleDelete={handleDelete}
                                     handleDownload={handleDownload}
                                     isTemporary={isTemporary}
-                                    caseId={caseItem._id}
+                                    caseId={caseItem?._id}
                                 />
                             </Box>
                         </Grid>

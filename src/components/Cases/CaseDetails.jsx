@@ -15,8 +15,8 @@ const CaseDetails = ({ caseItem }) => {
     // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     // Separate fields by type
-    const textNumberStakeholderFields = caseItem.fields.filter(field => field.type === 'text' || field.type === 'number' || field.type === 'stakeholder');
-    const priceDateFields = caseItem.fields.filter(field => field.type === 'price' || field.type === 'date');
+    const textNumberStakeholderFields = caseItem?.fields.filter(field => field.type === 'text' || field.type === 'number' || field.type === 'stakeholder');
+    const priceDateFields = caseItem?.fields.filter(field => field.type === 'price' || field.type === 'date');
 
     return (
         <Container maxWidth="xl" sx={{ width: '100%' }}>
@@ -31,7 +31,7 @@ const CaseDetails = ({ caseItem }) => {
                     </Typography>
                 </Box>
                 {
-                    caseItem.status === 'active' || caseItem.status === 'Active' && user.role !== 'client' && !isTemporary ?
+                    caseItem?.status === 'active' || caseItem?.status === 'Active' && user.role !== 'client' && !isTemporary ?
 
                         <Box>
                             <Button onClick={toEditCaseDetails} variant="contained" sx={{ ...muiStyles.detailsButtonStyle, width: '10vh' }} >

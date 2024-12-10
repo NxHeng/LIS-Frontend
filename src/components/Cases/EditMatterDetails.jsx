@@ -15,10 +15,10 @@ const EditMatterDetails = ({ caseItem }) => {
     const [loading, setLoading] = useState(true);
 
     // useEffect(() => {
-    //     if (caseItem.category) {
-    //         fetchCategory(caseItem.category);
+    //     if (caseItem?.category) {
+    //         fetchCategory(caseItem?.category);
     //     }
-    // }, [caseItem.category, fetchCategory]);
+    // }, [caseItem?.category, fetchCategory]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,7 +29,7 @@ const EditMatterDetails = ({ caseItem }) => {
     }, []);
 
     const handleSave = () => {
-        updateCaseInDatabase(caseItem._id, editedData);
+        updateCaseInDatabase(caseItem?._id, editedData);
         // update these specific fields in local storage
         localStorage.setItem('caseItem', JSON.stringify(editedData));
         toMatterDetails();

@@ -54,18 +54,18 @@ const Cases = () => {
 
         // Apply category filter if the category is not 'All'
         if (category && category !== 'All') {
-            filtered = filtered.filter(caseItem => caseItem.category._id === category);
+            filtered = filtered.filter(caseItem => caseItem?.category?._id === category);
         }
 
         if (status) {
-            filtered = filtered.filter(caseItem => caseItem.status.toLowerCase() === status.toLowerCase());
+            filtered = filtered.filter(caseItem => caseItem?.status.toLowerCase() === status.toLowerCase());
         }
 
         // Apply search query filter
         if (query) {
             filtered = filtered.filter(caseItem =>
-                caseItem.matterName.toLowerCase().includes(query.toLowerCase()) ||
-                caseItem.clients.some(client => client?.name.toLowerCase().includes(query.toLowerCase()))
+                caseItem?.matterName.toLowerCase().includes(query.toLowerCase()) ||
+                caseItem?.clients.some(client => client?.name.toLowerCase().includes(query.toLowerCase()))
             );
         }
         setSearchFilteredCases(filtered);

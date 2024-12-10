@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 
 const CaseContext = createContext();
@@ -107,11 +108,13 @@ export const CaseContextProvider = ({ children }) => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
+            localStorage.setItem('caseItem', JSON.stringify(data));
             return data;
         } catch (error) {
             console.error(error);
         }
     };
+
 
     const fetchCases = async () => {
         setCaseItemsLoaded(false);

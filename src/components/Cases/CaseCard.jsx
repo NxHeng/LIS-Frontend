@@ -14,12 +14,12 @@ const CaseCard = ({ caseItem }) => {
 
     // filter out the first task that is not completed
     useEffect(() => {
-        const firstTaskTemp = caseItem.tasks.find(task => task.status !== 'Completed');
+        const firstTaskTemp = caseItem?.tasks.find(task => task.status !== 'Completed');
         setFirstTask(firstTaskTemp);
     }, [caseItem]);
 
     // Format the createdAt date
-    const formattedDate = format(new Date(caseItem.createdAt), 'dd MMM yyyy');
+    const formattedDate = format(new Date(caseItem?.createdAt), 'dd MMM yyyy');
 
     const truncateText = (text, maxLength) => {
         if (text.length <= maxLength) {
@@ -29,7 +29,8 @@ const CaseCard = ({ caseItem }) => {
     }
 
     return (
-        <Link to={`/cases/details/${caseItem._id}`} onClick={handleClick} style={{ textDecoration: 'none' }}>
+        // <Link to={`/cases/details/${caseItem?._id}`} onClick={handleClick} style={{ textDecoration: 'none' }}>
+        <Link to={`/cases/details/${caseItem?._id}`} style={{ textDecoration: 'none' }}>
             <Card elevation={5} sx={{
                 marginBottom: 2,
                 borderRadius: 3,
@@ -44,10 +45,10 @@ const CaseCard = ({ caseItem }) => {
                 <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mx: 2 }}>
                     <Box sx={{ flex: 1 }}>
                         <Typography component="span" variant="h6">
-                            {caseItem.matterName}
+                            {caseItem?.matterName}
                         </Typography>
                         <Typography variant="body1">
-                            {caseItem.clients[0].name}
+                            {caseItem?.clients[0].name}
                         </Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>

@@ -95,8 +95,8 @@ const CaseLog = ({ logs, caseId }) => {
                         overflowY: 'auto',
                         py: 1,
                     }}>
-                        {logList.length > 0 ? (
-                            logList.map((log, index) => (
+                        {logList?.length > 0 ? (
+                            logList?.map((log, index) => (
                                 <LogCard
                                     key={log._id || index}
                                     log={log}
