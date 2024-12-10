@@ -31,31 +31,67 @@ const AttachmentUpload = ({ onAttachmentChange, existingFile, onRemoveFile }) =>
         }
     };
 
+    const handleRemoveExistingFile = () => {
+        setFileName("");
+        
+        onAttachmentChange(null); // Notify parent that file is removed
+        if (onRemoveFile) {
+            onRemoveFile(); // Call the parent callback
+        }
+    }
+
     return (
         <Box>
             <Typography variant="h6" color="grey">Attachment</Typography>
-            <Button
-                variant="contained"
-                component="label"
-                sx={{
-                    ...muiStyles.detailsButtonStyle,
-                    mt: 1,
-                    py: 1,
-                    px: 2,
-                    backgroundColor: "#1976d2",
-                    color: "#fff",
-                    "&:hover": {
-                        backgroundColor: "#155a9c",
-                    },
-                }}
-            >
-                Upload File
-                <input
-                    type="file"
-                    hidden
-                    onChange={handleAttachmentChange}
-                />
-            </Button>
+            {existingFile.fileURI ? (
+                <Button
+                    variant="contained"
+                    component="label"
+                    sx={{
+                        ...muiStyles.detailsButtonStyle,
+                        mt: 1,
+                        py: 1,
+                        px: 2,
+                        backgroundColor: "#1976d2",
+                        color: "#fff",
+                        "&:hover": {
+                            backgroundColor: "#155a9c",
+                        },
+                    }}
+                >
+                    Upload File
+                    <input
+                        type="file"
+                        hidden
+                        onChange={handleAttachmentChange}
+                    />
+                </Button>
+            ) : null}
+
+            {!existingFile.fileURI ? (
+                <Button
+                    variant="contained"
+                    component="label"
+                    sx={{
+                        ...muiStyles.detailsButtonStyle,
+                        mt: 1,
+                        py: 1,
+                        px: 2,
+                        backgroundColor: "#1976d2",
+                        color: "#fff",
+                        "&:hover": {
+                            backgroundColor: "#155a9c",
+                        },
+                    }}
+                >
+                    Upload File
+                    <input
+                        type="file"
+                        hidden
+                        onChange={handleAttachmentChange}
+                    />
+                </Button>
+            ) : null}
 
             {fileName && (
                 <>
@@ -81,7 +117,7 @@ const AttachmentUpload = ({ onAttachmentChange, existingFile, onRemoveFile }) =>
             )}
 
             {/* Display existing file information if available */}
-            {existingFile ? (
+            {existingFile.fileURI ? (
                 <Box sx={{ mt: 2 }}>
                     <Typography variant="body2" color="textSecondary">
                         <b>Existing file:</b> {existingFile.fileName}
@@ -89,7 +125,7 @@ const AttachmentUpload = ({ onAttachmentChange, existingFile, onRemoveFile }) =>
                     <Button
                         variant="outlined"
                         color="error"
-                        onClick={handleRemoveFile}
+                        onClick={handleRemoveExistingFile}
                         sx={{
                             ...muiStyles.detailsButtonStyle,
                             mt: 1,
@@ -101,6 +137,8 @@ const AttachmentUpload = ({ onAttachmentChange, existingFile, onRemoveFile }) =>
                     </Button>
                 </Box>
             ) : null}
+
+
         </Box>
     );
 };

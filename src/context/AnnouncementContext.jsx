@@ -75,15 +75,16 @@ export const AnnouncementContextProvider = ({ children }) => {
     };
 
     // Update announcement in the database
-    const updateAnnouncement = async (formData) => {
+    const updateAnnouncement = async (formData, announcementId) => {
         try {
-            const response = await fetch(`${API_URL}/announcement/updateAnnouncement/${announcement._id}`, {
+            const response = await fetch(`${API_URL}/announcement/updateAnnouncement/${announcementId}`, {
                 method: 'PATCH',
                 body: formData
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update the announcement');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to update the announcement');
             }
 
             const data = await response.json();
@@ -122,7 +123,10 @@ export const AnnouncementContextProvider = ({ children }) => {
             }
 
             setCurrentAttachment(null);
-            updateAnnouncement
+            const formData = new FormData();
+            formData.append('fileURI', null);
+            formData.append('fileName', null);
+            updateAnnouncement(formData, selectedAnnouncement._id);
             selectedAnnouncement.fileURI = null;
             selectedAnnouncement.fileName = null;
             console.log('Delete successful');

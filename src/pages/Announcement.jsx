@@ -99,13 +99,18 @@ const Announcement = () => {
         formData.append('description', updatedAnnouncement.description);
 
         // If a new file is added, append it
+        console.log('Attachment:', attachment);
         if (attachment) {
-            formData.append('file', attachment);
+            formData.append('attachment', attachment);
         } else if (selectedAnnouncement.fileURI && !attachment) {
-            formData.append('file', null);
+            formData.append('attachment', null);
         }
-        await updateAnnouncement(formData);
-        setPanel('detail');
+        try {
+            await updateAnnouncement(formData, updatedAnnouncement._id);
+            setPanel('detail');
+        } catch (error) {
+            console.error('Error updating announcement:', error);
+        }
     };
 
     const handleRemoveFile = async () => {
@@ -113,6 +118,7 @@ const Announcement = () => {
         setCurrentAttachment(null);
         console.log('Attachment removed:', selectedAnnouncement.fileURI);
         await deleteAttachment(selectedAnnouncement.fileURI);
+        setSelectedAnnouncement({ ...selectedAnnouncement, fileURI: null, fileName: null });
     };
 
     // Trigger the dialog to open
@@ -346,7 +352,7 @@ const Announcement = () => {
                                     />
                                 </Box>
 
-                                {selectedAnnouncement.fileURI && (
+                                {/* {selectedAnnouncement.fileURI && (
                                     <>
                                         <Box>
                                             <Typography variant='h6' color='grey'>Attachment</Typography>
@@ -360,9 +366,9 @@ const Announcement = () => {
                                             </Box>
                                         </Box>
                                     </>
-                                )}
+                                )} */}
 
-                                {/* <Box>
+                                <Box>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'start' }}>
                                         <AttachmentUpload
                                             existingFile={selectedAnnouncement} // Pass existing file for display
@@ -370,7 +376,7 @@ const Announcement = () => {
                                             onRemoveFile={handleRemoveFile} // Handle file removal
                                         />
                                     </Box>
-                                </Box> */}
+                                </Box>
 
                             </Stack>
                         </Card>
