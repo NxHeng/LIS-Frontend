@@ -66,7 +66,7 @@ export const AuthContextProvider = ({ children }) => {
     const register = async (username, email, password) => {
         try {
             // await axios.post(`${API_URL}/user/register`, { username, email, password });
-            const response = await fetch(`${API_URL}/user/register`, { 
+            const response = await fetch(`${API_URL}/user/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export const AuthContextProvider = ({ children }) => {
 
     const clientRegister = async (username, email, password, phone, ic) => {
         try {
-            const response = await fetch(`${API_URL}/user/clientRegister`, { 
+            const response = await fetch(`${API_URL}/user/clientRegister`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -99,6 +99,30 @@ export const AuthContextProvider = ({ children }) => {
             return { success: false, message: error.response?.data?.message || error.message };
         }
     };
+
+    const registerUser = async (username, email, password, phone, ic, role) => {
+        try {
+            const response = await fetch(`${API_URL}/user/userRegister`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, email, password, phone, ic, role }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Error: ${errorData.error}, Details: ${errorData.details}`);
+            }
+            const data = await response.json();
+            console.log(data);
+            return { success: true, message: `The ${role} account has been created` };
+        } catch (error) {
+            console.error('Registration failed:', error.response ? error.response.data : error.message);
+            return { success: false, message: error.response?.data?.message || error.message };
+        }
+    };
+
 
     const fetchProfile = async (authToken) => {
         try {
@@ -119,7 +143,7 @@ export const AuthContextProvider = ({ children }) => {
             console.error('Failed to fetch profile:', error.message);
         }
     };
-    
+
 
     const logout = async () => {
         setLoading(true);
@@ -182,6 +206,7 @@ export const AuthContextProvider = ({ children }) => {
             logout,
             register,
             clientRegister,
+            registerUser,
             fetchProfile,
             setUser,
             setToken,

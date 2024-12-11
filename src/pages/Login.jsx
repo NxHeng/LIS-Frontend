@@ -28,7 +28,7 @@ const Login = () => {
 
     return (
         <>
-            <Background/>
+            <Background />
             <Container component="main"
                 maxWidth="xs"
                 sx={{
@@ -65,7 +65,7 @@ const Login = () => {
                                         margin="normal"
                                         variant="outlined"
                                     />
-                                    <Typography variant="body2" sx={{ml:.2}}>
+                                    <Typography variant="body2" sx={{ ml: .2 }}>
                                         <Box
                                             component={Link}
                                             to='/forgot-password'
@@ -103,9 +103,12 @@ const Login = () => {
 
                                 <Typography variant="body2" align="center" sx={{ mt: 2 }}>
                                     No account?{' '}
+                                    {/* link open in new tab */}
                                     <Box
-                                        component={Link}
-                                        to='/register-client'
+                                        component="a"
+                                        href="https://wongloh.com/contact"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         sx={{
                                             textDecoration: 'none',
                                             color: 'primary.main',
@@ -116,7 +119,7 @@ const Login = () => {
                                             },
                                         }}
                                     >
-                                        Create an account
+                                        Contact Us
                                     </Box>
                                 </Typography>
 

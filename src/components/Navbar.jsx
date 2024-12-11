@@ -33,7 +33,7 @@ const pages = [
     { name: 'Notifications', icon: <Notifications /> },
     { name: 'Announcement', icon: <Announcement /> }
 ];
-const settings = ['Profile', 'Manage Users', 'Notification Settings'];
+const settings = ['Profile', 'Manage Users', 'Notification Settings',];
 
 const Navbar = () => {
     const { logout, loading } = useAuthContext();

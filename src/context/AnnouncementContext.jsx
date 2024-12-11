@@ -73,7 +73,7 @@ export const AnnouncementContextProvider = ({ children }) => {
         setAnnouncements(newAnnouncements);
         setSelectedAnnouncement(updatedAnnouncement);
     };
-
+    
     // Update announcement in the database
     const updateAnnouncement = async (formData, announcementId) => {
         try {

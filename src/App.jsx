@@ -12,8 +12,9 @@ import Notifications from "./pages/Notifications";
 import Announcement from "./pages/Announcement";
 import Create from "./pages/Create";
 import Login from './pages/Login';
-import StaffRegister from './pages/StaffRegister';
-import ClientRegister from './pages/ClientRegister';
+// import StaffRegister from './pages/StaffRegister';
+// import ClientRegister from './pages/ClientRegister';
+import CreateAccount from "./pages/CreateAccount";
 import Profile from './pages/Profile';
 import ChangePassword from "./pages/ChangePassword";
 import ManageUsers from "./pages/ManageUsers";
@@ -46,8 +47,8 @@ function App() {
           {/* Auth Routes */}
           <Route element={<AuthRoutes />}>
             <Route path="/login" element={<Login />} />
-            <Route path="/register-staff" element={<StaffRegister />} />
-            <Route path="/register-client" element={<ClientRegister />} />
+            {/* <Route path="/register-staff" element={<StaffRegister />} />
+            <Route path="/register-client" element={<ClientRegister />} /> */}
             {/* Temp Detail Route */}
             <Route path="/temporary/:caseId/:token" element={<TempDetail />} />
             {/* Expired Page Route */}
@@ -81,6 +82,7 @@ function App() {
               <>
                 <Route path="/manageusers" element={<ManageUsers />} />
                 <Route path="/notificationsettings" element={<NotificationSettings />} />
+                <Route path="/createaccount" element={<CreateAccount />} />
               </>
             )}
 

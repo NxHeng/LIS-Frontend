@@ -8,6 +8,7 @@ import muiStyles from '../styles/muiStyles';
 import Background from '../components/Background';
 import { ManageAccounts, Person } from '@mui/icons-material';
 import { useUserContext } from '../context/UserContext';
+import { Link } from 'react-router-dom';
 
 const ManageUsers = () => {
     const [pendingStaffs, setPendingStaffs] = useState([]);
@@ -204,7 +205,7 @@ const ManageUsers = () => {
             <Background />
             <Container sx={{ p: 4 }}>
                 <Stack spacing={2}>
-                    <Card sx={{ ...muiStyles.cardStyle, p: 2 }}>
+                    <Card sx={{ ...muiStyles.cardStyle, p: 2, display: 'flex', justifyContent: 'space-between' }}>
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'start',
@@ -216,6 +217,12 @@ const ManageUsers = () => {
                                 Manage Users
                             </Typography>
                         </Box>
+                        {/* onclick go to create user account page */}
+                        <Link to={'/createaccount'} style={{ textDecoration: 'none' }}>
+                            <Button variant='contained' color='primary' sx={{ ...muiStyles.detailsButtonStyle, m: 1 }}>
+                                Create Account
+                            </Button>
+                        </Link>
                     </Card>
 
 
@@ -273,48 +280,48 @@ const ManageUsers = () => {
 
                             {/* Active Users */}
                             {/* <CustomTabPanel value={tabValue} index={1}> */}
-                                <Box>
-                                    {renderRoleTitle('staffs')}
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <UserTable
-                                            users={getPagedData(activeStaffs, activeStaffPage)}
-                                            isStaff={true}
-                                            handleRoleChange={handleRoleChange}
-                                            onEdit={handleOpenDialog}
-                                            handleDeleteUser={handleDeleteActiveUser}
-                                            openDeleteDialog={openDeleteDialog}
-                                            closeDeleteDialog={closeDeleteDialog}
-                                            deleteDialogOpen={deleteDialogOpen}
-                                            handleDeleteUserClick={handleDeleteUserClick}
-                                        />
-                                        <Pagination
-                                            count={Math.ceil(activeStaffs.length / 5)}
-                                            page={activeStaffPage}
-                                            onChange={(e, newPage) => handlePageChange(e, newPage, 'activeStaff')}
-                                            sx={{ mt: 2 }}
-                                        />
-                                    </Box>
-                                    {renderRoleTitle('clients')}
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <UserTable
-                                            users={getPagedData(activeClients, activeClientPage)}
-                                            isClient={true}
-                                            handleRoleChange={handleRoleChange}
-                                            onEdit={handleOpenDialog}
-                                            handleDeleteUser={handleDeleteActiveUser}
-                                            openDeleteDialog={openDeleteDialog}
-                                            closeDeleteDialog={closeDeleteDialog}
-                                            deleteDialogOpen={deleteDialogOpen}
-                                            handleDeleteUserClick={handleDeleteUserClick}
-                                        />
-                                        <Pagination
-                                            count={Math.ceil(activeClients.length / 5)}
-                                            page={activeClientPage}
-                                            onChange={(e, newPage) => handlePageChange(e, newPage, 'activeClient')}
-                                            sx={{ mt: 2 }}
-                                        />
-                                    </Box>
+                            <Box>
+                                {renderRoleTitle('staffs')}
+                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <UserTable
+                                        users={getPagedData(activeStaffs, activeStaffPage)}
+                                        isStaff={true}
+                                        handleRoleChange={handleRoleChange}
+                                        onEdit={handleOpenDialog}
+                                        handleDeleteUser={handleDeleteActiveUser}
+                                        openDeleteDialog={openDeleteDialog}
+                                        closeDeleteDialog={closeDeleteDialog}
+                                        deleteDialogOpen={deleteDialogOpen}
+                                        handleDeleteUserClick={handleDeleteUserClick}
+                                    />
+                                    <Pagination
+                                        count={Math.ceil(activeStaffs.length / 5)}
+                                        page={activeStaffPage}
+                                        onChange={(e, newPage) => handlePageChange(e, newPage, 'activeStaff')}
+                                        sx={{ mt: 2 }}
+                                    />
                                 </Box>
+                                {renderRoleTitle('clients')}
+                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <UserTable
+                                        users={getPagedData(activeClients, activeClientPage)}
+                                        isClient={true}
+                                        handleRoleChange={handleRoleChange}
+                                        onEdit={handleOpenDialog}
+                                        handleDeleteUser={handleDeleteActiveUser}
+                                        openDeleteDialog={openDeleteDialog}
+                                        closeDeleteDialog={closeDeleteDialog}
+                                        deleteDialogOpen={deleteDialogOpen}
+                                        handleDeleteUserClick={handleDeleteUserClick}
+                                    />
+                                    <Pagination
+                                        count={Math.ceil(activeClients.length / 5)}
+                                        page={activeClientPage}
+                                        onChange={(e, newPage) => handlePageChange(e, newPage, 'activeClient')}
+                                        sx={{ mt: 2 }}
+                                    />
+                                </Box>
+                            </Box>
                             {/* </CustomTabPanel> */}
 
                             {/* <CustomTabPanel value={tabValue} index={2}>
