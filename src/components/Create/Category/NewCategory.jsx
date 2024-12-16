@@ -1,115 +1,89 @@
-import React from 'react';
-import { useState } from 'react';
-import { Container, Box, Typography, Button, TextField, InputAdornment, IconButton, FormControl, InputLabel, Select, MenuItem, Stack, Tabs, Tab, Card, } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React, { useState, useEffect } from 'react';
+import {
+    Container, Box, Typography, Button, TextField, FormControl, Stack, Tabs, Tab, Card, FormControlLabel, Checkbox, Grid,
+} from '@mui/material';
+
 import PropTypes from 'prop-types';
 import muiStyles from '../../../styles/muiStyles';
 
 import { useCategoryContext } from '../../../context/CategoryContext';
 import { useCreateContext } from '../../../context/CreateContext';
-import { ta } from 'date-fns/locale';
+import { useFieldContext } from '../../../context/FieldContext';
+import { useTaskFieldContext } from '../../../context/TaskFieldContext';
 
 const NewCategory = () => {
 
     const { category, setCategory, createCategory } = useCategoryContext();
     const { toCategories } = useCreateContext();
+    const { fields, fetchFields } = useFieldContext();
+    const { taskFields, fetchTaskFields } = useTaskFieldContext();
+    const [categoryName, setCategoryName] = useState('');
+    const [selectedDetailField, setSelectedDetailField] = useState('');
+    const [selectedTaskField, setSelectedTaskField] = useState('');
+
+    useEffect(() => {
+        fetchFields();
+        fetchTaskFields();
+    }, []);
 
     // Category Name Field
-    const [categoryName, setCategoryName] = useState('');
     const handleCategoryNameChange = (event) => {
         setCategoryName(event.target.value);
     };
 
     // Case Details Fields
-    const [detailFields, setDetailFields] = useState([{ id: 0, value: '', type: 'text', order: 0 }]);
-
-    const handleAddDetailField = () => {
-        const newId = detailFields.length > 0 ? detailFields[detailFields.length - 1].id + 1 : 0;
-        setDetailFields([...detailFields, { id: newId, value: '', type: 'text' }]);
+    const handleFieldChange = (event) => {
+        const { value, checked } = event.target;
+        if (checked) {
+            setSelectedDetailField([...selectedDetailField, value]);
+        } else {
+            setSelectedDetailField(selectedDetailField.filter(field => field !== value));
+        }
     };
+    // Case Task Fields
+    const handleTaskFieldChange = (event) => {
+        const { value, checked } = event.target;
+        if (checked) {
+            setSelectedTaskField([...selectedTaskField, value]);
+        } else {
+            setSelectedTaskField(selectedTaskField.filter(field => field !== value));
+        }
+    }
 
-    const handleRemoveDetailField = (id) => {
-        setDetailFields(detailFields.filter(field => field.id !== id));
-    };
-
-    const handleDetailChange = (id, event) => {
-        const newFields = detailFields.map(field => {
-            if (field.id === id) {
-                return { ...field, value: event.target.value };
-            }
-            return field;
-        });
-        setDetailFields(newFields);
-    };
-
-    const handleDetailTypeChange = (id, newType) => {
-        const newFields = detailFields.map(field => {
-            if (field.id === id) {
-                return { ...field, type: newType };
-            }
-            return field;
-        });
-        setDetailFields(newFields);
-    };
-
-
-
-    // Tasks Fields
-    const [taskFields, setTaskFields] = useState([{ id: 0, value: '' }]);
-
-    const handleAddTaskField = () => {
-        const newId = taskFields.length > 0 ? taskFields[taskFields.length - 1].id + 1 : 0;
-        const newOrder = newId
-        setTaskFields([...taskFields, { id: newId, value: '', order: newOrder }]);
-    };
-
-    const handleRemoveTaskField = (id) => {
-        const newFields = taskFields.filter(field => field.id !== id).map((field, index) => ({
-            ...field,
-            order: index // Reorder remaining tasks
-        }));
-        setTaskFields(newFields);
-    };
-
-    const handleTaskChange = (id, event) => {
-        const newFields = taskFields.map(field => {
-            if (field.id === id) {
-                return { ...field, value: event.target.value };
-            }
-            return field;
-        });
-        setTaskFields(newFields);
-    };
-
-    // Create Category
+    // Create Category (Save and continue to tasks)
     const handleSubmitDetails = (event) => {
         event.preventDefault();
         // Handle form submission with fields state
-        console.log(detailFields)
-        const transformedFields = transformDetailFields(detailFields);
+        // const transformedFields = selectedDetailField.map(fieldId => {
+        //     const field = fields.find(f => f._id === fieldId);
+        //     return { name: field.name, type: field.type };
+        // });
+        const transformedFields = selectedDetailField.map(fieldId => fieldId);
+        console.log("transformed: ", transformedFields);
         setCategory({ categoryName: categoryName, fields: transformedFields });
-        console.log(transformedFields);
         setTabValue(1);
     };
 
+    // Create Category (Save and create category)
     const handleSubmitTasks = (event) => {
         event.preventDefault();
-        // Handle form submission with fields state
-
-        const transformedTasks = transformTaskFields(taskFields);
+        // Transform selected task fields and assign ascending order
+        // const transformedTasks = selectedTaskField.map((fieldId, index) => {
+        //     const taskField = taskFields.find(f => f._id === fieldId);
+        //     return {
+        //         description: taskField.description,
+        //         order: index + 1 
+        //     };
+        // });
+        const transformedTasks = selectedTaskField.map(fieldId => fieldId)
         console.log("transformed: ", transformedTasks);
-        const newCategory = { ...category, tasks: transformedTasks };
-        // To Database
-        // console.log(newCategory);
+        const newCategory = {
+            ...category,
+            tasks: transformedTasks
+        };
+        // Save category to the database
         createCategory(newCategory);
         toCategories();
-    }
-
-    const transformDetailFields = (fields) => {
-        return fields.map(({ value, type }) => ({ name: value, type }));
-    };
-    const transformTaskFields = (fields) => {
-        return fields.map(({ value, order }) => ({ description: value, order }));
     };
 
     // Tabs Handling
@@ -143,10 +117,8 @@ const NewCategory = () => {
 
                     {/* Case Details */}
                     <CustomTabPanel value={tabValue} index={0}>
-                        <Box component='form' onSubmit={handleSubmitDetails}>
-                            <Typography variant="h6" sx={{ mt: 2 }}>
-                                Category Name
-                            </Typography>
+                        <Box component="form" onSubmit={handleSubmitDetails}>
+                            <Typography variant="h6" sx={{ mt: 2 }}>Category Name</Typography>
                             <TextField
                                 variant="outlined"
                                 margin="normal"
@@ -158,58 +130,30 @@ const NewCategory = () => {
                                 autoFocus
                                 onChange={handleCategoryNameChange}
                             />
-                            <Typography variant="h6" sx={{ mt: 2 }}>
-                                Details Needed
-                            </Typography>
-                            {detailFields.map((field, index) => (
-                                <Stack sx={{ mt: 1 }} key={field.id} spacing={2} direction="row">
-                                    <TextField
-                                        variant="outlined"
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        value={field.value}
-                                        onChange={(e) => handleDetailChange(field.id, e)}
-                                        label={`Detail ${index + 1}`}
-                                        InputProps={{
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    <IconButton
-                                                        aria-label="delete"
-                                                        onClick={() => handleRemoveDetailField(field.id)}
-                                                    >
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                    <FormControl fullWidth>
-                                        <Select
-                                            variant="outlined"
-                                            required
-                                            fullWidth
-                                            value={field.type}
-                                            onChange={(e) => handleDetailTypeChange(field.id, e.target.value)}
-                                        >
-                                            <MenuItem value="text">Text</MenuItem>
-                                            <MenuItem value="date">Date</MenuItem>
-                                            <MenuItem value="price">Price</MenuItem>
-                                            <MenuItem value="number">Number</MenuItem>
-                                            <MenuItem value="stakeholder">Stakeholder</MenuItem>
 
-                                            {/* Add more types here */}
-                                        </Select>
-                                    </FormControl>
-                                </Stack>
-                            ))}
-                            <Button
-                                onClick={handleAddDetailField}
-                                variant="text"
-                                sx={{ ...muiStyles.detailsButtonStyle, mt: 3, mb: 2, width: '100%' }}
-                            >
-                                Add Detail
-                            </Button>
+                            <Typography variant="h6" sx={{ mt: 2 }}>Select Details Needed</Typography>
+                            {/* Display all available fields as checkboxes in a structured layout */}
+                            <FormControl fullWidth sx={{ mb: 2 }}>
+                                <Box>
+                                    <Grid container spacing={1}>
+                                        {fields.map((field) => (
+                                            <Grid item xs={12} sm={6} md={4} key={field._id}>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            value={field._id}
+                                                            checked={selectedDetailField.includes(field._id)}
+                                                            onChange={handleFieldChange}
+                                                        />
+                                                    }
+                                                    label={`${field.name}`}
+                                                />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Box>
+                            </FormControl>
+
                             <Button
                                 type="submit"
                                 fullWidth
@@ -221,43 +165,30 @@ const NewCategory = () => {
                         </Box>
                     </CustomTabPanel>
 
+
                     {/* Tasks */}
                     <CustomTabPanel value={tabValue} index={1}>
                         <Box component='form' onSubmit={handleSubmitTasks}>
                             <Typography variant="h6" sx={{ mt: 2 }}>
                                 Tasks Needed
                             </Typography>
-                            {taskFields.map((field, index) => (
-                                <TextField
-                                    key={field.id}
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    value={field.value}
-                                    onChange={(e) => handleTaskChange(field.id, e)}
-                                    label={`Task ${index + 1}`}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="delete"
-                                                    onClick={() => handleRemoveTaskField(field.id)}
-                                                >
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            ))}
-                            <Button
-                                onClick={handleAddTaskField}
-                                variant="text"
-                                sx={{ ...muiStyles.detailsButtonStyle, mt: 3, mb: 2, width: '100%' }}
-                            >
-                                Add Task
-                            </Button>
+                            <Grid container spacing={1}>
+                                {taskFields.map((field) => (
+                                    <Grid item xs={12} sm={6} md={6} key={field._id}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    value={field._id}
+                                                    checked={selectedTaskField.includes(field._id)}
+                                                    onChange={handleTaskFieldChange}
+                                                />
+                                            }
+                                            label={`${field.description}`}
+                                        />
+                                    </Grid>
+                                ))}
+                            </Grid>
+
                             <Button
                                 type="submit"
                                 fullWidth

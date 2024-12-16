@@ -6,7 +6,7 @@ import { useCategoryContext } from '../../context/CategoryContext';
 import { useCaseContext } from '../../context/CaseContext';
 import { useUserContext } from '../../context/UserContext';
 
-const EditMatterDetails = ({ caseItem }) => {
+const EditMatterDetails = ({ caseItem, onSave }) => {
     const { updateCaseInDatabase, fetchCase, toMatterDetails } = useCaseContext();
     const { getUserList, userList } = useUserContext();
     const { fetchCategory, category } = useCategoryContext();
@@ -28,10 +28,11 @@ const EditMatterDetails = ({ caseItem }) => {
         fetchData();
     }, []);
 
-    const handleSave = () => {
-        updateCaseInDatabase(caseItem?._id, editedData);
+    const handleSave = async () => {
+        const data = await updateCaseInDatabase(caseItem?._id, editedData);
         // update these specific fields in local storage
-        localStorage.setItem('caseItem', JSON.stringify(editedData));
+        localStorage.setItem('caseItem', JSON.stringify(data));
+        onSave(data);
         toMatterDetails();
     };
 

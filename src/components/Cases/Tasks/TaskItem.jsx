@@ -17,10 +17,12 @@ const TaskItem = ({ task, index, onStatusChange, newStatus }) => {
     const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     const handleCheckboxChange = () => {
-        const newStatus = status !== 'Completed' ? 'Completed' : 'Pending';
+        const newStatus = status === 'Completed' ? 'Pending' : 'Completed';
         // setCompleted(true);
         // updateTask(task._id, { status: newStatus });
         // updateTaskInDatabase(caseId, task._id, { status: newStatus });
+        console.log('status:', status);
+        console.log('newStatus:', newStatus);
         updateTaskStatus(caseId, task._id, newStatus);
         // onStatusChange(newStatus);
     };

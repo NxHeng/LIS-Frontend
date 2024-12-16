@@ -6,6 +6,8 @@ import './index.css'
 import { CreateContextProvider } from './context/CreateContext'
 import { CategoryContextProvider } from './context/CategoryContext'
 import { CaseContextProvider } from './context/CaseContext'
+import { FieldContextProvider } from './context/FieldContext'
+import { TaskFieldContextProvider } from './context/TaskFieldContext.jsx'
 import { TaskContextProvider } from './context/TaskContext'
 import { AuthContextProvider } from './context/AuthContext.jsx'
 import { DashboardContextProvider } from './context/DashboardContext.jsx'
@@ -20,19 +22,23 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AnnouncementContextProvider>
         <SocketContextProvider>
           <AuthContextProvider>
-            <TaskContextProvider>
-              <CaseContextProvider>
-                <CategoryContextProvider>
-                  <CreateContextProvider>
-                    <DashboardContextProvider>
-                      <DocumentContextProvider>
-                        <App />
-                      </DocumentContextProvider>
-                    </DashboardContextProvider>
-                  </CreateContextProvider>
-                </CategoryContextProvider>
-              </CaseContextProvider>
-            </TaskContextProvider>
+            <FieldContextProvider>
+              <TaskFieldContextProvider>
+                <TaskContextProvider>
+                  <CaseContextProvider>
+                    <CategoryContextProvider>
+                      <CreateContextProvider>
+                        <DashboardContextProvider>
+                          <DocumentContextProvider>
+                            <App />
+                          </DocumentContextProvider>
+                        </DashboardContextProvider>
+                      </CreateContextProvider>
+                    </CategoryContextProvider>
+                  </CaseContextProvider>
+                </TaskContextProvider>
+              </TaskFieldContextProvider>
+            </FieldContextProvider>
           </AuthContextProvider>
         </SocketContextProvider>
       </AnnouncementContextProvider>

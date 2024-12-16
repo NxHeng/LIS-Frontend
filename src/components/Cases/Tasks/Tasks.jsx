@@ -28,13 +28,6 @@ const Tasks = () => {
         }
     }, [caseItem?.tasks]);
 
-    // temp
-    useEffect(() => {
-        if (tasksLoaded) {
-            console.log(tasks);
-        }
-    }, [tasksLoaded, tasks]);
-
     const handleOnDragEnd = (result) => {
         console.log("something happened");
         if (!result.destination) return;
@@ -51,17 +44,6 @@ const Tasks = () => {
         updateTasksOrder(caseItem?._id, updatedTasks);
         console.log("this is reordered tasks: ", updatedTasks);
     };
-
-    // const handleTaskStatusChange = (taskId, newStatus) => {
-    //     // Find the task in the tasks array and update its status
-    //     const updatedTasks = tasks.map(task => {
-    //         if (task.id === taskId) {
-    //             return { ...task, status: newStatus };
-    //         }
-    //         return task;
-    //     });
-    //     setTasks(updatedTasks);
-    // };
 
     if (!tasksLoaded) {
         return (

@@ -25,7 +25,7 @@ const TaskDetail = () => {
             return null;
         }
     }, []);
-    const { task, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask } = useTaskContext();
+    const { task, setTasks, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask } = useTaskContext();
 
     const [formData, setFormData] = useState({
         description: '',
@@ -34,38 +34,62 @@ const TaskDetail = () => {
         reminder: null,
         remark: '',
         status: '',
+        completedAt: null,
     });
 
     useEffect(() => {
         if (task) {
             console.log("Task: ", task);
-            // console.log('Task initiationDate:', task.initiationDate);
-            // console.log('Parsed initiationDate:', isValid(parseISO(task.initiationDate)) ? parseISO(task.initiationDate) : null);
+            // console.log('Task initiationDate:', task?.initiationDate);
+            // console.log('Parsed initiationDate:', isValid(parseISO(task?.initiationDate)) ? parseISO(task?.initiationDate) : null);
 
             setFormData({
-                description: task.description || '',
-                initiationDate: task.initiationDate || null,
-                dueDate: task.dueDate || null,
-                reminder: task.reminder || null,
-                remark: task.remark || '',
-                status: task.status || '',
+                description: task?.description || '',
+                initiationDate: task?.initiationDate || null,
+                dueDate: task?.dueDate || null,
+                reminder: task?.reminder || null,
+                remark: task?.remark || '',
+                status: task?.status || '',
+                completedAt: task?.completedAt || null,
             });
         }
     }, [task]);
 
 
     const debouncedSave = debounce((value) => {
-        updateTaskInDatabase(caseId, task._id, formData);
-        updateTask(task._id, formData);
+        updateTaskInDatabase(caseId, task?._id, { ...formData, completedAt: task?.completedAt });
+        // updateTask(task?._id, { ...formData, completedAt: task?.completedAt });
+        setTasks((prevTasks) => {
+            return prevTasks.map((t) => {
+                if (t._id === task?._id) {
+                    return { ...t, ...formData, completedAt: task?.completedAt };
+                }
+                return t;
+            });
+        });
     }, 1000);
 
+    const areDatesEqual = (date1, date2) => {
+        return (!date1 && !date2) || (date1 && date2 && new Date(date1).toISOString() === new Date(date2).toISOString());
+    };
+
+    const isFormDataUpdated = () => {
+        return (
+            formData.description !== task?.description ||
+            !areDatesEqual(formData.initiationDate, task?.initiationDate) ||
+            !areDatesEqual(formData.dueDate, task?.dueDate) ||
+            !areDatesEqual(formData.reminder, task?.reminder) ||
+            formData.remark !== task?.remark ||
+            formData.status !== task?.status
+        );
+    };
+
+
     useEffect(() => {
-        if (formData && (formData.description || formData.initiationDate || formData.dueDate || formData.reminder || formData.remark || formData.status)) {
-            // console.log("trigger debounce???");
+        if (isFormDataUpdated()) {
             debouncedSave(formData);
         }
 
-        // Cleanup function to cancel the debounce on unmount
         return () => {
             debouncedSave.cancel();
         };
@@ -73,8 +97,13 @@ const TaskDetail = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prevData => ({ ...prevData, [name]: value }));
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value,
+            completedAt: prevData.completedAt // Preserve completedAt value
+        }));
     };
+
 
     const handleDateChange = (name, date) => {
         console.log('Date:', date);
@@ -89,8 +118,8 @@ const TaskDetail = () => {
     };
 
     const handleDeleteTask = () => {
-        deleteTaskFromDatabase(caseId, task._id);
-        deleteTask(task._id);
+        deleteTaskFromDatabase(caseId, task?._id);
+        deleteTask(task?._id);
         setTask(null);
         setOpenDialog(false);
     };
@@ -171,7 +200,7 @@ const TaskDetail = () => {
                             endIcon={<InfoIcon />}
                             sx={{ borderRadius: 3 }}
                         >
-                            {task.status}
+                            {task?.status}
                         </Button> */}
                                     <Stack direction="row" spacing={1} alignItems="center">
                                         <FormControl fullWidth>

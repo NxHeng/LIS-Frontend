@@ -15,22 +15,104 @@ export const TaskContextProvider = ({ children }) => {
 
     //Find a task by id and set it with new task data
     const updateTask = (taskId, taskData) => {
-        setTasks(tasks.map((task) => (task._id === taskId ? { ...task, ...taskData } : task)));
+        setTasks(tasks?.map((task) => (task._id === taskId ? { ...task, ...taskData } : task)));
     }
 
     const updateFilteredTasks = (taskId, taskData) => {
-        // console.log("update filtered task TRIGGERED");
-        setFilteredTasks(filteredTasks.map((task) => (task._id === taskId ? { ...task, ...taskData } : task)));
-    }
+        setFilteredTasks((prevFilteredTasks) => {
+            // Create a new object to avoid mutation of the previous state
+            const updatedFilteredTasks = Object.entries(prevFilteredTasks).reduce((acc, [caseId, caseGroup]) => {
+                // For each case, map through its tasks to find the one that needs to be updated
+                const updatedTasks = caseGroup.tasks.map((task) =>
+                    task._id === taskId ? { ...task, ...taskData } : task // Update the task if it matches the taskId
+                );
+
+                // Add the updated caseGroup to the accumulator with the updated tasks
+                acc[caseId] = { ...caseGroup, tasks: updatedTasks };
+
+                return acc;
+            }, {});
+
+            // Return the updated state to trigger re-render
+            return updatedFilteredTasks;
+        });
+
+        setTasks((prevTasks) => {
+            // Create a new object to avoid mutation of the previous state
+            const updatedTasks = Object.entries(prevTasks).reduce((acc, [caseId, caseGroup]) => {
+                // For each case, map through its tasks to find the one that needs to be updated
+                const updatedTasks = caseGroup.tasks.map((task) =>
+                    task._id === taskId ? { ...task, ...taskData } : task // Update the task if it matches the taskId
+                );
+
+                // Add the updated caseGroup to the accumulator with the updated tasks
+                acc[caseId] = { ...caseGroup, tasks: updatedTasks };
+
+                return acc;
+            }, {});
+
+            // Return the updated state to trigger re-render
+            return updatedTasks;
+        });
+    };
+
 
     const updateTaskStatus = (caseId, taskId, newStatus) => {
-        const updatedTask = tasks.find(task => task._id === taskId);
+        const updatedTask = tasks?.find(task => task._id === taskId);
         if (updatedTask) {
             updatedTask.status = newStatus;
             setTasks([...tasks]);  // Or however you manage the tasks state
             updateTaskInDatabase(caseId, taskId, { status: newStatus });
         }
     };
+
+    const updateTaskStatusGroupedByCase = (caseId, taskId, newStatus) => {
+        // Update in filteredTasks
+        const caseGroupFiltered = filteredTasks[caseId];
+        if (caseGroupFiltered) {
+            // Find the task in the filtered tasks
+            const updatedTaskInFiltered = caseGroupFiltered.tasks.find(task => task._id === taskId);
+
+            if (updatedTaskInFiltered) {
+                // Update the status in filteredTasks
+                updatedTaskInFiltered.status = newStatus;
+
+                // Update the filteredTasks state to reflect the change
+                setFilteredTasks({
+                    ...filteredTasks,
+                    [caseId]: {
+                        ...caseGroupFiltered,
+                        tasks: [...caseGroupFiltered.tasks] // Trigger re-render with updated task
+                    }
+                });
+            }
+        }
+
+        // Update in original tasks (the format is similar to filteredTasks, grouped by caseId)
+        const caseGroupOriginal = tasks[caseId];
+        if (caseGroupOriginal) {
+            // Find the task in the original tasks
+            const updatedTaskInOriginal = caseGroupOriginal.tasks.find(task => task._id === taskId);
+
+            if (updatedTaskInOriginal) {
+                // Update the status in the original tasks
+                updatedTaskInOriginal.status = newStatus;
+
+                // Update the tasks state to reflect the change
+                setTasks({
+                    ...tasks,
+                    [caseId]: {
+                        ...caseGroupOriginal,
+                        tasks: [...caseGroupOriginal.tasks] // Trigger re-render with updated task
+                    }
+                });
+
+                // Optionally, update the database with the new status
+                updateTaskInDatabase(caseId, taskId, { status: newStatus });
+            }
+        }
+    };
+
 
     const updateTasksOrder = async (caseId, tasksData) => {
         try {
@@ -59,15 +141,11 @@ export const TaskContextProvider = ({ children }) => {
                 body: JSON.stringify(taskData),
             });
             const data = await response.json();
-            // console.log(data);
+            console.log(data);
         } catch (error) {
             console.error(error);
         }
     }
-
-    // const addTask = (taskData) => {
-    //     setTasks([...tasks, taskData]);
-    // }
 
     const addTaskToDatabase = async (caseId, taskData) => {
         try {
@@ -76,18 +154,17 @@ export const TaskContextProvider = ({ children }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ description: taskData, order: tasks.length }),
+                body: JSON.stringify({ description: taskData, order: tasks?.length }),
             });
             const data = await response.json();
             fetchTasks(caseId);
-            // console.log(data);
         } catch (error) {
             console.error(error);
         }
     }
 
     const deleteTask = (id) => {
-        setTasks(tasks.filter((task) => task._id !== id));
+        setTasks(tasks?.filter((task) => task._id !== id));
     }
 
     const deleteTaskFromDatabase = async (caseId, taskId) => {
@@ -96,7 +173,6 @@ export const TaskContextProvider = ({ children }) => {
                 method: 'DELETE',
             });
             const data = await response.json();
-            // console.log(data);
         } catch (error) {
             console.error(error);
         }
@@ -125,9 +201,9 @@ export const TaskContextProvider = ({ children }) => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            console.log(data);
             setTasks(data);
             setTasksLoaded(true);
+            return data;
         } catch (error) {
             console.error(error);
         }
@@ -147,22 +223,27 @@ export const TaskContextProvider = ({ children }) => {
         setTask(null);
         setStatusFilter(status);
 
-        // Iterate over each matterName group and filter tasks by status
-        const filteredTasks = Object.entries(tasks).reduce((acc, [matterName, taskList]) => {
-            // Ensure taskList is an array before calling .filter
+        // Iterate over tasks grouped by caseId
+        const filteredTasks = Object.entries(tasks).reduce((acc, [caseId, { matterName, tasks: taskList }]) => {
             if (Array.isArray(taskList)) {
-                const filtered = taskList.filter((task) => task.status === status); // Filter tasks by status
+                // Filter tasks by status
+                const filtered = taskList.filter((task) => task.status === status);
                 if (filtered.length > 0) {
-                    acc[matterName] = filtered; // Add to result if there are filtered tasks
+                    // Retain original structure but update tasks with the filtered list
+                    acc[caseId] = {
+                        matterName,
+                        tasks: filtered
+                    };
                 }
             } else {
-                console.warn(`Expected taskList to be an array, but got ${typeof taskList} for matter ${matterName}`);
+                console.warn(`Expected taskList to be an array, but got ${typeof taskList} for caseId ${caseId}`);
             }
             return acc;
         }, {});
 
-        return filteredTasks; // Return the grouped tasks
+        return filteredTasks; // Return the filtered tasks with the original format
     };
+
 
 
 
@@ -185,6 +266,7 @@ export const TaskContextProvider = ({ children }) => {
             deleteTaskFromDatabase,
             fetchTasks,
             updateTaskStatus,
+            updateTaskStatusGroupedByCase,
             statusFilter,
             filterStatus,
             getTasksByStaff,

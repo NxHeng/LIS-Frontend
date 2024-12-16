@@ -8,14 +8,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useCaseContext } from '../../context/CaseContext';
 import { useCategoryContext } from '../../context/CategoryContext';
 
-const EditCaseDetails = ({ caseItem }) => {
+const EditCaseDetails = ({ caseItem, onSave }) => {
     const { updateCaseInDatabase, toCaseDetails } = useCaseContext();
     const { fetchCategory, category } = useCategoryContext();
     const [caseData, setCaseData] = useState(null);
 
     useEffect(() => {
         // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
-        fetchCategory(caseItem?.category).then(() => {
+        fetchCategory(caseItem?.category._id).then(() => {
             setCaseData(caseItem);
         });
     }, []);
@@ -43,9 +43,11 @@ const EditCaseDetails = ({ caseItem }) => {
         }));
     };
 
-    const handleSave = () => {
-        updateCaseInDatabase(caseData._id, caseData);
-        localStorage.setItem('caseItem', JSON.stringify(caseData));
+    const handleSave = async () => {
+        const data = await updateCaseInDatabase(caseData._id, caseData);
+        console.log('Data:', data); 
+        localStorage.setItem('caseItem', JSON.stringify(data));
+        onSave(data);
         toCaseDetails();
     };
 

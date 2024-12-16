@@ -45,12 +45,15 @@ const Details = () => {
                 setLoading(false);
             }
         };
-    
+
         if (!caseItem || caseItem._id !== id) {
             loadCaseData(); // Call the function to fetch data
         }
     }, [id]);
 
+    const handleUpdatedCase = (updatedCase) => {
+        setCaseItem(updatedCase);
+    };
 
     useEffect(() => {
         setIsTemporary(false);
@@ -124,11 +127,11 @@ const Details = () => {
                                 detailView === 'matterDetails' ? (
                                     <MatterDetails caseItem={caseItem} />
                                 ) : detailView === 'editMatterDetails' ? (
-                                    <EditMatterDetails caseItem={caseItem} />
+                                    <EditMatterDetails caseItem={caseItem} onSave={handleUpdatedCase} />
                                 ) : detailView === 'caseDetails' ? (
                                     <CaseDetails caseItem={caseItem} />
                                 ) : detailView === 'editCaseDetails' ? (
-                                    <EditCaseDetails caseItem={caseItem} />
+                                    <EditCaseDetails caseItem={caseItem} onSave={handleUpdatedCase} />
                                 ) : detailView === 'tasks' ? (
                                     <Tasks />
                                 ) : detailView === 'documents' ? (

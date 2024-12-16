@@ -197,8 +197,11 @@ export const CaseContextProvider = ({ children }) => {
                 },
                 body: JSON.stringify(updatedData),
             });
+            if (!response.ok) {
+                throw new Error("Failed to update task in database");
+            }
             const data = await response.json();
-            console.log('Case updated:', data);
+            return data;
         } catch (error) {
             console.error('Error updating case:', error);
         }

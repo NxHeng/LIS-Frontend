@@ -37,6 +37,16 @@ export const CreateContextProvider = ({ children }) => {
     console.log(view)
   };
 
+  const toDetailFields = () => {
+    setView('detailFields');
+    console.log(view)
+  };
+
+  const toTaskFields = () => {
+    setView('taskFields');
+    console.log(view)
+  };
+
   return (
     <CreateContext.Provider value={{
       view,
@@ -45,6 +55,8 @@ export const CreateContextProvider = ({ children }) => {
       toCategories,
       toNewCategory,
       toCategoryUpdate,
+      toDetailFields,
+      toTaskFields,
     }}>
       {children}
     </CreateContext.Provider>

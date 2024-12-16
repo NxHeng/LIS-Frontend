@@ -82,7 +82,7 @@ const Navbar = () => {
             // When receive notifications after initial load
             const latestNotification = notifications[0];
             if (latestNotification) {
-                setSnackbarMessage(`New Notification '${latestNotification.message}'`);
+                setSnackbarMessage(`New Notification - ${latestNotification.message}`);
                 setSnackbarOpen(true);
             }
         } else {

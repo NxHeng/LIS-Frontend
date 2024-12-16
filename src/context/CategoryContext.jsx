@@ -36,14 +36,16 @@ export const CategoryContextProvider = ({ children }) => {
     };
 
     //update category in database
-    const updateCategory = async (category) => {
+    const updateCategory = async (category, categoryName) => {
+        //combine category and categoryName
+        const body = { ...category, categoryName: categoryName };
         try {
-            const response = await fetch(`${API_URL}/create/updateCategory/${category.id}`, {
+            const response = await fetch(`${API_URL}/create/updateCategory/${category._id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(category),
+                body: JSON.stringify(body),
             });
             const data = await response.json();
             console.log(data);

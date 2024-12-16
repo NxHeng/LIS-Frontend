@@ -15,39 +15,67 @@ const Tasks = () => {
     const { setFromTasks } = useCaseContext();
     // const [filteredTasks, setFilteredTasks] = useState([]);
     const didRunEffect = useRef(false);
+    const [tasksLoaded, setTasksLoaded] = useState(false);
 
     useEffect(() => {
-        setFromTasks(false);
-        getTasksByStaff(JSON.parse(localStorage.getItem('user'))._id);
+        const fetchTasks = async () => {
+            try {
+                // Ensure setFromTasks is called before fetching tasks
+                setFromTasks(false);
+
+                const userId = JSON.parse(localStorage.getItem('user'))._id;
+                console.log("Fetching tasks for user ID:", userId);
+
+                // Wait for tasks to be fetched
+                const result = await getTasksByStaff(userId);
+
+                if (result) setTasksLoaded(true);
+
+                console.log("Tasks successfully fetched!", result);
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            }
+        };
+
+        fetchTasks();
     }, []);
 
-    useEffect(() => {
-        console.log("didRunEffect: ", didRunEffect.current);
 
-        if (tasks && Object.keys(tasks).length > 0 && !didRunEffect.current) {
+    useEffect(() => {
+        // if tasks is not object or empty, return
+        if (!tasks || Object.keys(tasks).length === 0) return;
+
+        if (tasksLoaded && tasks && Object.keys(tasks).length > 0 && !didRunEffect.current) {
             handleStatusFilter("Pending");
             didRunEffect.current = true; // Set to true after first run
         }
-    }, [tasks]);
+    }, [tasks, tasksLoaded]);
 
     const handleStatusFilter = (status) => {
-        console.log("Running filter");
-        // Get filtered tasks by status (this is an object, not an array)
+        // Get filtered tasks by status
         const filtered = filterStatus(status);
         console.log("Filtered: ", filtered);
+
         // Initialize an empty object to store grouped tasks
         const groupedTasks = {};
+
         // Iterate through the filtered object
-        Object.entries(filtered).forEach(([matterName, taskList]) => {
+        Object.entries(filtered).forEach(([caseId, { matterName, tasks: taskList }]) => {
             // If the task list exists and has items, add to groupedTasks
             if (taskList && taskList.length > 0) {
-                groupedTasks[matterName] = taskList;
+                groupedTasks[caseId] = {
+                    matterName, // Retain the matterName
+                    tasks: taskList // Include the filtered tasks
+                };
             }
         });
+
         // Set the grouped tasks in the state
         setFilteredTasks(groupedTasks);
-        console.log(status, " ", groupedTasks);
+
+        console.log("Grouped Tasks: ", groupedTasks);
     };
+
 
 
     // const handleStatusFilter = (status) => {
@@ -147,8 +175,8 @@ const Tasks = () => {
                                         <Card sx={{ ...muiStyles.cardStyle, p: 1, mb: 10, backdropFilter: 'unset' }}>
                                             <CardContent>
                                                 {filteredTasks && Object.keys(filteredTasks).length > 0 ? (
-                                                    Object.entries(filteredTasks).map(([matterName, tasks]) => (
-                                                        <Box key={matterName} sx={{ mb: 3 }}>
+                                                    Object.entries(filteredTasks).map(([caseId, { matterName, tasks }]) => (
+                                                        <Box key={caseId} sx={{ mb: 3 }}>
                                                             <Typography variant="h6" sx={{ mb: 1, px: 2, fontWeight: 'bold' }}>
                                                                 {matterName}
                                                             </Typography>

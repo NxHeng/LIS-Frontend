@@ -34,8 +34,8 @@ const MyDetails = () => {
         const Circle = ({ content, completed }) => (
             <Box
                 sx={{
-                    width: 32,
-                    height: 32,
+                    minWidth: 32,
+                    minHeight: 32,
                     borderRadius: '50%',
                     backgroundColor: completed ? 'green' : 'grey',
                     color: 'white',

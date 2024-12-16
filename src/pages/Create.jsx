@@ -11,11 +11,13 @@ import NewCaseDetails from '../components/Create/Case/NewCaseDetails';
 import CategoryList from '../components/Create/Category/CategoryList';
 import NewCategory from '../components/Create/Category/NewCategory';
 import CategoryUpdate from '../components/Create/Category/CategoryUpdate';
+import DetailList from '../components/Create/Detail/DetailList';
+import TaskList from '../components/Create/Task/TaskList';
 
 import { useCreateContext } from '../context/CreateContext';
 
 const Create = () => {
-    const { view, toNewCase, toCategories } = useCreateContext();
+    const { view, toNewCase, toCategories, toDetailFields, toTaskFields } = useCreateContext();
     const user = jwtDecode(localStorage.getItem('token'));
 
     useEffect(() => {
@@ -60,6 +62,12 @@ const Create = () => {
                                                 <Button onClick={toCategories} variant={view === 'categories' || view === 'newCategory' || view === 'categoryUpdate' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
                                                     Categories
                                                 </Button>
+                                                <Button onClick={toDetailFields} variant={view === 'detailFields' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                                    Detail Fields
+                                                </Button>
+                                                <Button onClick={toTaskFields} variant={view === 'taskFields' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                                    Task Fields
+                                                </Button>
                                             </>
                                         }
                                     </Stack>
@@ -78,6 +86,10 @@ const Create = () => {
                                     <NewCategory />
                                 ) : view === 'categoryUpdate' && user.role === 'admin' ? (
                                     <CategoryUpdate />
+                                ) : view === 'detailFields' && user.role === 'admin' ? (
+                                    <DetailList />
+                                ) : view === 'taskFields' && user.role === 'admin' ? (
+                                    <TaskList />
                                 ) : null
                             }
                         </Grid>

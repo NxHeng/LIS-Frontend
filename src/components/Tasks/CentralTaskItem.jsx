@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { useTaskContext } from '../../context/TaskContext';
 
 const CentralTaskItem = ({ task, onStatusChange, newStatus }) => {
-    const { setTask, updateTaskStatus } = useTaskContext();
+    const { setTask, updateTaskStatusGroupedByCase } = useTaskContext();
 
     const { id, description, dueDate, status, caseId } = task;
 
@@ -13,8 +13,9 @@ const CentralTaskItem = ({ task, onStatusChange, newStatus }) => {
     // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     const handleCheckboxChange = () => {
-        const newStatus = status !== 'Completed' ? 'Completed' : 'Pending';
-        updateTaskStatus(caseId, task._id, newStatus);
+        const newStatus = status === 'Completed' ? 'Pending' : 'Completed';
+        console.log(caseId, task._id, newStatus);
+        updateTaskStatusGroupedByCase(caseId, task._id, newStatus);
     };
 
     const handleClick = () => {

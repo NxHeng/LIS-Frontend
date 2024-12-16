@@ -15,8 +15,8 @@ const CaseDetails = ({ caseItem }) => {
     // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
 
     // Separate fields by type
-    const textNumberStakeholderFields = caseItem?.fields.filter(field => field.type === 'text' || field.type === 'number' || field.type === 'stakeholder');
-    const priceDateFields = caseItem?.fields.filter(field => field.type === 'price' || field.type === 'date');
+    const textNumberStakeholderFields = caseItem?.fields?.filter(field => field.type === 'text' || field.type === 'number' || field.type === 'stakeholder');
+    const priceDateFields = caseItem?.fields?.filter(field => field.type === 'price' || field.type === 'date');
 
     return (
         <Container maxWidth="xl" sx={{ width: '100%' }}>
@@ -55,7 +55,7 @@ const CaseDetails = ({ caseItem }) => {
             </Card>
 
             {/* Table for Text and Number Fields */}
-            {textNumberStakeholderFields.length > 0 ? (
+            {textNumberStakeholderFields?.length > 0 ? (
                 <TableContainer component={Paper} sx={{ mb: 3, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
                     <Table>
                         <TableHead>
@@ -66,7 +66,7 @@ const CaseDetails = ({ caseItem }) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {textNumberStakeholderFields.map((field) => (
+                            {textNumberStakeholderFields?.map((field) => (
                                 <CollapsibleRow key={field._id} field={field} />
                             ))}
                         </TableBody>
@@ -75,7 +75,7 @@ const CaseDetails = ({ caseItem }) => {
             ) : null}
 
             {/* Table for Price and Date Fields */}
-            {priceDateFields.length > 0 ? (
+            {priceDateFields?.length > 0 ? (
                 <TableContainer component={Paper} sx={{ boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)' }}>
                     <Table>
                         <TableHead>
@@ -86,7 +86,7 @@ const CaseDetails = ({ caseItem }) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {priceDateFields.map(field => (
+                            {priceDateFields?.map(field => (
                                 <CollapsibleRow key={field._id} field={field} />
                             ))}
                         </TableBody>

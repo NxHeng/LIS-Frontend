@@ -232,10 +232,10 @@ const CentralTaskDetail = () => {
                                 <MenuItem value="Awaiting Initiation">Awaiting Initiation</MenuItem>
                             </Select>
                         </FormControl>
-                        {user.role === 'admin' || user.role === 'solicitor' && (
+                        {['admin', 'solicitor'].includes(user.role) && (
                             <Button
-                                variant='contained'
-                                color='error'
+                                variant="contained"
+                                color="error"
                                 endIcon={<DeleteIcon />}
                                 sx={{ borderRadius: 3 }}
                                 onClick={handleDeleteTask}
