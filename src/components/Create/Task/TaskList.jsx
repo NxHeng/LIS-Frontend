@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Stack, Typography, CircularProgress, Card, Box, Button, Modal, TextField, FormControl, InputLabel, Select, MenuItem, } from '@mui/material';
+import { Container, Stack, Typography, CircularProgress, Card, CardContent, Box, Button, Modal, TextField, FormControl, InputLabel, Select, MenuItem, Pagination } from '@mui/material';
 import muiStyles from '../../../styles/muiStyles';
 
 import TaskCard from './TaskCard';
@@ -47,6 +47,22 @@ const TaskList = () => {
         }
     };
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const tasksPerPage = 7;
+
+    // Calculate total pages
+    const totalPages = Math.ceil(taskFields.length / tasksPerPage);
+
+    // Get task fields for the current page
+    const startIndex = (currentPage - 1) * tasksPerPage;
+    const sortedTaskFields = taskFields.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const currentTaskFields = sortedTaskFields.slice(startIndex, startIndex + tasksPerPage);
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
     if (!taskFieldsLoaded) {
         return (
             <Container maxWidth="sm" sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
@@ -68,9 +84,22 @@ const TaskList = () => {
                 </Card>
 
                 <Card sx={{ ...muiStyles.cardStyle, p: 4 }}>
-                    {taskFields.map((taskField) => (
+                    {currentTaskFields.map((taskField) => (
                         <TaskCard key={taskField._id} taskField={taskField} onDelete={handleDelete} />
                     ))}
+                </Card>
+                <Card sx={muiStyles.cardStyle}>
+                    <CardContent>
+                        {/* Pagination Component */}
+                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <Pagination
+                                count={totalPages}
+                                page={currentPage}
+                                onChange={handlePageChange}
+                                color="primary"
+                            />
+                        </Box>
+                    </CardContent>
                 </Card>
             </Stack>
 
@@ -105,7 +134,7 @@ const TaskList = () => {
                     />
 
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button onClick={handleCloseModal} color='error' variant='outlined' sx={{ ...muiStyles.detailsButtonStyle,  mr: 1 }}>
+                        <Button onClick={handleCloseModal} color='error' variant='outlined' sx={{ ...muiStyles.detailsButtonStyle, mr: 1 }}>
                             Cancel
                         </Button>
                         <Button

@@ -122,14 +122,15 @@ const NewCaseDetails = () => {
                         {formData.fields.map((field) => (
                             <Grid container spacing={2} alignItems="flex-start" key={field._id}>
                                 {/* Main value field */}
-                                <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
+                                <Grid item xs={12} sm={6} md={6} sx={{ mb: 2 }}>
                                     {field.type === 'date' ? (
                                         <LocalizationProvider dateAdapter={AdapterDateFns} >
                                             <DatePicker
                                                 label={field.name}
                                                 value={field.value ? new Date(field.value) : null}
-                                                fullWidth
+                                                
                                                 onChange={(date) => handleDateChange(field._id, date)}
+                                                sx={{ width: '100%' }}
                                             />
                                         </LocalizationProvider>
                                     ) : (
@@ -161,7 +162,7 @@ const NewCaseDetails = () => {
                                 {/* Additional fields */}
                                 {field.type === 'stakeholder' ? (
                                     <>
-                                        <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
+                                        <Grid item xs={12} sm={6} md={2} sx={{ mb: 2 }}>
                                             <TextField
                                                 label="Tel"
                                                 value={field.tel}
@@ -169,7 +170,7 @@ const NewCaseDetails = () => {
                                                 fullWidth
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
+                                        <Grid item xs={12} sm={6} md={2} sx={{ mb: 2 }}>
                                             <TextField
                                                 label="Email"
                                                 value={field.email}
@@ -177,7 +178,7 @@ const NewCaseDetails = () => {
                                                 fullWidth
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6} md={3} sx={{ mb: 2 }}>
+                                        <Grid item xs={12} sm={6} md={2} sx={{ mb: 2 }}>
                                             <TextField
                                                 label="Fax"
                                                 value={field.fax}
@@ -187,7 +188,7 @@ const NewCaseDetails = () => {
                                         </Grid>
                                     </>
                                 ) : (
-                                    <Grid item xs={12} sm={6} md={9} sx={{ mb: 2 }}>
+                                    <Grid item xs={12} sm={6} md={6} sx={{ mb: 2 }}>
                                         <TextField
                                             label="Remarks"
                                             value={field.remarks}

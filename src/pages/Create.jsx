@@ -74,7 +74,7 @@ const Create = () => {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={10}>
                             {
                                 view === 'newCase' ? (
                                     <NewCase />

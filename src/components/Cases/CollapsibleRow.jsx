@@ -24,7 +24,7 @@ const CollapsibleRow = ({ field }) => {
                 </TableCell>
                 <TableCell align="left" sx={{ width: '70%' }}>
                     {field.type === 'date' ? (
-                        formatDate(field.value)
+                        field.value ? formatDate(field.value) : 'No date selected'
                     ) : field.type === 'price' ? (
                         `RM ${field.value}`
                     ) : (
