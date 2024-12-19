@@ -178,7 +178,7 @@ const Announcement = () => {
             // Check if the announcement has an attachment before fetching
             if (selectedAnnouncement.fileURI) {
                 const loadAttachment = async () => {
-                    const result = await fetchAttachment(selectedAnnouncement.fileURI);
+                    const result = await fetchAttachment(selectedAnnouncement._id);
                     setCurrentAttachment(result);
                 };
                 loadAttachment();

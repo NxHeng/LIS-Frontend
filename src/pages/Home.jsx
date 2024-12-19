@@ -86,7 +86,22 @@ const Home = () => {
     };
 
     const pieOptions = {
-        maintainAspectRatio: false, // Disable maintain aspect ratio for custom sizing
+        responsive: true,
+        maintainAspectRatio: false, // Allow chart to resize
+        plugins: {
+            legend: {
+                position: 'left', // Position legend on the right
+                align: 'center',  // Align legend items vertically
+                labels: {
+                    boxWidth: 12,   // Size of the color box
+                    padding: 5,    // Spacing between legend items
+                },
+            },
+            title: {
+                display: true,
+                text: 'Cases by Category',
+            },
+        },
     };
 
     const formatDate = (date) => {

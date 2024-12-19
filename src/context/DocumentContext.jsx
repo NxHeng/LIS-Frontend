@@ -85,26 +85,62 @@ export const DocumentContextProvider = ({ children }) => {
         }
     };
 
-    const fetchPreview = async (fileId) => {
+    const fetchPreview = async (fileId, fileType) => {
         try {
+            // Build the query string with the fileId
             const params = new URLSearchParams({
-                fileId: fileId
+                fileId: fileId,
             });
-            console.log(`${API_URL}/document/previewFile?${params.toString()}`);
+
+            // Make the request to the backend to fetch the file preview
             const response = await fetch(`${API_URL}/document/previewFile?${params.toString()}`);
-            // Read the response as a blob (binary large object)
-            const blob = await response.blob();
 
-            // Create a URL for the blob
-            const fileUrl = URL.createObjectURL(blob);
-            console.log('Fetched file preview:', fileUrl);
+            // Check if the response is successful
+            if (!response.ok) {
+                throw new Error('Failed to fetch file preview');
+            }
 
-            // Return or set the blob URL for preview in the UI
-            return fileUrl;
+            // Handle different file types
+            if (['application/pdf', 'image/jpeg', 'image/png'].includes(fileType)) {
+                // For binary files, read the response as a blob
+                const blob = await response.blob();
+
+                // Create a URL for the blob to be used in the UI
+                const fileUrl = URL.createObjectURL(blob);
+                console.log('Fetched file preview:', fileUrl);
+                return fileUrl;
+
+            } else if (fileType === 'text/plain') {
+                // For text files, read the response as text
+                const textContent = await response.text();
+                console.log('Fetched text file content:', textContent);
+                return textContent; // Return raw text for direct rendering
+
+            } else if (fileType === 'text/csv') {
+                // For CSV files, read the response as text for preview
+                const csvContent = await response.text();
+                console.log('Fetched CSV file content:', csvContent);
+                return csvContent;
+
+            } else if (fileType === 'application/msword' || fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                // For Word documents, use external viewers or fetch blob
+                const blob = await response.blob();
+                const fileUrl = URL.createObjectURL(blob);
+                console.log('Fetched Word file preview:', fileUrl);
+                return fileUrl;
+
+            } else {
+                // Default handling for unsupported file types
+                throw new Error(`Unsupported file type: ${fileType}`);
+            }
+
         } catch (err) {
+            // Log the error to the console if something goes wrong
             console.error('Error fetching file preview:', err);
+            return null;
         }
     };
+
 
     const createFolder = async ({ caseId, folderName }) => {
         try {
@@ -126,6 +162,7 @@ export const DocumentContextProvider = ({ children }) => {
 
             // Fetch the updated folder contents after creating the folder
             fetchContents(caseId);
+            fetchFolders(caseId);
         } catch (err) {
             console.error('Error creating folder:', err);
         }
@@ -248,29 +285,70 @@ export const DocumentContextProvider = ({ children }) => {
         }
     };
 
+    // const downloadFile = async (fileId, fileName) => {
+    //     try {
+    //         const params = new URLSearchParams({ fileId });
+    //         const response = await fetch(`${API_URL}/document/downloadFile?${params.toString()}`);
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok');
+    //         }
+
+    //         const blob = await response.blob();
+    //         const url = URL.createObjectURL(blob);
+    //         const a = document.createElement('a');
+    //         a.href = url;
+    //         a.download = fileName || 'download'; // Use the provided fileName or default to 'download'
+    //         document.body.appendChild(a); // Append the anchor to the body
+    //         a.click();
+    //         document.body.removeChild(a); // Remove the anchor from the body
+    //         URL.revokeObjectURL(url); // Revoke the object URL
+
+    //         console.log('File downloaded:', url);
+    //     } catch (err) {
+    //         console.error('Error downloading file:', err);
+    //     }
+    // };
+
     const downloadFile = async (fileId, fileName) => {
         try {
-            const params = new URLSearchParams({ fileId });
-            const response = await fetch(`${API_URL}/document/downloadFile?${params.toString()}`);
+            // Make the API request to your backend
+            const response = await fetch(`${API_URL}/document/downloadFile?fileId=${fileId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            // Check if the response is OK (status 200)
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Failed to download file');
             }
 
+            // Create a Blob from the response
             const blob = await response.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName || 'download'; // Use the provided fileName or default to 'download'
-            document.body.appendChild(a); // Append the anchor to the body
-            a.click();
-            document.body.removeChild(a); // Remove the anchor from the body
-            URL.revokeObjectURL(url); // Revoke the object URL
 
-            console.log('File downloaded:', url);
-        } catch (err) {
-            console.error('Error downloading file:', err);
+            // Create a link to trigger the download
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+
+            console.log(response.headers.get('Content-Disposition'));
+            // The filename is already provided in the response headers from the backend
+            const fileName = response.headers.get('Content-Disposition').split('filename=')[1].replace(/"/g, '');
+
+            link.download = fileName; // Use the filename from the header
+
+            // Programmatically click the link to trigger the download
+            link.click();
+
+            // Cleanup the URL object
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading file:', error);
         }
     };
+
+
 
     const moveFile = async (fileId, newFolderId, caseId) => {
         try {
@@ -328,7 +406,7 @@ export const DocumentContextProvider = ({ children }) => {
             // Perform download operation
             console.log(selectedFile);
             downloadFile(selectedFile._id, selectedFile.fileName); // Pass fileId and fileName as separate arguments
-            console.log('Downloading file:', selectedFile.fileName);
+            // console.log('Downloading file:', selectedFile.fileURI);
         }
         handleAnchorClose(); // Close the context menu after performing the download action
     };

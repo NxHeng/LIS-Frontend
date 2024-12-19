@@ -40,18 +40,18 @@ const FileFolderDetails = ({ item, handleRename, handleDelete, handleDownload, i
                         item && (
                             <Stack direction="row" spacing={1}>
                                 {user.role !== 'client' && !isTemporary && (
-                                    <>
-                                        <Tooltip title="Edit">
-                                            <IconButton color="primary" onClick={() => handleRename()}>
-                                                <EditIcon />
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Tooltip title="Delete">
-                                            <IconButton color="error" onClick={openDeleteDialog}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </>
+                                    <Tooltip title="Edit">
+                                        <IconButton color="primary" onClick={() => handleRename()}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                                {(user.role !== 'client' && user.role !== 'clerk') && !isTemporary && (
+                                    <Tooltip title="Delete">
+                                    <IconButton color="error" onClick={openDeleteDialog}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
                                 )}
                                 {!isFolder && (
                                     <Tooltip title="Download">

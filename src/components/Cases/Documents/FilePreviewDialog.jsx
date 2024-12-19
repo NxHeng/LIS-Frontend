@@ -1,10 +1,11 @@
 // FilePreviewDialog.js
-import React from 'react';
-import { Dialog, DialogTitle, DialogContent, IconButton, Box } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Dialog, DialogTitle, DialogContent, IconButton, Box, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import muiStyles, { TransitionZoom } from '../../../styles/muiStyles';
 
 const FilePreviewDialog = ({ open, selectedFile, filePreview, handleFileClose }) => {
+
     return (
         <Dialog
             maxWidth='lg'
@@ -55,14 +56,27 @@ const FilePreviewDialog = ({ open, selectedFile, filePreview, handleFileClose })
                     {selectedFile?.fileType === 'text/plain' && filePreview && (
                         <pre style={{ whiteSpace: 'pre-wrap' }}>{filePreview}</pre>
                     )}
-                    {selectedFile?.fileType === 'application/msword' && filePreview && (
+                    {selectedFile?.fileType === 'text/csv' && filePreview && (
+                        <pre style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word', paddingLeft:750 }}>{filePreview}
+                        </pre>
+                    )}
+                    {['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', ].includes(selectedFile?.fileType) && filePreview && (
                         <iframe
-                            src={`https://view.officeapps.live.com/op/view.aspx?src=${filePreview}`}
+                            src={`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(filePreview)}`}
                             width="100%"
-                            height={window.innerHeight * 0.8}
-                            title="Word Document"
+                            height="600px"
+                            title="Word Document Preview"
                         />
                     )}
+
+
+                    {/* Fallback for unsupported file types */}
+                    {!filePreview && (
+                        <Typography variant="body2">
+                            Unable to preview this file type. Please download the file to view it.
+                        </Typography>
+                    )}
+                    
                     {/* Add conditions for other file types here */}
 
 

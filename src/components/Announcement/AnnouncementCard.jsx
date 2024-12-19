@@ -27,10 +27,10 @@ const AnnouncementCard = ({ announcement, onClick }) => {
         }}>
             <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mx: 2 }}>
                 <Typography component="span" variant="h6" sx={{ ml: "10vh" }}>
-                    {announcement.title}
+                    {announcement?.title}
                 </Typography>
                 <Typography variant="body1" sx={{ mr: "10vh" }}>
-                    {formatDate(announcement.date)}
+                    {formatDate(announcement?.date)}
                 </Typography>
             </CardContent>
         </Card>

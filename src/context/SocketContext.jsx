@@ -34,7 +34,7 @@ export const SocketContextProvider = ({ children }) => {
     };
 
     const handleNewAnnouncement = (announcement) => {
-        console.log("New announcement received", announcement); // Log to verify the event handling
+        console.log("Handle New Announcement", announcement); // Log to verify the event handling
         setAnnouncements((prevNotifications) => [announcement.announcementId, ...prevNotifications]);
     }
 

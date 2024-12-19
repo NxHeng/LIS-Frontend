@@ -30,24 +30,24 @@ const Create = () => {
             <Container sx={{ p: 4 }}>
                 <Box sx={{ flexGrow: 1 }}>
                     <Grid container spacing={2}>
-                        <Grid item xs={2}>
-                            <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
-                                <CardContent>
-                                    <Stack spacing={2}>
-                                        <Box sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            px: 2,
-                                            pt: 1,
-                                            pb: .5,
-                                        }}>
-                                            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                                                Create
-                                            </Typography>
-                                        </Box>
-                                        {/* New Case */}
-                                        {user.role === 'admin' &&
-                                            <>
+                        {user.role === 'admin' &&
+                            <>
+                                <Grid item xs={2}>
+                                    <Card sx={{ ...muiStyles.cardStyle, height: 'auto' }}>
+                                        <CardContent>
+                                            <Stack spacing={2}>
+                                                <Box sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    px: 2,
+                                                    pt: 1,
+                                                    pb: .5,
+                                                }}>
+                                                    <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                                                        Create
+                                                    </Typography>
+                                                </Box>
+                                                {/* New Case */}
                                                 <Button onClick={toNewCase} variant={view === 'newCase' || view === 'newCaseDetails' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
                                                     New Case
                                                 </Button>
@@ -68,13 +68,14 @@ const Create = () => {
                                                 <Button onClick={toTaskFields} variant={view === 'taskFields' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
                                                     Task Fields
                                                 </Button>
-                                            </>
-                                        }
-                                    </Stack>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={10}>
+                                            </Stack>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            </>
+                        }
+
+                        <Grid item xs={user.role === 'admin' ? 10 : 12} >
                             {
                                 view === 'newCase' ? (
                                     <NewCase />

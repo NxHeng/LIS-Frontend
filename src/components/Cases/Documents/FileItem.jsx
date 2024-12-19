@@ -26,7 +26,7 @@ const FileItem = ({ file }) => {
     useEffect(() => {
         const fetchFilePreview = async () => {
             if (open && selectedFile) {
-                const fileUrl = await fetchPreview(selectedFile._id);
+                const fileUrl = await fetchPreview(selectedFile?._id, selectedFile?.fileType);
                 setFilePreview(fileUrl);
             }
         };

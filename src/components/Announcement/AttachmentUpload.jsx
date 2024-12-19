@@ -43,7 +43,7 @@ const AttachmentUpload = ({ onAttachmentChange, existingFile, onRemoveFile }) =>
     return (
         <Box>
             <Typography variant="h6" color="grey">Attachment</Typography>
-            {existingFile.fileURI ? (
+            {existingFile?.fileURI ? (
                 <Button
                     variant="contained"
                     component="label"
@@ -68,7 +68,7 @@ const AttachmentUpload = ({ onAttachmentChange, existingFile, onRemoveFile }) =>
                 </Button>
             ) : null}
 
-            {!existingFile.fileURI ? (
+            {!existingFile?.fileURI ? (
                 <Button
                     variant="contained"
                     component="label"
@@ -117,7 +117,7 @@ const AttachmentUpload = ({ onAttachmentChange, existingFile, onRemoveFile }) =>
             )}
 
             {/* Display existing file information if available */}
-            {existingFile.fileURI ? (
+            {existingFile?.fileURI ? (
                 <Box sx={{ mt: 2 }}>
                     <Typography variant="body2" color="textSecondary">
                         <b>Existing file:</b> {existingFile.fileName}
