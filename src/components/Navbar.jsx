@@ -61,17 +61,17 @@ const Navbar = () => {
 
     useEffect(() => {
         socket?.emit("register", user._id.toString());
-        console.log(user._id, socket);
+        // console.log(user._id, socket);
 
         // Listen for new notifications
         socket?.on('newNotification', (notification) => {
-            console.log("New notification received", notification);
+            // console.log("New notification received", notification);
             handleNewNotification(notification);
         });
 
         // Listen for new announcements
         socket?.on('newAnnouncement', (announcement) => {
-            console.log("New announcement received", announcement);
+            // console.log("New announcement received", announcement);
             handleNewAnnouncement(announcement); // Function to handle announcement
         });
 

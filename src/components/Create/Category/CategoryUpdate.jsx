@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Container, Box, Typography, Button, TextField, InputAdornment, IconButton, CircularProgress, Stack, FormControl, Card, Tab, Tabs, Grid, FormControlLabel, Checkbox } from '@mui/material';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
@@ -174,6 +175,28 @@ const CategoryUpdate = () => {
         setDeleteDialogOpen(false);
     };
 
+    // Handle Drag End to update the order of selected fields
+    const handleDragEnd = (result) => {
+        const { destination, source } = result;
+
+        // If dropped outside the list or no change in order
+        if (!destination || destination.index === source.index) {
+            return;
+        }
+
+        // Rearrange the selected field order based on the drag-and-drop result
+        const updatedFields = Array.from(category.fields);  // Directly use category.fields
+        const [removed] = updatedFields.splice(source.index, 1);  // Remove the item from the original position
+        updatedFields.splice(destination.index, 0, removed);  // Insert the item in the new position
+
+        // Update the category with the new order
+        setCategory(prevCategory => ({
+            ...prevCategory,
+            fields: updatedFields,  // Update fields order in the category
+        }));
+    };
+
+
     if (!categoryLoaded) {
         console.log(categoryLoaded)
         return (
@@ -192,119 +215,177 @@ const CategoryUpdate = () => {
                 isCategory={true}
                 category={category}
             />
-            <Container maxWidth="md">
-                <Stack spacing={2}>
-                    <Card sx={{ ...muiStyles.cardStyle, p: 2 }}>
-                        <Box sx={{
-                            px: 2,
-                            pt: .5,
-                            pb: .5,
-                        }}>
-                            <Typography variant="h6">
-                                Update Category
-                            </Typography>
-                        </Box>
-                    </Card>
-                    <Card sx={{ ...muiStyles.cardStyle, p: 4 }}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <Tabs value={tabValue} onChange={handleChangeTab} aria-label="basic tabs example">
-                                <Tab sx={{ textTransform: 'capitalize' }} label="Case Details" {...a11yProps(0)} />
-                                <Tab sx={{ textTransform: 'capitalize' }} label="Tasks" {...a11yProps(1)} />
-                            </Tabs>
-                        </Box>
+            <Box fullWidth sx={{ flexGrow: 1, mb: 2 }}>
+                <Card sx={{ ...muiStyles.cardStyle, p: 2 }}>
+                    <Box sx={{
+                        px: 2,
+                        pt: .5,
+                        pb: .5,
+                    }}>
+                        <Typography variant="h6">
+                            Update Category
+                        </Typography>
+                    </Box>
+                </Card>
+            </Box>
+            <Grid container spacing={2}>
+                <Grid item xs={8.5}>
+                    <Stack spacing={2}>
+                        <Card sx={{ ...muiStyles.cardStyle, p: 4 }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={tabValue} onChange={handleChangeTab} aria-label="basic tabs example">
+                                    <Tab sx={{ textTransform: 'capitalize' }} label="Case Details" {...a11yProps(0)} />
+                                    <Tab sx={{ textTransform: 'capitalize' }} label="Tasks" {...a11yProps(1)} />
+                                </Tabs>
+                            </Box>
 
-                        {/* Case Details */}
-                        <CustomTabPanel value={tabValue} index={0}>
-                            {/* <form onSubmit={handleSubmit}> */}
-                            <Box component='form'>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    id="categoryName"
-                                    label="Category Name"
-                                    name="categoryName"
-                                    autoFocus
-                                    onChange={handleCategoryNameChange}
-                                    value={categoryName}
-                                />
-                                <Typography variant="h6" sx={{ mt: 2 }}>
-                                    Select Details Needed
-                                </Typography>
-                                <FormControl fullWidth sx={{ mb: 2 }}>
-                                    <Box>
-                                        <Grid container spacing={1}>
-                                            {fields.map((field) => (
-                                                <Grid item xs={12} sm={6} md={6} key={field._id}>
-                                                    <FormControlLabel
-                                                        control={
-                                                            <Checkbox
-                                                                value={field._id}
-                                                                checked={category.fields ? category.fields.map(field => field._id).includes(field._id) : false}
-                                                                onChange={(e) => handleDetailFieldSelection(e, field)
-                                                                }
-                                                            />
-                                                        }
-                                                        label={`${field.name}`}
-                                                    />
-                                                </Grid>
-                                            ))}
-                                        </Grid>
+                            {/* Case Details */}
+                            <CustomTabPanel value={tabValue} index={0}>
+                                {/* <form onSubmit={handleSubmit}> */}
+                                <Box component='form'>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="categoryName"
+                                        label="Category Name"
+                                        name="categoryName"
+                                        autoFocus
+                                        onChange={handleCategoryNameChange}
+                                        value={categoryName}
+                                    />
+                                    <Typography variant="h6" sx={{ mt: 2 }}>
+                                        Select Details Needed
+                                    </Typography>
+                                    <FormControl fullWidth sx={{ mb: 2 }}>
+                                        <Box>
+                                            <Grid container spacing={1}>
+                                                {fields.map((field) => (
+                                                    <Grid item xs={12} sm={6} md={6} key={field._id}>
+                                                        <FormControlLabel
+                                                            control={
+                                                                <Checkbox
+                                                                    value={field._id}
+                                                                    checked={category.fields ? category.fields.map(field => field._id).includes(field._id) : false}
+                                                                    onChange={(e) => handleDetailFieldSelection(e, field)
+                                                                    }
+                                                                />
+                                                            }
+                                                            label={`${field.name}`}
+                                                        />
+                                                    </Grid>
+                                                ))}
+                                            </Grid>
+                                        </Box>
+                                    </FormControl>
+
+                                    <Box sx={{ display: 'flex', gap: 1, width: 1 }}>
+                                        <Button onClick={handleDeleteClick} color='error' variant="outlined" sx={{ ...muiStyles.detailsButtonStyle, flexGrow: 1 }}>
+                                            Delete
+                                        </Button>
+                                        <Button onClick={handleSaveDetail} color='success' variant="contained" sx={{ ...muiStyles.detailsButtonStyle, flexGrow: 1 }}>
+                                            Save Details
+                                        </Button>
                                     </Box>
-                                </FormControl>
+                                </Box>
+                            </CustomTabPanel>
 
-                                <Box sx={{ display: 'flex', gap: 1, width: 1 }}>
-                                    <Button onClick={handleDeleteClick} color='error' variant="outlined" sx={{ ...muiStyles.detailsButtonStyle, flexGrow: 1 }}>
-                                        Delete
-                                    </Button>
-                                    <Button onClick={handleSaveDetail} color='success' variant="contained" sx={{ ...muiStyles.detailsButtonStyle, flexGrow: 1 }}>
-                                        Save Details
+                            {/* Tasks */}
+                            <CustomTabPanel value={tabValue} index={1}>
+                                <Box component='form' onSubmit={handleSaveTask}>
+                                    <Typography variant="h6" sx={{ mt: 2 }}>
+                                        Tasks Needed
+                                    </Typography>
+                                    <FormControl fullWidth sx={{ mb: 2 }}>
+                                        <Box>
+                                            <Grid container spacing={1}>
+                                                {taskFields.map((field) => (
+                                                    <Grid item xs={12} sm={6} md={6} key={field._id}>
+                                                        <FormControlLabel
+                                                            control={
+                                                                <Checkbox
+                                                                    value={field._id}
+                                                                    checked={category.tasks ? category.tasks.map(field => field._id).includes(field._id) : false}
+                                                                    onChange={(e) => handleTaskFieldSelection(e, field)
+                                                                    }
+                                                                />
+                                                            }
+                                                            label={`${field.description}`}
+                                                        />
+                                                    </Grid>
+                                                ))}
+                                            </Grid>
+                                        </Box>
+                                    </FormControl>
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{ ...muiStyles.detailsButtonStyle, mt: 1, mb: 2 }}
+                                    >
+                                        Save Tasks
                                     </Button>
                                 </Box>
-                            </Box>
-                        </CustomTabPanel>
+                            </CustomTabPanel>
+                        </Card>
+                    </Stack>
+                </Grid>
+                <Grid item xs={3.5}>
+                    <Card sx={{
+                        p: 4,
+                        borderRadius: 3,
+                        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                    }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <Typography variant="h6" sx={{ ...muiStyles.sideNavTitleStyle, mb: 2 }} >
+                                {tabValue === 0 ? 'Details Order' : 'Not Applicable'}
+                            </Typography>
 
-                        {/* Tasks */}
-                        <CustomTabPanel value={tabValue} index={1}>
-                            <Box component='form' onSubmit={handleSaveTask}>
-                                <Typography variant="h6" sx={{ mt: 2 }}>
-                                    Tasks Needed
-                                </Typography>
-                                <FormControl fullWidth sx={{ mb: 2 }}>
-                                    <Box>
-                                        <Grid container spacing={1}>
-                                            {taskFields.map((field) => (
-                                                <Grid item xs={12} sm={6} md={6} key={field._id}>
-                                                    <FormControlLabel
-                                                        control={
-                                                            <Checkbox
-                                                                value={field._id}
-                                                                checked={category.tasks ? category.tasks.map(field => field._id).includes(field._id) : false}
-                                                                onChange={(e) => handleTaskFieldSelection(e, field)
-                                                                }
-                                                            />
-                                                        }
-                                                        label={`${field.description}`}
-                                                    />
-                                                </Grid>
-                                            ))}
+                        </Box>
+                        {tabValue === 0 && (
+                            <DragDropContext onDragEnd={handleDragEnd}>
+                                <Droppable droppableId="selectedFields">
+                                    {(provided) => (
+                                        <Grid container spacing={1}
+                                            ref={provided.innerRef}
+                                            {...provided.droppableProps}
+                                        >
+                                            {category.fields && category.fields.length > 0 ? category.fields.map((field, index) => {
+                                                return (
+                                                    <Draggable key={field._id} draggableId={field._id} index={index}>
+                                                        {(provided) => (
+                                                            <Grid item xs={12} ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}>
+                                                                <Box
+                                                                    sx={{
+                                                                        p: 2,
+                                                                        border: '1px solid', borderColor: 'divider', borderRadius: 4,
+                                                                        textAlign: 'start',
+                                                                    }}
+                                                                >
+                                                                    <Typography>
+                                                                        {index + 1}. {field.name || 'Unknown Field'}
+                                                                    </Typography>
+                                                                </Box>
+                                                            </Grid>
+                                                        )}
+                                                    </Draggable>
+                                                );
+                                            }) : (
+                                                <Typography>No fields selected</Typography>
+                                            )}
+                                            {provided.placeholder}
                                         </Grid>
-                                    </Box>
-                                </FormControl>
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{ ...muiStyles.detailsButtonStyle, mt: 1, mb: 2 }}
-                                >
-                                    Save Tasks
-                                </Button>
-                            </Box>
-                        </CustomTabPanel>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
+                        )}
                     </Card>
-                </Stack>
-            </Container >
+                </Grid>
+            </Grid >
         </>
     );
 };

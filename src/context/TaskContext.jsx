@@ -209,6 +209,21 @@ export const TaskContextProvider = ({ children }) => {
         }
     }
 
+    const getAllTasks = async () => {
+        try {
+            const response = await fetch(`${API_URL}/case/getAllTasks`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setTasks(data);
+            setTasksLoaded(true);
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     // const filterStatus = (status) => {
     //     //filter tasks by status
     //     setTask(null);
@@ -219,10 +234,14 @@ export const TaskContextProvider = ({ children }) => {
     // }
 
     const filterStatus = (status) => {
+        if (!tasks || Object.keys(tasks).length === 0) {
+            console.warn("No tasks available for filtering.");
+            return {};
+        }
         // Reset task and update status filter
         setTask(null);
         setStatusFilter(status);
-
+        console.log("Tasks are empty?", Object.keys(tasks).length);
         // Iterate over tasks grouped by caseId
         const filteredTasks = Object.entries(tasks).reduce((acc, [caseId, { matterName, tasks: taskList }]) => {
             if (Array.isArray(taskList)) {
@@ -265,6 +284,7 @@ export const TaskContextProvider = ({ children }) => {
             deleteTask,
             deleteTaskFromDatabase,
             fetchTasks,
+            getAllTasks,
             updateTaskStatus,
             updateTaskStatusGroupedByCase,
             statusFilter,

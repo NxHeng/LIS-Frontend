@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Box, Button, Container, Grid, Stack, Typography, Card, CardContent, Snackbar, Alert, Pagination } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import { format, formatDistanceStrict } from 'date-fns';
 import { Link } from 'react-router-dom';
 import muiStyles from '../styles/muiStyles';
 import Background from '../components/Background';
 import CategoryIcon from '@mui/icons-material/Category';
+import DeleteDialog from '../components/DeleteDialog';
 
 import { useSocketContext } from '../context/SocketContext';
 import { useAuthContext } from '../context/AuthContext';
@@ -16,6 +18,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 const Notifications = () => {
 
     // const [notifications, setNotifications] = useState([]);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState("All");
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -40,7 +43,13 @@ const Notifications = () => {
         const fetchNotifications = async () => {
             if (!userId) return; // Ensure userId is not null before making the request
             try {
-                const response = await fetch(`${API_URL}/notification/getNotifications?userId=${userId}`);
+                const response = await fetch(`${API_URL}/notification/getNotifications`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -109,6 +118,64 @@ const Notifications = () => {
         return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     };
 
+    // Open dialog
+    const handleOpenDeleteDialog = () => setDeleteDialogOpen(true);
+
+    // Close dialog
+    const handleCloseDeleteDialog = () => setDeleteDialogOpen(false);
+
+    const handleDeleteAllClick = () => {
+        handleOpenDeleteDialog();
+    };
+
+    const handleDeleteAll = async () => {
+        deleteAllNotifications();
+        setDeleteDialogOpen(false);
+    };
+
+    const deleteAllNotifications = async () => {
+        try {
+            const response = await fetch(`${API_URL}/notification/deleteAllNotifications`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setNotifications([]);
+            console.log('All notifications deleted:', data);
+        }
+        catch (error) {
+            console.error('Failed to delete all notifications:', error);
+        }
+    };
+
+    const handleDeleteSingleNotification = async (notificationId) => {
+        try {
+            console.log('Bearer: ', localStorage.getItem('token'));
+            const response = await fetch(`${API_URL}/notification/deleteSingleNotification/${notificationId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setNotifications((prevNotifications) => prevNotifications.filter(notification => notification._id !== notificationId));
+            console.log('Notification deleted:', data);
+        }
+        catch (error) {
+            console.error('Failed to delete notification:', error);
+        }
+    }
+
     // Render different card designs for each category
     const renderNotificationCard = (notification) => {
         return (
@@ -121,7 +188,8 @@ const Notifications = () => {
                 '&:hover': {
                     transform: 'scale(1.05)',  // Slightly scales up the card on hover
                     boxShadow: '0px 6px 24px rgba(0, 0, 0, 0.15)' // Optional: enhance shadow on hover for extra depth
-                }
+                },
+                width: '100%'
             }}>
                 <CardContent>
                     <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
@@ -159,10 +227,15 @@ const Notifications = () => {
                         </Box>
 
                         {/* Right Section (date/status) */}
-                        <Box sx={{ flexBasis: '20%', textAlign: 'right' }}>
-                            {notification.type === 'deadline' && (
-                                <Typography color="error" sx={{ fontWeight: 'bold' }}>{formatDate(notification.caseId.tasks.find(task => task._id === notification.taskId).dueDate)}</Typography>
-                            )}
+                        <Box sx={{ flexBasis: '20%', textAlign: 'center' }}>
+                            {notification.type === 'deadline' && (() => {
+                                const task = notification.caseId.tasks.find((task) => task._id === notification.taskId);
+                                return task?.dueDate ? (
+                                    <Typography color="error" sx={{ fontWeight: 'bold' }}>
+                                        {formatDate(task.dueDate)}
+                                    </Typography>
+                                ) : null;
+                            })()}
                             {notification.type === 'reminder' && (
                                 <Typography color="error" sx={{ fontWeight: 'bold' }}>{formatDate(notification.caseId.tasks.find(task => task._id === notification.taskId).reminder)}</Typography>
                             )}
@@ -182,7 +255,6 @@ const Notifications = () => {
         );
     };
 
-
     return (
         <>
             {/* Snackbar for displaying new notifications */}
@@ -197,6 +269,14 @@ const Notifications = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+
+            {/* Delete Dialog */}
+            <DeleteDialog
+                deleteDialogOpen={deleteDialogOpen}
+                closeDeleteDialog={handleCloseDeleteDialog}
+                confirmDelete={handleDeleteAll}
+                isNotification={true}
+            />
 
             <Container maxWidth="lg" sx={{ p: 2 }}>
                 <Box sx={{ flexGrow: 1, mt: 2 }}>
@@ -241,6 +321,10 @@ const Notifications = () => {
                                         <Button onClick={() => handleStatusFilter("status_change")} variant={statusFilter === "status_change" ? "contained" : "text"} sx={muiStyles.buttonStyle}>
                                             Status Changes
                                         </Button>
+
+                                        <Button sx={{ ...muiStyles.detailsButtonStyle, mt: 2 }} variant="outlined" color="error" onClick={() => handleDeleteAllClick()}>
+                                            Delete All
+                                        </Button>
                                     </Stack>
                                 </CardContent>
                             </Card>
@@ -255,13 +339,22 @@ const Notifications = () => {
                                             filteredNotificationsForCurrentPage.map((notification) => (
                                                 <Grid item xs={12} key={notification._id}>
                                                     {notification.caseId ? (
-                                                        <Link
-                                                            to={`/cases/details/${notification.caseId._id}`}
-                                                            onClick={() => handleClick(notification)}
-                                                            style={{ textDecoration: 'none' }}
-                                                        >
-                                                            {renderNotificationCard(notification)}
-                                                        </Link>
+                                                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                            <Box sx={{ flexGrow: 1 }}>
+
+                                                                <Link
+                                                                    to={`/cases/details/${notification.caseId._id}`}
+                                                                    onClick={() => handleClick(notification)}
+                                                                    style={{ textDecoration: 'none' }}
+                                                                    sx={{ width: '100%' }}
+                                                                >
+                                                                    {renderNotificationCard(notification)}
+                                                                </Link>
+                                                            </Box>
+                                                            <Box sx={{ display: 'flex', alignItems: 'center', pl: 3, pb: 3 }}>
+                                                                <Delete onClick={() => handleDeleteSingleNotification(notification._id)} color="disabled" sx={{ cursor: 'pointer' }} />
+                                                            </Box>
+                                                        </Box>
                                                     ) : null}
                                                 </Grid>
                                             ))

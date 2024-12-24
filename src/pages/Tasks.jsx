@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Container, Typography, Grid, Box, Stack, Button, Card, CardContent } from '@mui/material';
 import QuizIcon from '@mui/icons-material/Quiz';
 
@@ -11,45 +12,77 @@ import Background from '../components/Background';
 
 const Tasks = () => {
 
-    const { statusFilter, filterStatus, getTasksByStaff, tasks, filteredTasks, setFilteredTasks } = useTaskContext();
+    const { statusFilter, filterStatus, getTasksByStaff, tasks, filteredTasks, setFilteredTasks, getAllTasks, tasksLoaded, setTasksLoaded } = useTaskContext();
     const { setFromTasks } = useCaseContext();
     // const [filteredTasks, setFilteredTasks] = useState([]);
     const didRunEffect = useRef(false);
-    const [tasksLoaded, setTasksLoaded] = useState(false);
+    // const [tasksLoaded, setTasksLoaded] = useState(false);
+    const location = useLocation();
+    
+    const fetchTasks = async () => {
+        try {
+            // Ensure setFromTasks is called before fetching tasks
+            setFromTasks(false);
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            const userId = user?._id;
+
+            let result = null;
+            if (user?.role === 'admin') {
+                // Fetch all tasks
+                result = await getAllTasks();
+            } else {
+                result = await getTasksByStaff(userId);
+                // Wait for tasks to be fetched
+            }
+
+            if (result) setTasksLoaded(true);
+
+            // console.log("Tasks successfully fetched!", result);
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
+        }
+    };
 
     useEffect(() => {
-        const fetchTasks = async () => {
-            try {
-                // Ensure setFromTasks is called before fetching tasks
-                setFromTasks(false);
+        fetchTasks();
+    }, []);
 
-                const userId = JSON.parse(localStorage.getItem('user'))._id;
-                console.log("Fetching tasks for user ID:", userId);
-
-                // Wait for tasks to be fetched
-                const result = await getTasksByStaff(userId);
-
-                if (result) setTasksLoaded(true);
-
-                console.log("Tasks successfully fetched!", result);
+    useEffect(() => {
+        const initializeTasks = async () => {
+            try {  
+                // After tasks are fetched, filter based on location state
+                // console.log("Tasks: ", Object.keys(tasks).length);
+                console.log("Location state:", location);
+    
+                // Apply the filtering logic only when tasks are available
+                if (tasks && Object.keys(tasks).length > 0 && tasksLoaded) {
+                    if (location.state?.target) {
+                        handleStatusFilter(location.state.target);
+                    } else {
+                        handleStatusFilter("Pending");
+                    }
+                } else {
+                    console.warn("Tasks are still loading");
+                }
             } catch (error) {
                 console.error("Error fetching tasks:", error);
             }
         };
+    
+        initializeTasks();
+    }, [tasks, tasksLoaded]);  // Runs whenever location.state or tasks changes
+    
 
-        fetchTasks();
-    }, []);
+    // useEffect(() => {
+    //     // if tasks is not object or empty, return
+    //     if (!tasks || Object.keys(tasks).length === 0) return;
 
-
-    useEffect(() => {
-        // if tasks is not object or empty, return
-        if (!tasks || Object.keys(tasks).length === 0) return;
-
-        if (tasksLoaded && tasks && Object.keys(tasks).length > 0 && !didRunEffect.current) {
-            handleStatusFilter("Pending");
-            didRunEffect.current = true; // Set to true after first run
-        }
-    }, [tasks, tasksLoaded]);
+    //     if (tasksLoaded && tasks && Object.keys(tasks).length > 0 && !didRunEffect.current) {
+    //         handleStatusFilter("Pending");
+    //         didRunEffect.current = true; // Set to true after first run
+    //     }
+    // }, [tasks, tasksLoaded]);
 
     const handleStatusFilter = (status) => {
         // Get filtered tasks by status
@@ -72,8 +105,6 @@ const Tasks = () => {
 
         // Set the grouped tasks in the state
         setFilteredTasks(groupedTasks);
-
-        console.log("Grouped Tasks: ", groupedTasks);
     };
 
 

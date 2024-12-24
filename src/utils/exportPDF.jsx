@@ -145,8 +145,17 @@ const exportPDF = (caseItem) => {
     doc.save(`Case - ${caseItem?.matterName}.pdf`);
 };
 
-const exportAnalysis = async (caseAnalysis) => {
+const exportAnalysis = async (monthlyStatus, yearlyStatus, month, year, category, homeView) => {
     const doc = new jsPDF();
+
+    // Map the month number to its name
+    const months = [
+        "January", "February", "March", "April",
+        "May", "June", "July", "August", "September", "October", "November", "December"
+    ];
+
+    const type = homeView === "monthly" ? "Monthly" : "Yearly";
+    const postfix = homeView === "monthly" ? `(${months[month - 1]}, ${year})` : `${year}`;
 
     // Header
     addHeader(doc);
@@ -154,8 +163,9 @@ const exportAnalysis = async (caseAnalysis) => {
     // Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    doc.text('Analysis Report', 14, 40);
-    //Export date
+    doc.text(`${type} Analysis Report ${postfix}`, 14, 40);
+
+    // Export date
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     const date = new Date().toLocaleDateString();
@@ -164,40 +174,191 @@ const exportAnalysis = async (caseAnalysis) => {
     const xRightToLeft = pageWidth - dateWidth - 14;
     doc.text(`Exported on: ${date}`, xRightToLeft, 40);
 
+    // Add category text
+    doc.setFontSize(12);
+    doc.text(`Category: ${category}`, 14, 48);
+
     // Add Key Metrics
     doc.setFontSize(12);
-    const metrics = [
-        `Active Cases: ${caseAnalysis.activeCases}`,
-        `Cases This Month: ${caseAnalysis.casesThisMonth}`,
-        `Cases Closed This Month: ${caseAnalysis.casesClosedThisMonth}`,
-        `Tasks Completed This Month: ${caseAnalysis.tasksCompletedThisMonth}`,
-    ];
-    metrics.forEach((metric, index) => {
-        doc.text(metric, 14, 50 + index * 10);
-    });
+    let metrics = [];
+    if (homeView === "monthly") {
+        metrics = [
+            `Cases Initiated: ${monthlyStatus.kpis.casesInitiatedCurrentMonth}`,
+        ];
+        metrics.forEach((metric, index) => {
+            doc.text(metric, 14, 55 + index * 10);
+        });
+    }
+    else {
+        metrics = [
+            `Cases Initiated: ${yearlyStatus.kpis.casesInitiatedCurrentYear}`,
+        ];
+        metrics.forEach((metric, index) => {
+            doc.text(metric, 14, 55 + index * 10);
+        });
+    }
 
-    // Convert a chart or section to an image
-    const chartElement = document.querySelector('#chartContainer'); // Replace with your chart container ID
-    if (chartElement) {
-        const canvas = await html2canvas(chartElement, {
+    // Select each chart element individually
+    let charts = [];
+    if (homeView === "monthly") {
+        charts = document.querySelectorAll('.chart.month');
+    } else {
+        charts = document.querySelectorAll('.chart.year');
+    }
+
+    // Chart layout settings
+    const margin = 7; // Margin from the edge of the page
+    const padding = 1; // Padding around each chart
+    const chartWidth = (pageWidth - margin * 3) / 2 - padding * 2; // Two charts side by side with padding
+    let currentX = margin;
+    let currentY = 60; // Starting Y position for charts
+    const chartSpacing = 10; // Spacing between rows of charts
+    const pageHeight = doc.internal.pageSize.height;
+
+    // Loop through each chart and add to the PDF
+    for (const chart of charts) {
+        // Use html2canvas to capture the chart as an image
+        const canvas = await html2canvas(chart, {
             ignoreElements: (element) => element.classList.contains('exclude'),
+            scale: 2,  // Increase resolution if needed
+        });
+    
+        // Check if canvas was rendered successfully
+        if (!canvas) {
+            console.error("html2canvas failed to render the chart.");
+            continue;
+        }
+    
+        const imgData = canvas.toDataURL('image/png');
+        const originalWidth = canvas.width;
+        const originalHeight = canvas.height;
+        const aspectRatio = originalHeight / originalWidth;
+    
+        // Define the desired width for the chart (70% of the page width)
+        const chartWidth = pageWidth * 0.7;
+        const imgHeight = chartWidth * aspectRatio;
+    
+        // Center the chart on the page
+        const centerX = (pageWidth - chartWidth) / 2;
+    
+        // Ensure the chart fits within the page; if not, add a new page
+        if (currentY + imgHeight > pageHeight - margin) {
+            doc.addPage();
+            currentY = margin + 10; // Reset Y position
+        }
+    
+        // Add the chart image to the PDF
+        doc.addImage(imgData, 'PNG', centerX, currentY, chartWidth, imgHeight);
+    
+        // Optional: Add border around the chart
+        doc.setDrawColor(0); // Black color for the border
+        doc.setLineWidth(0.3); // Border thickness
+        doc.rect(centerX, currentY, chartWidth, imgHeight); // Draw border rectangle
+    
+        // Update position for the next chart
+        currentY += imgHeight + chartSpacing;
+    }
+    
+
+    {
+        let status = homeView === "monthly" ? monthlyStatus : yearlyStatus;
+        // Add a page break before the table
+        doc.addPage();
+
+        // Add header for the table
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Cases by Staffs", 14, 20);
+
+        // Add table headers and data (Example for table with monthlyStatus.table data)
+        const headers = [
+            'Staff Name',
+            'Cases Handled',
+            'Cases by Category',
+            'Avg Turnaround Time (Days)',
+        ];
+
+        const rows = status.table.map(staff => [
+            staff.staffName,
+            staff.casesHandled,
+            staff.categories.map(category => `${category.categoryName}: ${category.count}`).join(", "),  // Joining categories in a single string
+            Math.round((staff.avgTurnaroundTime / (1000 * 60 * 60 * 24)) * 10) / 10,  // Convert ms to days
+        ]);
+
+        const startY = 35; // Starting position of the table
+        const rowHeight = 5;
+        const columnWidths = [40, 35, 50, 48];  // Adjust column widths according to your needs
+        const maxWidth = pageWidth - 20;  // Account for margins
+
+        // Add table header to the PDF
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        headers.forEach((header, index) => {
+            doc.text(header, 14 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0), startY);
         });
 
-        const imgData = canvas.toDataURL('image/png');
+        // add a line separator under the header
+        doc.setLineWidth(0.5);
+        doc.line(14, startY + 2, 14 + columnWidths.reduce((a, b) => a + b, 0), startY + 2);
 
-        // Get original dimensions
-        const imgWidth = 180; // Desired width in PDF
-        const imgHeight = (canvas.height / canvas.width) * imgWidth; // Maintain aspect ratio
-
-        doc.addImage(imgData, 'PNG', 14, 90, imgWidth, imgHeight);
+        // Add table rows
+        doc.setFont("helvetica", "normal");
+        let currentY = startY + rowHeight + 2;
+        rows.forEach((row, rowIndex) => {
+            let categoryY = currentY; // Track the Y position for the "Cases by Category" column
+        
+            // Iterate over the columns
+            row.forEach((cell, index) => {
+                let columnX = 14 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0);
+        
+                if (index === 2) { // "Cases by Category" column
+                    const categories = String(cell).split(',').map(item => item.trim());  // Split and trim spaces
+                    const lineHeight = 6;  // Line height for wrapped text
+        
+                    // Loop through each category and add to the PDF
+                    categories.forEach((category) => {
+                        // Split each category into multiple lines if it exceeds the column width
+                        const wrappedText = doc.splitTextToSize(category, columnWidths[index]);
+                        doc.text(wrappedText, columnX, categoryY);
+                        categoryY += wrappedText.length * lineHeight;  // Increase the Y position for each line
+                    });
+                } else { // Other columns (e.g., "Staff Name", "Cases Handled", "Avg Turnaround Time")
+                    doc.text(String(cell), columnX, currentY);
+                }
+            });
+        
+            // Determine the bottom Y position for the row (categoryY handles wrapped text cases)
+            const rowBottomY = Math.max(currentY, categoryY) - 3;
+        
+            // Check if this is the last row for the current staff
+            const isLastRowForStaff =
+                rowIndex === rows.length - 1 || // Last row in the table
+                rows[rowIndex][0] !== rows[rowIndex + 1][0]; // Staff name changes in the next row
+        
+            if (isLastRowForStaff) {
+                // Draw a bottom line for the current staff's entry
+                const totalWidth = columnWidths.reduce((a, b) => a + b, 0);
+                doc.line(14, rowBottomY, 14 + totalWidth, rowBottomY);
+            }
+        
+            // Update currentY for the next row
+            currentY = rowBottomY + rowHeight;
+        
+            // If the current row exceeds the page height, add a new page
+            if (currentY > pageHeight - 20) {
+                doc.addPage(); // Add a new page
+                currentY = 20; // Reset Y position for new page
+            }
+        });
+        
     }
 
     // Add footer
     addFooter(doc);
 
-    // Save PDF
-    doc.save('CaseAnalysisReport.pdf');
-}
+    // Save the generated PDF
+    doc.save(`${type} Report-${postfix}.pdf`);
+};
 
 
 export { exportPDF, exportAnalysis };

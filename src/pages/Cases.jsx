@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Container, Typography, Grid, Box, Stack, Button, Autocomplete, InputAdornment, TextField, CircularProgress, Pagination, Card, CardContent } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import QuizIcon from '@mui/icons-material/Quiz';
@@ -33,13 +34,26 @@ const Cases = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [searchFilteredCases, setSearchFilteredCases] = useState([]);
-    const userId = JSON.parse(localStorage.getItem('user'))._id;
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user?._id;
+    const location = useLocation();
 
     useEffect(() => {
         fetchCategories();
-        toMyCases(userId);
-        // console.log(caseItemsLoaded);
+        if (user?.role === 'admin') {
+            toAllCases();
+        } else {
+            toMyCases(userId);
+        }
     }, []);
+
+    useEffect(() => {
+        if (location.state) {
+            handleFilterClosedCases();
+        } else {
+            handleFilterActiveCases();
+        }
+    }, [location.state]);
 
     useEffect(() => {
         filterCases(searchQuery, filteredCategory, filteredCases);
@@ -124,22 +138,26 @@ const Cases = () => {
                                             pt: 1,
                                             pb: .5,
                                         }}>
-                                            <Typography variant="h4" sx={{fontWeight: 'bold'}}>
+                                            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
                                                 Cases
                                             </Typography>
                                         </Box>
-                                        <Box sx={muiStyles.sideNavTitleStyle}>
-                                            <FilterAlt fontSize="medium" sx={{ mr: 1 }} />
-                                            <Typography variant="subtitle1">
-                                                Filter
-                                            </Typography>
-                                        </Box>
-                                        <Button onClick={() => toMyCases(userId)} variant={view === 'myCases' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
-                                            My Cases
-                                        </Button>
-                                        <Button onClick={toAllCases} variant={view === 'allCases' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
-                                            All Cases
-                                        </Button>
+                                        {user?.role !== 'admin' && (
+                                            <>
+                                                <Box sx={muiStyles.sideNavTitleStyle}>
+                                                    <FilterAlt fontSize="medium" sx={{ mr: 1 }} />
+                                                    <Typography variant="subtitle1">
+                                                        Filter
+                                                    </Typography>
+                                                </Box>
+                                                <Button onClick={() => toMyCases(userId)} variant={view === 'myCases' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                                    My Cases
+                                                </Button>
+                                                <Button onClick={toAllCases} variant={view === 'allCases' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                                    All Cases
+                                                </Button>
+                                            </>
+                                        )}
                                         <Box sx={muiStyles.sideNavTitleStyle}>
                                             <QuizIcon fontSize="medium" sx={{ mr: 1 }} />
                                             <Typography variant="subtitle1">

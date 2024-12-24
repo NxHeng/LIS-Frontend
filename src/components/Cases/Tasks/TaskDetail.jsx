@@ -67,6 +67,16 @@ const TaskDetail = () => {
                 return t;
             });
         });
+
+        // save updated Task to caseItem in localStorage
+        const updatedTasks = JSON.parse(localStorage.getItem('caseItem')).tasks.map((t) => {
+            if (t._id === task?._id) {
+                return { ...t, ...formData, completedAt: task?.completedAt };
+            }
+            return t;
+        });
+        localStorage.setItem('caseItem', JSON.stringify({ ...JSON.parse(localStorage.getItem('caseItem')), tasks: updatedTasks }));
+
     }, 1000);
 
     const areDatesEqual = (date1, date2) => {
@@ -215,7 +225,7 @@ const TaskDetail = () => {
                                                 {...caseItem?.status === 'active' || caseItem?.status === 'Active' ? { disabled: false } : { disabled: true }}
                                             >
                                                 <MenuItem value="Pending">Pending</MenuItem>
-                                                <MenuItem value="Due">Due</MenuItem>
+                                                <MenuItem value="Overdue">Overdue</MenuItem>
                                                 <MenuItem value="On Hold">On Hold</MenuItem>
                                                 <MenuItem value="Completed">Completed</MenuItem>
                                                 <MenuItem value="Awaiting Initiation">Awaiting Initiation</MenuItem>
