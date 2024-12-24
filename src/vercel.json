@@ -1,0 +1,80 @@
+{
+    "rewrites": [
+        {
+            "source": "/login",
+            "destination": "/pages/Login"
+        },
+        {
+            "source": "/temporary/:caseId/:token",
+            "destination": "/pages/TempDetail"
+        },
+        {
+            "source": "/temporary/expired",
+            "destination": "/pages/ExpiredPage"
+        },
+        {
+            "source": "/forgot-password",
+            "destination": "/pages/ForgotPassword"
+        },
+        {
+            "source": "/reset-password/:token",
+            "destination": "/pages/ResetPassword"
+        },
+        {
+            "source": "/profile",
+            "destination": "/pages/Profile"
+        },
+        {
+            "source": "/changepassword",
+            "destination": "/pages/ChangePassword"
+        },
+        {
+            "source": "/cases",
+            "destination": "/pages/Cases"
+        },
+        {
+            "source": "/cases/details/:id",
+            "destination": "/pages/Details"
+        },
+        {
+            "source": "/tasks",
+            "destination": "/pages/Tasks"
+        },
+        {
+            "source": "/notifications",
+            "destination": "/pages/Notifications"
+        },
+        {
+            "source": "/announcement",
+            "destination": "/pages/Announcement"
+        },
+        {
+            "source": "/create",
+            "destination": "/pages/Create"
+        },
+        {
+            "source": "/manageusers",
+            "destination": "/pages/ManageUsers"
+        },
+        {
+            "source": "/notificationsettings",
+            "destination": "/pages/NotificationSettings"
+        },
+        {
+            "source": "/createaccount",
+            "destination": "/pages/CreateAccount"
+        },
+        {
+            "source": "/client/mycases",
+            "destination": "/pages/MyCases"
+        },
+        {
+            "source": "/client/mycases/details/:id",
+            "destination": "/pages/MyDetails"
+        },
+        {
+            "source": "/:path*",
+            "destination": "/pages/ErrorPage"
+        }
+    ]
+}
