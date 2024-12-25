@@ -35,6 +35,8 @@ const pages = [
 ];
 const settings = ['Profile', 'Manage Users', 'Notification Settings',];
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Navbar = () => {
     const { logout, loading } = useAuthContext();
     const { toNewCase } = useCreateContext();
@@ -56,7 +58,7 @@ const Navbar = () => {
 
     useEffect(() => {
         // setUserId(user._id);
-        setSocket(io(process.env.VITE_API_URL));
+        setSocket(io(API_URL));
     }, []);
 
     useEffect(() => {
