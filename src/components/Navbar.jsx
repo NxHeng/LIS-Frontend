@@ -56,7 +56,7 @@ const Navbar = () => {
 
     useEffect(() => {
         // setUserId(user._id);
-        setSocket(io("http://localhost:5000"));
+        setSocket(io(process.env.VITE_API_URL));
     }, []);
 
     useEffect(() => {
