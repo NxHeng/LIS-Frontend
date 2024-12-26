@@ -65,13 +65,14 @@ const Home = () => {
             fetchOverallStatus();
             fetchMonthlyStatus({
                 category: categoryFilter === 'All' ? '' : categoryFilter,
-                year: new Date().getFullYear(),
-                month: new Date().getMonth()
+                year: yearFilter,
+                month: monthFilter
             });
             fetchYearlyStatus({
                 category: categoryFilter === 'All' ? '' : categoryFilter,
-                year: new Date().getFullYear(),
+                year: yearFilter
             });
+            // console.log('First useEffect month:', monthFilter);
         } else {
             fetchStatistics();
         }
@@ -89,6 +90,8 @@ const Home = () => {
                 category: categoryFilter === 'All' ? '' : categoryFilter,
                 year: yearFilter,
             });
+            
+            // console.log('Second useEffect monthFilter:', monthFilter);
         } else {
             fetchStatistics();
         }
