@@ -15,7 +15,7 @@
     "@emotion/styled": "^11.11.5",
     "@hello-pangea/dnd": "^16.6.0",
     "@mui/icons-material": "^5.15.18",
-    "@mui/material": "^5.15.19",
+    "@mui/material": "^6.3.0",
     "@mui/x-date-pickers": "^7.6.2",
     "@sgratzl/chartjs-chart-boxplot": "^4.4.4",
     "axios": "^1.7.2",

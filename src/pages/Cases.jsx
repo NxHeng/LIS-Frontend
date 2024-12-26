@@ -5,10 +5,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import QuizIcon from '@mui/icons-material/Quiz';
 import FilterAlt from '@mui/icons-material/FilterAlt';
 import CategoryIcon from '@mui/icons-material/Category';
+import SortIcon from '@mui/icons-material/Sort';
 
 import CaseCard from '../components/Cases/CaseCard';
 import Background from '../components/Background';
 import muiStyles from '../styles/muiStyles';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers';
 
 import { useCaseContext } from '../context/CaseContext';
 import { useCategoryContext } from '../context/CategoryContext';
@@ -34,6 +38,9 @@ const Cases = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [searchFilteredCases, setSearchFilteredCases] = useState([]);
+    const [sortOrder, setSortOrder] = useState('latest'); // "latest" or "oldest"
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user?._id;
     const location = useLocation();
@@ -56,14 +63,14 @@ const Cases = () => {
     }, [location.state]);
 
     useEffect(() => {
-        filterCases(searchQuery, filteredCategory, filteredCases);
-    }, [caseItems, searchQuery, filteredCategory, filteredCases]);
+        filterCases(searchQuery, filteredCategory, filteredCases, sortOrder, startDate, endDate);
+    }, [caseItems, searchQuery, filteredCategory, filteredCases, sortOrder, startDate, endDate]);
 
     const handleSearchChange = (event, newValue) => {
         setSearchQuery(newValue);
     };
 
-    const filterCases = (query, category, status) => {
+    const filterCases = (query, category, status, order, dateRange) => {
         let filtered = caseItems;
 
         // Apply category filter if the category is not 'All'
@@ -82,6 +89,22 @@ const Cases = () => {
                 caseItem?.clients.some(client => client?.name.toLowerCase().includes(query.toLowerCase()))
             );
         }
+
+        // Apply date filter
+        if (startDate && endDate) {
+            filtered = filtered.filter(caseItem => {
+                const caseDate = new Date(caseItem.createdAt);
+                return caseDate >= startDate && caseDate <= endDate;
+            });
+        }
+
+        // Apply sorting by date
+        filtered = filtered.sort((a, b) => {
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
+            return order === 'latest' ? dateB - dateA : dateA - dateB;
+        });
+
         setSearchFilteredCases(filtered);
     };
 
@@ -99,6 +122,14 @@ const Cases = () => {
     const handleFilterClosedCases = () => {
         setFilteredCases('closed');
         filterCases(searchQuery, filteredCategory, 'closed');
+    };
+
+    const handleSortToggle = () => {
+        setSortOrder(sortOrder === 'latest' ? 'oldest' : 'latest');
+    };
+
+    const handleDateFilterChange = (newValue) => {
+        setDateRange(newValue);
     };
 
     const handlePageChange = (event, value) => {
@@ -202,7 +233,7 @@ const Cases = () => {
                         {/* Main Content */}
                         <Grid item xs={9}>
                             <Stack direction="column" spacing={2}>
-                                <Card sx={{ ...muiStyles.cardStyle, p: 4 }}>
+                                <Card sx={{ ...muiStyles.cardStyle, p: 2 }}>
                                     <Container maxWidth="lg">
                                         <Autocomplete
                                             fullWidth
@@ -232,25 +263,37 @@ const Cases = () => {
                                 </Card>
                                 <Card sx={muiStyles.cardStyle}>
                                     <CardContent>
-                                        {/* <Container sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                            <Button variant='contained' sx={{ mx: 1 }}>
-                                Date
-                            </Button>
-                            <Button variant='contained' sx={{ mx: 1 }}>
-                                Sort
-                            </Button>
-                        </Container> */}
-                                        <Container sx={{ mt: 2 }}>
-                                            {filteredCasesForCurrentPage.length > 0 ? (
-                                                filteredCasesForCurrentPage.map((caseItem, index) => (
-                                                    <CaseCard key={index} caseItem={caseItem} />
-                                                ))
-                                            ) : (
-                                                <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}>
-                                                    <Typography variant='h6' sx={{ alignItems: 'center' }}>No cases available</Typography>
-                                                </Box>
-                                            )}
-                                        </Container>
+                                        <Stack spacing={1} direction='row' sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <Stack direction="row" spacing={2}>
+                                                    <DatePicker
+                                                        label="Start Date"
+                                                        value={startDate}
+                                                        onChange={(newValue) => setStartDate(newValue)}
+                                                        slotProps={{ textField: { size: 'small' } }}
+                                                    />
+                                                    <DatePicker
+                                                        label="End Date"
+                                                        value={endDate}
+                                                        onChange={(newValue) => setEndDate(newValue)}
+                                                        slotProps={{ textField: { size: 'small' } }}
+                                                    />
+                                                </Stack>
+                                                <Button size='small' variant='outlined' onClick={handleSortToggle} sx={muiStyles.buttonStyle}>
+                                                    <SortIcon sx={{ mr: 1 }} />
+                                                    Sort ({sortOrder})
+                                                </Button>
+                                            </LocalizationProvider>
+                                        </Stack>
+                                        {filteredCasesForCurrentPage.length > 0 ? (
+                                            filteredCasesForCurrentPage.map((caseItem, index) => (
+                                                <CaseCard key={index} caseItem={caseItem} />
+                                            ))
+                                        ) : (
+                                            <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}>
+                                                <Typography variant='h6' sx={{ alignItems: 'center' }}>No cases available</Typography>
+                                            </Box>
+                                        )}
                                     </CardContent>
                                 </Card>
                                 <Card sx={{
