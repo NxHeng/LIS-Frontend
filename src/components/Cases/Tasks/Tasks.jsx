@@ -10,6 +10,7 @@ import { useTaskContext } from '../../../context/TaskContext';
 const Tasks = () => {
 
     const { tasks, setTasks, tasksLoaded, setTasksLoaded, fetchTasks, updateTasksOrder } = useTaskContext();
+    const token = localStorage.getItem('token');
 
     const caseItem = useMemo(() => {
         try {
@@ -22,7 +23,7 @@ const Tasks = () => {
 
     useEffect(() => {
         if (caseItem?.tasks) {
-            fetchTasks(caseItem?._id);
+            fetchTasks(caseItem?._id, token);
         } else {
             setTasksLoaded(false);
         }
@@ -41,7 +42,7 @@ const Tasks = () => {
         }));
 
         setTasks(updatedTasks);
-        updateTasksOrder(caseItem?._id, updatedTasks);
+        updateTasksOrder(caseItem?._id, updatedTasks, token);
         console.log("this is reordered tasks: ", updatedTasks);
     };
 

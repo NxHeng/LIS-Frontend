@@ -41,6 +41,7 @@ const Cases = () => {
     const [sortOrder, setSortOrder] = useState('latest'); // "latest" or "oldest"
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user?._id;
     const location = useLocation();
@@ -48,9 +49,9 @@ const Cases = () => {
     useEffect(() => {
         fetchCategories();
         if (user?.role === 'admin') {
-            toAllCases();
+            toAllCases(token);
         } else {
-            toMyCases(userId);
+            toMyCases(userId, token);
         }
     }, []);
 
@@ -181,10 +182,10 @@ const Cases = () => {
                                                         Filter
                                                     </Typography>
                                                 </Box>
-                                                <Button onClick={() => toMyCases(userId)} variant={view === 'myCases' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                                <Button onClick={() => toMyCases(userId, token)} variant={view === 'myCases' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
                                                     My Cases
                                                 </Button>
-                                                <Button onClick={toAllCases} variant={view === 'allCases' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
+                                                <Button onClick={() => toAllCases(token)} variant={view === 'allCases' ? "contained" : "text"} sx={muiStyles.buttonStyle} >
                                                     All Cases
                                                 </Button>
                                             </>

@@ -14,6 +14,7 @@ export const CaseContextProvider = ({ children }) => {
     const [isTemporary, setIsTemporary] = useState(false);
 
     const [fromTasks, setFromTasks] = useState(false);
+    const [fromCase, setFromCase] = useState(false);
     const [fromNotificationsToTasks, setFromNotificationsToTasks] = useState(false);
     const [fromNotificationsToCaseDetails, setFromNotificationsToCaseDetails] = useState(false);
     const [detailView, setDetailView] = useState('matterDetails');
@@ -33,16 +34,16 @@ export const CaseContextProvider = ({ children }) => {
     const { setTask } = useTaskContext();
 
     // Case List Page
-    const toMyCases = (userId) => {
+    const toMyCases = (userId, token) => {
         setView('myCases');
         // console.log(view);
-        fetchMyCases(userId);
+        fetchMyCases(userId, token);
     };
 
-    const toAllCases = () => {
+    const toAllCases = (token) => {
         setView('allCases');
         // console.log(view);
-        fetchCases();
+        fetchCases(token);
     };
 
     const filterActiveCases = () => {
@@ -85,12 +86,13 @@ export const CaseContextProvider = ({ children }) => {
         setDetailView('documents');
     }
 
-    const createCase = async (formData) => {
+    const createCase = async (formData, token) => {
         try {
             const response = await fetch(`${API_URL}/case/createCase`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(formData),
             });
@@ -101,9 +103,15 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
-    const fetchCase = async (id) => {
+    const fetchCase = async (id, authToken) => {
         try {
-            const response = await fetch(`${API_URL}/case/getCase/${id}`);
+            const response = await fetch(`${API_URL}/case/getCase/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -116,10 +124,16 @@ export const CaseContextProvider = ({ children }) => {
     };
 
 
-    const fetchCases = async () => {
+    const fetchCases = async (authToken) => {
         setCaseItemsLoaded(false);
         try {
-            const response = await fetch(`${API_URL}/case/getCases`);
+            const response = await fetch(`${API_URL}/case/getCases`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                }
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -131,10 +145,16 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
-    const fetchCasesByClient = async (icNumber) => {
+    const fetchCasesByClient = async (icNumber, authToken) => {
         setCaseItemsLoaded(false);
         try {
-            const response = await fetch(`${API_URL}/case/getCasesByClient/${icNumber}`);
+            const response = await fetch(`${API_URL}/case/getCasesByClient/${icNumber}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                }
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -146,10 +166,16 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
-    const fetchMyCases = async (userId) => {
+    const fetchMyCases = async (userId, authToken) => {
         setCaseItemsLoaded(false);
         try {
-            const response = await fetch(`${API_URL}/case/getMyCases/${userId}`);
+            const response = await fetch(`${API_URL}/case/getMyCases/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                }
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -171,12 +197,13 @@ export const CaseContextProvider = ({ children }) => {
         setCaseItems(updatedCaseItems);
     };
 
-    const updateCaseAsClosedInDatabase = async (id) => {
+    const updateCaseAsClosedInDatabase = async (id, authToken) => {
         try {
             const response = await fetch(`${API_URL}/case/updateCase/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
                 },
                 body: JSON.stringify({ status: 'closed' }),
             });
@@ -188,12 +215,13 @@ export const CaseContextProvider = ({ children }) => {
         }
     }
 
-    const updateCaseInDatabase = async (caseId, updatedData) => {
+    const updateCaseInDatabase = async (caseId, updatedData, authToken) => {
         try {
             const response = await fetch(`${API_URL}/case/updateCase/${caseId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
                 },
                 body: JSON.stringify(updatedData),
             });
@@ -207,12 +235,13 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
-    const generateLink = async (caseId) => {
+    const generateLink = async (caseId, authToken) => {
         try {
             const response = await fetch(`${API_URL}/link/generate-link`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
                 },
                 body: JSON.stringify({ caseId }),
             });
@@ -237,12 +266,13 @@ export const CaseContextProvider = ({ children }) => {
         }
     };
 
-    const addLog = async (caseId, logMessage, userId) => {
+    const addLog = async (caseId, logMessage, userId, authToken) => {
         try {
             const response = await fetch(`${API_URL}/case/addLog/${caseId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
                 },
                 body: JSON.stringify({ logMessage, createdBy: userId }),
             });
@@ -253,10 +283,14 @@ export const CaseContextProvider = ({ children }) => {
         }
     }
 
-    const deleteLog = async (caseId, logId) => {
+    const deleteLog = async (caseId, logId, authToken) => {
         try {
             const response = await fetch(`${API_URL}/case/deleteLog/${caseId}/${logId}`, {
                 method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
             });
             if (response.ok) {
                 console.log(`Log with ID ${logId} deleted successfully.`);
@@ -311,7 +345,9 @@ export const CaseContextProvider = ({ children }) => {
             isTemporary,
             setIsTemporary,
             addLog,
-            deleteLog
+            deleteLog,
+            fromCase,
+            setFromCase,
         }}>
             {children}
         </CaseContext.Provider>

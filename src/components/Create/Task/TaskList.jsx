@@ -4,6 +4,7 @@ import muiStyles from '../../../styles/muiStyles';
 
 import TaskCard from './TaskCard';
 import { useTaskFieldContext } from '../../../context/TaskFieldContext';
+import { useCaseContext } from '../../../context/CaseContext';
 
 const TaskList = () => {
     const { taskFields, taskFieldsLoaded, fetchTaskFields, deleteTaskField, createTaskField } = useTaskFieldContext();

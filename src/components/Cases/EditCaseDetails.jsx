@@ -12,6 +12,7 @@ const EditCaseDetails = ({ caseItem, onSave }) => {
     const { updateCaseInDatabase, toCaseDetails } = useCaseContext();
     const { fetchCategory, category } = useCategoryContext();
     const [caseData, setCaseData] = useState(null);
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
@@ -44,7 +45,7 @@ const EditCaseDetails = ({ caseItem, onSave }) => {
     };
 
     const handleSave = async () => {
-        const data = await updateCaseInDatabase(caseData._id, caseData);
+        const data = await updateCaseInDatabase(caseData._id, caseData, token);
         console.log('Data:', data); 
         localStorage.setItem('caseItem', JSON.stringify(data));
         onSave(data);

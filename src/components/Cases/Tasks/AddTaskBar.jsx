@@ -37,6 +37,7 @@ const StyledButton = styled(Button)({
 const StickyBottomBar = () => {
 
     const caseId = JSON.parse(localStorage.getItem('caseItem'))._id;
+    const token = localStorage.getItem('token');
 
     const [taskName, setTaskName] = useState('');
     const { addTaskToDatabase } = useTaskContext();
@@ -44,10 +45,10 @@ const StickyBottomBar = () => {
 
     const handleAddTask = () => {
         if (taskName.trim()) {
-            addTaskToDatabase(caseId, taskName); // Add the task to the database
+            addTaskToDatabase(caseId, taskName, token); // Add the task to the database
             setTaskName(''); // Reset the field after adding
         }
-        fetchCase(caseId); // Fetch the case to update the tasks list
+        fetchCase(caseId, token); // Fetch the case to update the tasks list
     };
 
     return (

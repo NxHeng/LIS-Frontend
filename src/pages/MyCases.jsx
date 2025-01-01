@@ -23,10 +23,11 @@ const MyCases = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchFilteredCases, setSearchFilteredCases] = useState([]);
     const userIc = JSON.parse(localStorage.getItem('user')).ic;
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
         fetchCategories();
-        fetchCasesByClient(userIc);
+        fetchCasesByClient(userIc, token);
     }, []);
 
     useEffect(() => {

@@ -26,6 +26,7 @@ const TaskDetail = () => {
         }
     }, []);
     const { task, setTasks, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask } = useTaskContext();
+    const token = localStorage.getItem('token');
 
     const [formData, setFormData] = useState({
         description: '',
@@ -57,7 +58,7 @@ const TaskDetail = () => {
 
 
     const debouncedSave = debounce((value) => {
-        updateTaskInDatabase(caseId, task?._id, { ...formData, completedAt: task?.completedAt });
+        updateTaskInDatabase(caseId, task?._id, { ...formData, completedAt: task?.completedAt }, token);
         // updateTask(task?._id, { ...formData, completedAt: task?.completedAt });
         setTasks((prevTasks) => {
             return prevTasks.map((t) => {
@@ -128,7 +129,7 @@ const TaskDetail = () => {
     };
 
     const handleDeleteTask = () => {
-        deleteTaskFromDatabase(caseId, task?._id);
+        deleteTaskFromDatabase(caseId, task?._id, token);
         deleteTask(task?._id);
         setTask(null);
         setOpenDialog(false);

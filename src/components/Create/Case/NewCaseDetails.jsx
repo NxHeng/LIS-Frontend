@@ -15,7 +15,9 @@ const NewCaseDetails = () => {
     const { formData, setFormData, createCase, fetchCases } = useCaseContext();
     const { toNewCase } = useCreateContext();
     const navigate = useNavigate();
+    const token = localStorage.getItem('token');
     console.log(formData);
+    
 
     useEffect(() => {
         if (category?.fields) {
@@ -88,8 +90,8 @@ const NewCaseDetails = () => {
             fields: []
         });
         console.log('Transformed Data::::', transformedData);
-        createCase(transformedData);
-        fetchCases();
+        createCase(transformedData, token);
+        fetchCases(token);
         console.log('Transformed Data:', transformedData);
         toNewCase();
         navigate('/cases');
