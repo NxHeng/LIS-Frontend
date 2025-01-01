@@ -28,6 +28,7 @@ const CentralTaskDetail = () => {
     const { task, updateTaskInDatabase, updateTask, deleteTask, deleteTaskFromDatabase, setTask, updateFilteredTasks } = useTaskContext();
 
     const user = jwtDecode(localStorage.getItem('token'));
+    const token = localStorage.getItem('token');
 
     const [formData, setFormData] = useState({
         description: '',
@@ -64,7 +65,7 @@ const CentralTaskDetail = () => {
     }, [task]);
 
     const debouncedSave = debounce((value) => {
-        updateTaskInDatabase(task.caseId, task._id, formData);
+        updateTaskInDatabase(task.caseId, task._id, formData, token);
         updateFilteredTasks(task._id, formData);
         // setTask(formData);
         // console.log("debounce formData: ", formData);
@@ -117,7 +118,7 @@ const CentralTaskDetail = () => {
     // };
 
     const handleDeleteTask = () => {
-        deleteTaskFromDatabase(task.caseId, task._id);
+        deleteTaskFromDatabase(task.caseId, task._id, token);
         deleteTask(task._id);
         setTask(null);
     };
@@ -129,7 +130,7 @@ const CentralTaskDetail = () => {
     const handleTitleClick = async () => {
 
         try {
-            const data = await fetchCase(task.caseId);
+            const data = await fetchCase(task.caseId, token);
             setCaseItem(data);
             setFromTasks(true);
         } catch (error) {
@@ -205,7 +206,7 @@ const CentralTaskDetail = () => {
                         onChange={handleChange}
                         margin="normal"
                     />
-                    <Stack spacing={1} direction="column" sx={{ mt: 2 }}>
+                    <Stack direction="column" sx={{ mt: 2, pb: 2 }}>
                         {/* <Button
                             type="submit"
                             variant='contained'
@@ -226,7 +227,7 @@ const CentralTaskDetail = () => {
                                 sx={{ mb: 3 }}
                             >
                                 <MenuItem value="Pending">Pending</MenuItem>
-                                <MenuItem value="Due">Due</MenuItem>
+                                <MenuItem value="Overdue">Overdue</MenuItem>
                                 <MenuItem value="On Hold">On Hold</MenuItem>
                                 <MenuItem value="Completed">Completed</MenuItem>
                                 <MenuItem value="Awaiting Initiation">Awaiting Initiation</MenuItem>

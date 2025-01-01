@@ -6,6 +6,7 @@ import { useTaskContext } from '../../context/TaskContext';
 
 const CentralTaskItem = ({ task, onStatusChange, newStatus }) => {
     const { setTask, updateTaskStatusGroupedByCase } = useTaskContext();
+    const token = localStorage.getItem('token');
 
     const { id, description, dueDate, status, caseId } = task;
 
@@ -15,7 +16,7 @@ const CentralTaskItem = ({ task, onStatusChange, newStatus }) => {
     const handleCheckboxChange = () => {
         const newStatus = status === 'Completed' ? 'Pending' : 'Completed';
         console.log(caseId, task._id, newStatus);
-        updateTaskStatusGroupedByCase(caseId, task._id, newStatus);
+        updateTaskStatusGroupedByCase(caseId, task._id, newStatus, token);
     };
 
     const handleClick = () => {

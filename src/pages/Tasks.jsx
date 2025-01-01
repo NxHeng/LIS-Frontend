@@ -18,7 +18,8 @@ const Tasks = () => {
     const didRunEffect = useRef(false);
     // const [tasksLoaded, setTasksLoaded] = useState(false);
     const location = useLocation();
-    
+    const [localTasksLoaded, setLocalTasksLoaded] = useState(false);
+
     const fetchTasks = async () => {
         try {
             // Ensure setFromTasks is called before fetching tasks
@@ -26,17 +27,17 @@ const Tasks = () => {
 
             const user = JSON.parse(localStorage.getItem('user'));
             const userId = user?._id;
-
+            const token = localStorage.getItem('token');
             let result = null;
             if (user?.role === 'admin') {
                 // Fetch all tasks
-                result = await getAllTasks();
+                result = await getAllTasks(token);
             } else {
-                result = await getTasksByStaff(userId);
+                result = await getTasksByStaff(userId, token);
                 // Wait for tasks to be fetched
             }
 
-            if (result) setTasksLoaded(true);
+            if (result) setLocalTasksLoaded(true);
 
             // console.log("Tasks successfully fetched!", result);
         } catch (error) {
@@ -46,22 +47,27 @@ const Tasks = () => {
 
     useEffect(() => {
         fetchTasks();
+        // didRunEffect.current = true;
     }, []);
 
     useEffect(() => {
         const initializeTasks = async () => {
-            try {  
+            try {
                 // After tasks are fetched, filter based on location state
                 // console.log("Tasks: ", Object.keys(tasks).length);
                 console.log("Location state:", location);
-    
+                console.log("Loaded Tasks: ", tasks);
+                console.log("Tasks Loaded: ", localTasksLoaded);
+
                 // Apply the filtering logic only when tasks are available
-                if (tasks && Object.keys(tasks).length > 0 && tasksLoaded) {
+                if (tasks !== null && tasks !== undefined && Object.keys(tasks).length > 0 && localTasksLoaded && !didRunEffect.current) {
                     if (location.state?.target) {
                         handleStatusFilter(location.state.target);
                     } else {
-                        handleStatusFilter("Pending");
+                        handleStatusFilter(statusFilter || "Pending");
+                        console.log("loaded...")
                     }
+                    didRunEffect.current = true;
                 } else {
                     console.warn("Tasks are still loading");
                 }
@@ -69,10 +75,14 @@ const Tasks = () => {
                 console.error("Error fetching tasks:", error);
             }
         };
-    
+        // if (!didRunEffect.current) {
+        //     console.log("Running effect...");
+        //     didRunEffect.current = true;
+        //     initializeTasks();
+        // }
         initializeTasks();
-    }, [tasks, tasksLoaded]);  // Runs whenever location.state or tasks changes
-    
+    }, [tasks, localTasksLoaded]);  // Runs whenever location.state or tasks changes
+
 
     // useEffect(() => {
     //     // if tasks is not object or empty, return

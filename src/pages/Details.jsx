@@ -24,6 +24,7 @@ const Details = () => {
     const { detailView, toMatterDetails, toEditMatterDetails, toCaseDetails, toTasks, toDocuments, fromTasks, fromNotificationsToTasks, fromNotificationsToCaseDetails, setFromTasks, setFromNotificationsToTasks, setFromNotificationsToCaseDetails, setIsTemporary, isTemporary, fetchCase } = useCaseContext();
     const { selectedFile, selectedFolder, handleRename, handleDelete, handleDownload, deleteDialogOpen, closeDeleteDialog, openDeleteDialog } = useDocumentContext();
     const { task } = useTaskContext();
+    const token = localStorage.getItem('token');
 
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
@@ -37,7 +38,7 @@ const Details = () => {
         const loadCaseData = async () => {
             try {
                 setLoading(true);
-                const data = await fetchCase(id); // Wait for the data to be fetched
+                const data = await fetchCase(id, token); // Wait for the data to be fetched
                 setCaseItem(data); // Update caseItem with the fetched data
             } catch (error) {
                 console.error("Error fetching case data:", error);

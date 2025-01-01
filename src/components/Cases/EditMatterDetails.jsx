@@ -13,6 +13,7 @@ const EditMatterDetails = ({ caseItem, onSave }) => {
     // const caseItem = JSON.parse(localStorage.getItem('caseItem'));
     const [editedData, setEditedData] = useState(caseItem);
     const [loading, setLoading] = useState(true);
+    const token = localStorage.getItem('token');
 
     // useEffect(() => {
     //     if (caseItem?.category) {
@@ -29,7 +30,7 @@ const EditMatterDetails = ({ caseItem, onSave }) => {
     }, []);
 
     const handleSave = async () => {
-        const data = await updateCaseInDatabase(caseItem?._id, editedData);
+        const data = await updateCaseInDatabase(caseItem?._id, editedData, token);
         // update these specific fields in local storage
         localStorage.setItem('caseItem', JSON.stringify(data));
         onSave(data);

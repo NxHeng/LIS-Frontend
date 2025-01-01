@@ -17,6 +17,7 @@ const CaseLog = ({ logs, caseId }) => {
     const [selectedLogId, setSelectedLogId] = useState(null); // Track log ID for deletion
 
     const [logList, setLogList] = useState(logs); // State to store logs
+    const token = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user ? user._id : '';
 
@@ -28,12 +29,12 @@ const CaseLog = ({ logs, caseId }) => {
 
     // Add log message
     const handleAddLog = (logMessage) => {
-        addLog(caseId, logMessage, userId);
+        addLog(caseId, logMessage, userId, token);
         setLogList([...logList, { logMessage, createdBy: userId, createdAt: new Date() }]);
     };
 
     const handleDeleteLog = (caseId, logId) => {
-        deleteLog(caseId, logId); // Perform the API call
+        deleteLog(caseId, logId, token); // Perform the API call
         setLogList((prevLogs) => prevLogs.filter((log) => log._id !== logId));
         closeDeleteDialog();
     };

@@ -21,7 +21,7 @@ const MatterDetails = ({ caseItem }) => {
     const navigate = useNavigate();
 
     const handleClose = () => {
-        updateCaseAsClosedInDatabase(caseItem?._id);
+        updateCaseAsClosedInDatabase(caseItem?._id, token);
         navigate('/cases');
     }
 
@@ -38,7 +38,7 @@ const MatterDetails = ({ caseItem }) => {
     };
 
     const handleGenerateLink = async () => {
-        const { url, qrCode } = await generateLink(caseItem?._id)
+        const { url, qrCode } = await generateLink(caseItem?._id, token)
         console.log("URL ", url);
         console.log("QR Code ", qrCode);
         if (url) {

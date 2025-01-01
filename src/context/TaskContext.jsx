@@ -57,16 +57,16 @@ export const TaskContextProvider = ({ children }) => {
     };
 
 
-    const updateTaskStatus = (caseId, taskId, newStatus) => {
+    const updateTaskStatus = (caseId, taskId, newStatus, authToken) => {
         const updatedTask = tasks?.find(task => task._id === taskId);
         if (updatedTask) {
             updatedTask.status = newStatus;
             setTasks([...tasks]);  // Or however you manage the tasks state
-            updateTaskInDatabase(caseId, taskId, { status: newStatus });
+            updateTaskInDatabase(caseId, taskId, { status: newStatus }, authToken);
         }
     };
 
-    const updateTaskStatusGroupedByCase = (caseId, taskId, newStatus) => {
+    const updateTaskStatusGroupedByCase = (caseId, taskId, newStatus, authToken) => {
         // Update in filteredTasks
         const caseGroupFiltered = filteredTasks[caseId];
         if (caseGroupFiltered) {
@@ -108,18 +108,19 @@ export const TaskContextProvider = ({ children }) => {
                 });
 
                 // Optionally, update the database with the new status
-                updateTaskInDatabase(caseId, taskId, { status: newStatus });
+                updateTaskInDatabase(caseId, taskId, { status: newStatus }, authToken);
             }
         }
     };
 
 
-    const updateTasksOrder = async (caseId, tasksData) => {
+    const updateTasksOrder = async (caseId, tasksData, authToken) => {
         try {
             const response = await fetch(`${API_URL}/case/updateTasksOrder/${caseId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
                 },
                 body: JSON.stringify(tasksData),
             });
@@ -130,13 +131,14 @@ export const TaskContextProvider = ({ children }) => {
         }
     }
 
-    const updateTaskInDatabase = async (caseId, taskId, taskData) => {
+    const updateTaskInDatabase = async (caseId, taskId, taskData, authToken) => {
         try {
             // console.log("update task in database");
             const response = await fetch(`${API_URL}/case/updateTask/${caseId}/${taskId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
                 },
                 body: JSON.stringify(taskData),
             });
@@ -147,17 +149,18 @@ export const TaskContextProvider = ({ children }) => {
         }
     }
 
-    const addTaskToDatabase = async (caseId, taskData) => {
+    const addTaskToDatabase = async (caseId, taskData, authToken) => {
         try {
             const response = await fetch(`${API_URL}/case/addTask/${caseId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
                 },
                 body: JSON.stringify({ description: taskData, order: tasks?.length }),
             });
             const data = await response.json();
-            fetchTasks(caseId);
+            fetchTasks(caseId, authToken);
         } catch (error) {
             console.error(error);
         }
@@ -167,20 +170,30 @@ export const TaskContextProvider = ({ children }) => {
         setTasks(tasks?.filter((task) => task._id !== id));
     }
 
-    const deleteTaskFromDatabase = async (caseId, taskId) => {
+    const deleteTaskFromDatabase = async (caseId, taskId, authToken) => {
         try {
             const response = await fetch(`${API_URL}/case/deleteTask/${caseId}/${taskId}`, {
                 method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
             });
-            const data = await response.json();
+            // const data = await response.json();
         } catch (error) {
             console.error(error);
         }
     }
 
-    const fetchTasks = async (id) => {
+    const fetchTasks = async (id, authToken) => {
         try {
-            const response = await fetch(`${API_URL}/case/getCase/${id}`);
+            const response = await fetch(`${API_URL}/case/getCase/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -194,9 +207,15 @@ export const TaskContextProvider = ({ children }) => {
     };
 
     // Central Tasks Page
-    const getTasksByStaff = async (staffId) => {
+    const getTasksByStaff = async (staffId, authToken) => {
         try {
-            const response = await fetch(`${API_URL}/case/getTasksByStaff/${staffId}`);
+            const response = await fetch(`${API_URL}/case/getTasksByStaff/${staffId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -209,9 +228,15 @@ export const TaskContextProvider = ({ children }) => {
         }
     }
 
-    const getAllTasks = async () => {
+    const getAllTasks = async (authToken) => {
         try {
-            const response = await fetch(`${API_URL}/case/getAllTasks`);
+            const response = await fetch(`${API_URL}/case/getAllTasks`,{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -243,6 +268,7 @@ export const TaskContextProvider = ({ children }) => {
         setStatusFilter(status);
         console.log("Tasks are empty?", Object.keys(tasks).length);
         // Iterate over tasks grouped by caseId
+        console.log("Tasks: ", tasks);
         const filteredTasks = Object.entries(tasks).reduce((acc, [caseId, { matterName, tasks: taskList }]) => {
             if (Array.isArray(taskList)) {
                 // Filter tasks by status

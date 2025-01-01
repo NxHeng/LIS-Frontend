@@ -697,7 +697,7 @@ const Home = () => {
                         <Grid className='exclude' item xs={12} sm={6} md={4}>
                             <Paper elevation={4} sx={{ ...muiStyles.paperStyle, display: 'flex', flexDirection: 'column' }}>
                                 <Box py={2} px={3} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <Typography color='black' component={Link} to='/tasks' variant="h6" style={{ textDecoration: 'none' }}>Pending Tasks</Typography>
+                                    <Typography color='black' component={Link} to='/tasks' state={{ target: 'Pending' }}variant="h6" style={{ textDecoration: 'none' }}>Pending Tasks</Typography>
                                     <Typography variant="h4" color='primary'>
                                         {overallStatus?.overview.totalPendingTasks}
                                     </Typography>
